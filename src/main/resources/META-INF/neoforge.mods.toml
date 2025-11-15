@@ -1,0 +1,17 @@
+modLoader = "javafml"
+loaderVersion = "*"
+license = "${license}"
+
+[[mods]]
+modId = "${id}"
+version = "${version}"
+displayName = "${name}"
+description = '''${description}'''
+authors = "${author}"
+logoFile = "icon.png"
+updateJSONURL="https://api.modrinth.com/updates/${modrinth}/forge_updates.json"
+displayURL="https://modrinth.com/project/${modrinth}"
+issueTrackerURL="https://github.com/BizCub/${github}/issues"
+
+[[mixins]]
+config = "${mixin}.mixins.json"
