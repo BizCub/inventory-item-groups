@@ -1,0 +1,13 @@
+{
+    "required": true,
+    "package": "com.bizcub.inventoryItemGroups.mixin",
+    "mixins": [
+        "Groups"
+    ],
+    "client": [
+        "Groups1"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+  }
+}
