@@ -1,20 +1,24 @@
 {
-  "schemaVersion": 1,
-  "id": "${id}",
-  "name": "${name}",
-  "version": "${version}",
-  "description": "${description}",
-  "license": "${license}",
-  "icon": "icon.png",
-  "authors": [
-    "${author}"
-  ],
-  "contact": {
-    "homepage": "https://modrinth.com/project/${modrinth}",
-    "issues": "https://github.com/BizCub/${github}/issues"
-  },
-  "entrypoints": {},
-  "mixins": [
-    "${mixin}.mixins.json"
-  ]
+    "schemaVersion": 1,
+    "id": "${id}",
+    "name": "${name}",
+    "version": "${version}",
+    "description": "${description}",
+    "license": "${license}",
+    "icon": "icon.png",
+    "authors": [
+        "${author}"
+    ],
+    "contact": {
+        "homepage": "https://modrinth.com/project/${modrinth}",
+        "issues": "https://github.com/BizCub/${github}/issues"
+    },
+    "entrypoints": {
+        "main": [
+            "com.bizcub.inventoryItemGroups.platforms.Fabric"
+        ]
+    },
+    "mixins": [
+        "${mixin}.mixins.json"
+    ]
 }
