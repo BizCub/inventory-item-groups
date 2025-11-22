@@ -7,6 +7,6 @@ public class Fabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Main.createItemsMapping();
+        Main.createLists();
     }
 }

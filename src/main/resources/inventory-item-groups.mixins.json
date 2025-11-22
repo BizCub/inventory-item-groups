@@ -5,6 +5,7 @@
         "Groups"
     ],
     "client": [
+        "Container",
         "Groups1"
     ],
     "injectors": {
