@@ -20,78 +20,70 @@ import java.util.Collection;
 import java.util.List;
 
 @Mixin(CreativeModeInventoryScreen.class)
-public class Groups {
+public class CreativeModeInventoryScreenMixin {
 
-    @Unique private static Slot inventoryItemGroups$slotClicked;
+    @Unique private static Slot inventoryItemGroups$clickedSlot;
 
     @Shadow private float scrollOffs;
 
     @Inject(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
     private void slotClicked(Slot slot, int i, int j, ClickType clickType, CallbackInfo ci) {
-        inventoryItemGroups$slotClicked = slot;
+        inventoryItemGroups$clickedSlot = slot;
 
         Main.tempInventoryItems.clear();
-        for (ItemStack itemStack : Main.tempInventoryItemStack) {
+        for (ItemStack itemStack : Main.tempInventoryItemStack)
             Main.tempInventoryItems.add(itemStack.getItem().toString());
-        }
 
-        int index = Main.slotIndexCalculation(Main.tempInventoryItems.size(), scrollOffs, slot.index);
+        int index = Main.indexCalculation(Main.tempInventoryItems.size(), scrollOffs, slot.index);
         String item = slot.getItem().getItem().toString();
 
-        for (ArrayList<String> list : Main.itemGroups) {
-            if (list.getFirst().equals(item) && Main.tempInventoryItems.indexOf(item) == index) {
-                Main.listChanged(item, index, scrollOffs);
-            }
-        }
-    }
-
-    @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
-    private void hh(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
-        String item = itemStack.getItem().toString();
-        int index = Main.slotIndexCalculation(Main.tempInventoryItemStack.size(), Main.tempScrollOffs, inventoryItemGroups$slotClicked.index);
-
-        if (Main.itemIconIndexes.containsValue(index)) {
-            instance.setCarried(ItemStack.EMPTY);
-            Main.listChanged(item, index, scrollOffs);
-        } else {
-            instance.setCarried(itemStack);
-        }
+        for (ArrayList<String> list : Main.itemGroups)
+            if (list.getFirst().equals(item) && Main.tempInventoryItems.indexOf(item) == index)
+                Main.itemsChanged(item, index, scrollOffs);
     }
 
     @Inject(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
-    private void ff(Slot slot, int i, int j, ClickType clickType, CallbackInfo ci) {
-        inventoryItemGroups$slotClicked = slot;
+    private void getSlot(Slot slot, int i, int j, ClickType clickType, CallbackInfo ci) {
+        inventoryItemGroups$clickedSlot = slot;
+    }
+
+    @Unique private void inventoryItemGroups$mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
+        String item = itemStack.getItem().toString();
+        int index = Main.indexCalculation(Main.tempInventoryItemStack.size(), Main.tempScrollOffs, inventoryItemGroups$clickedSlot.index);
+
+        if (Main.iconIndexes.containsValue(index)) {
+            instance.setCarried(ItemStack.EMPTY);
+            Main.itemsChanged(item, index, scrollOffs);
+        } else
+            instance.setCarried(itemStack);
+    }
+
+    @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
+    private void mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
+        inventoryItemGroups$mouseButtonsFix(instance, itemStack);
     }
 
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
-    private void gg(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
-        String item = itemStack.getItem().toString();
-        int index = Main.slotIndexCalculation(Main.tempInventoryItemStack.size(), Main.tempScrollOffs, inventoryItemGroups$slotClicked.index);
-
-        if (Main.itemIconIndexes.containsValue(index)) {
-            instance.setCarried(ItemStack.EMPTY);
-            Main.listChanged(item, index, scrollOffs);
-        } else {
-            instance.setCarried(itemStack);
-        }
+    private void mouseMiddleButtonFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
+        inventoryItemGroups$mouseButtonsFix(instance, itemStack);
     }
 
     @Redirect(method = "selectTab", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;getDisplayItems()Ljava/util/Collection;"))
     private Collection<ItemStack> groupsImplementation(CreativeModeTab instance) {
         List<ItemStack> newStack = new ArrayList<>(instance.getDisplayItems());
-        List<String> removeItemNames = new ArrayList<>();
+        List<String> removeItems = new ArrayList<>();
 
-        Main.visibilityGroup();
+        Main.hideGroups();
 
         for (ArrayList<String> list : Main.itemGroups) {
-            removeItemNames.addAll(list);
-            removeItemNames.remove(list.getFirst());
+            removeItems.addAll(list);
+            removeItems.remove(list.getFirst());
         }
 
         for (int i = 0; i < newStack.size(); i++) {
             String name = newStack.get(i).getItem().toString();
 
-            for (String item : removeItemNames) {
+            for (String item : removeItems) {
                 if (name.equals(item)) {
                     newStack.remove(i);
                     i--;
@@ -104,7 +96,7 @@ public class Groups {
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void gg(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
+    private void getScrollOffs(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
         Main.tempScrollOffs = scrollOffs;
     }
 }

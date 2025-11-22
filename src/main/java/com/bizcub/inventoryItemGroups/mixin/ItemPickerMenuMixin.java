@@ -15,29 +15,28 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.ArrayList;
 
 @Mixin(CreativeModeInventoryScreen.ItemPickerMenu.class)
-public abstract class Groups1 {
+public abstract class ItemPickerMenuMixin {
 
     @Shadow @Final public NonNullList<@NotNull ItemStack> items;
 
     @Shadow public abstract void scrollTo(float f);
 
     @Inject(method = "getCarried", at = @At("HEAD"))
-    private void gg(CallbackInfoReturnable<ItemStack> cir) {
+    private void toggleGroupVisibility(CallbackInfoReturnable<ItemStack> cir) {
         if (Main.tempListChanged) {
-            String group;
+            String groupName;
             boolean visible;
 
             for (ArrayList<String> list : Main.itemGroups) {
                 if (list.contains(Main.tempGroupName)) {
-                    group = list.getFirst();
-                    visible = !Main.groupVisibility.get(group);
-                    Main.groupVisibility.put(group, visible);
+                    groupName = list.getFirst();
+                    visible = !Main.groupVisibility.get(groupName);
+                    Main.groupVisibility.put(groupName, visible);
 
-                    if (visible) {
+                    if (visible)
                         list.reversed().forEach(str -> items.add(Main.tempIndex + 1, new ItemStack(Main.itemsMapping.get(str))));
-                    } else {
+                    else
                         list.forEach(ignored -> items.remove(Main.tempIndex + 1));
-                    }
                 }
             }
 

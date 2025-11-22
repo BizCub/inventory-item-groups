@@ -2,11 +2,11 @@
     "required": true,
     "package": "com.bizcub.inventoryItemGroups.mixin",
     "mixins": [
-        "Groups"
+        "CreativeModeInventoryScreenMixin"
     ],
     "client": [
-        "Container",
-        "Groups1"
+        "AbstractContainerScreenMixin",
+        "ItemPickerMenuMixin"
     ],
     "injectors": {
         "defaultRequire": 1
