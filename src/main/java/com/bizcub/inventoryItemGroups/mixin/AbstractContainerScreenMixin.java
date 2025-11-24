@@ -1,5 +1,6 @@
 package com.bizcub.inventoryItemGroups.mixin;
 
+import com.bizcub.inventoryItemGroups.Group;
 import com.bizcub.inventoryItemGroups.Main;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -40,42 +41,70 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
         index += slot.index;
 
         boolean visible = false;
-        if (Main.iconIndexes.containsValue(index) && slot.index <= 44) {
-            for (String str : Main.iconIndexes.keySet())
-                if (Main.iconIndexes.get(str) == index)
-                    visible = Main.groupVisibility.get(str);
+//        if (Main.iconIndexes.containsValue(index) && slot.index <= 44) {
+//            for (String str : Main.iconIndexes.keySet())
+//                if (Main.iconIndexes.get(str) == index)
+//                    visible = Main.groupVisibility.get(str);
+//
+//            if (visible)
+//                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ITEM_SLOT_SPRITE, slot.x-1, slot.y-1, 18, 18);
+//        }
 
-            if (visible)
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ITEM_SLOT_SPRITE, slot.x-1, slot.y-1, 18, 18);
+        for (Group group : Main.groups) {
+            if (group.getItemsWithIndexes().containsValue(index) && slot.index <= 44) {
+                for (String str : group.getItemsWithIndexes().keySet())
+                    if (group.getItemsWithIndexes().get(str) == index)
+                        visible = group.isVisibility();
+
+                if (visible)
+                    guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ITEM_SLOT_SPRITE, slot.x-1, slot.y-1, 18, 18);
+            }
         }
-        if (Main.itemIndexes.containsValue(index) && slot.index <= 44)
-            for (String str : Main.itemIndexes.keySet())
-                if (Main.itemIndexes.get(str) == index)
-                    guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ICON_SLOT_SPRITE, slot.x-1, slot.y-1, 18, 18);
+
+//        if (Main.itemIndexes.containsValue(index) && slot.index <= 44)
+//            for (String str : Main.itemIndexes.keySet())
+//                if (Main.itemIndexes.get(str) == index)
+//                    guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ICON_SLOT_SPRITE, slot.x-1, slot.y-1, 18, 18);
+
+        for (Group group : Main.groups)
+            if (group.getItemsWithIndexes().containsValue(index) && slot.index <= 44)
+                for (String str : group.getItemsWithIndexes().keySet())
+                    if (group.getItemsWithIndexes().get(str) == index)
+                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ICON_SLOT_SPRITE, slot.x-1, slot.y-1, 18, 18);
     }
 
     @Inject(method = "renderSlot", at = @At("TAIL"))
     private void renderVisibilitySprites(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
         ArrayList<ItemStack> newStack = new ArrayList<>(Main.tempInventoryItemStack);
-        Main.iconIndexes.clear();
-        Main.itemIndexes.clear();
+//        Main.iconIndexes.clear();
+//        Main.itemIndexes.clear();
 
         for (int i = newStack.size()-1; i > 0; i--) {
             String item = newStack.get(i).getItem().toString();
 
-            for (ArrayList<String> list : Main.itemGroups)
-                if (list.getFirst().equals(item))
-                    Main.iconIndexes.put(item, i);
+//            for (ArrayList<String> list : Main.itemGroups)
+//                if (list.getFirst().equals(item))
+//                    Main.iconIndexes.put(item, i);
+
+            for (Group group : Main.groups)
+                if (group.getItems().getFirst().equals(item))
+                    group.setItemWithIndex(item, i);
         }
 
         for (int i = 0; i < newStack.size(); i++) {
             String item = newStack.get(i).getItem().toString();
 
-            for (ArrayList<String> list : Main.itemGroups)
-                if (Main.groupVisibility.get(list.getFirst()))
-                    for (String str : list)
+//            for (ArrayList<String> list : Main.itemGroups)
+//                if (Main.groupVisibility.get(list.getFirst()))
+//                    for (String str : list)
+//                        if (str.equals(item))
+//                            Main.itemIndexes.put(str, i);
+
+            for (Group group : Main.groups)
+                if (group.isVisibility())
+                    for (String str : group.getItems())
                         if (str.equals(item))
-                            Main.itemIndexes.put(str, i);
+                            group.setItemWithIndex(str, i);
         }
 
         NonNullList<@NotNull Slot> slots = menu.slots;
@@ -84,15 +113,22 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
             index = Main.tempInventoryItemStack.indexOf(slots.get(1).getItem()) - 1;
         index += slot.index;
         boolean visible = false;
-        if (Main.iconIndexes.containsValue(index) && slot.index <= 45) {
-            for (String str : Main.iconIndexes.keySet())
-                if (Main.iconIndexes.get(str) == index)
-                    visible = Main.groupVisibility.get(str);
+        //if (Main.iconIndexes.containsValue(index) && slot.index <= 45) {
+        for (Group group : Main.groups) {
+            if (group.getItemsWithIndexes().containsValue(index) && slot.index <= 45) {
+//            for (String str : Main.iconIndexes.keySet())
+//                if (Main.iconIndexes.get(str) == index)
+//                    visible = Main.groupVisibility.get(str);
 
-            if (visible)
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MINUS_SPRITE, slot.x, slot.y, 16, 16);
-            else
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PLUS_SPRITE, slot.x, slot.y, 16, 16);
+                for (String str : group.getItemsWithIndexes().keySet())
+                    if (group.getItemsWithIndexes().get(str) == index)
+                        visible = group.isVisibility();
+
+                if (visible)
+                    guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MINUS_SPRITE, slot.x, slot.y, 16, 16);
+                else
+                    guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PLUS_SPRITE, slot.x, slot.y, 16, 16);
+            }
         }
     }
 }

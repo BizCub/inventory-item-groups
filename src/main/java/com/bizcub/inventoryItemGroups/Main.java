@@ -1,8 +1,6 @@
 package com.bizcub.inventoryItemGroups;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +14,9 @@ public class Main {
     public static HashMap<String, Integer> itemIndexes = new HashMap<>();
     public static HashMap<String, Boolean> groupVisibility = new HashMap<>();
     public static HashMap<String, Item> itemsMapping = new HashMap<>();
+    public static HashMap<String, CreativeModeTab> tabsMapping = new HashMap<>();
+
+    public static ArrayList<Group> groups = new ArrayList<>();
 
     public static List<ItemStack> tempInventoryItemStack = new ArrayList<>();
     public static List<String> tempInventoryItems = new ArrayList<>();
@@ -30,11 +31,22 @@ public class Main {
             itemsMapping.put(item.toString(), item);
             if (item == Items.AIR) break;
         }
+
+        for (CreativeModeTab tab : CreativeModeTabs.allTabs())
+            tabsMapping.put(tab.getDisplayName().getString(), tab);
+
+        groups.add(new Group("Building Blocks", itemGroups.getFirst()));
+        groups.add(new Group("Building Blocks", itemGroups.get(1)));
     }
 
     public static void hideGroups() {
-        for (ArrayList<String> list : itemGroups)
-            groupVisibility.put(list.getFirst(), false);
+//        for (ArrayList<String> list : itemGroups)
+//            groupVisibility.put(list.getFirst(), false);
+
+        for (Group group : groups) {
+            group.setVisibility(false);
+            //groupVisibility.put(group.getItems().getFirst(), false);
+        }
     }
 
     public static void itemsChanged(String groupName, int index, float scrollOffs) {
