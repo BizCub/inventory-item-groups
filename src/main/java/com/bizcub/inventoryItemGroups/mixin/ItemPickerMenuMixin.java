@@ -13,8 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
-
 @Mixin(CreativeModeInventoryScreen.ItemPickerMenu.class)
 public abstract class ItemPickerMenuMixin {
 
@@ -25,36 +23,17 @@ public abstract class ItemPickerMenuMixin {
     @Inject(method = "getCarried", at = @At("HEAD"))
     private void toggleGroupVisibility(CallbackInfoReturnable<ItemStack> cir) {
         if (Main.tempListChanged) {
-//            String groupName;
-//            boolean visible;
-//
-//            for (ArrayList<String> list : Main.itemGroups) {
-//                if (list.contains(Main.tempGroupName)) {
-//                    groupName = list.getFirst();
-//                    visible = !Main.groupVisibility.get(groupName);
-//                    Main.groupVisibility.put(groupName, visible);
-//
-//                    if (visible)
-//                        list.reversed().forEach(str -> items.add(Main.tempIndex + 1, new ItemStack(Main.itemsMapping.get(str))));
-//                    else
-//                        list.forEach(ignored -> items.remove(Main.tempIndex + 1));
-//                }
-//            }
+            Group group = Main.tempGroup;
+            group.setVisibility(!group.isVisibility());
 
-            for (Group group : Main.groups) {
-                if (group.getItems().contains(Main.tempGroupName)) {
-                    group.setVisibility(!group.isVisibility());
-
-                    if (group.isVisibility())
-                        group.getItems().reversed().forEach(str -> items.add(Main.tempIndex + 1, new ItemStack(Main.itemsMapping.get(str))));
-                    else
-                        group.getItems().forEach(ignored -> items.remove(Main.tempIndex + 1));
-                }
-            }
+            if (group.isVisibility())
+                group.getItems().reversed().forEach(str -> items.add(Main.tempIndex + 1, new ItemStack(Main.itemsMapping.get(str))));
+            else group.getItems().forEach(ignore -> items.remove(Main.tempIndex + 1));
 
             Main.tempListChanged = false;
+            Main.tempInventoryItemStack = items;
             scrollTo(Main.tempScrollOffs);
         }
-        Main.tempInventoryItemStack = items;
+        Main.setIndexes();
     }
 }

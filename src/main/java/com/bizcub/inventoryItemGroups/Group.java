@@ -5,16 +5,17 @@ import java.util.HashMap;
 
 public class Group {
     private String tab;
-    private HashMap<String, Integer> items = new HashMap<>();
+    private final HashMap<String, Integer> icon = new HashMap<>();
+    private final HashMap<String, Integer> items = new HashMap<>();
     private boolean visibility;
 
     public Group(String tab, ArrayList<String> items) {
         this.tab = tab;
         this.visibility = false;
+        this.icon.put(items.getFirst(), -1);
 
-        for (String str : items) {
+        for (String str : items)
             this.items.put(str, 0);
-        }
     }
 
     public String getTab() {
@@ -43,5 +44,17 @@ public class Group {
 
     public void setVisibility(boolean visibility) {
         this.visibility = visibility;
+    }
+
+    public String getIcon() {
+        return icon.keySet().stream().toList().getFirst();
+    }
+
+    public int getIconIndex() {
+        return icon.get(getIcon());
+    }
+
+    public void setIconIndex(int index) {
+        this.icon.put(getIcon(), index);
     }
 }
