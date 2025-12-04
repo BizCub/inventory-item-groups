@@ -2,6 +2,7 @@ package com.bizcub.inventoryItemGroups.mixin;
 
 import com.bizcub.inventoryItemGroups.Group;
 import com.bizcub.inventoryItemGroups.Main;
+import com.bizcub.inventoryItemGroups.config.ModConfig;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -23,6 +24,7 @@ import java.util.List;
 public abstract class CreativeModeInventoryScreenMixin {
 
     @Shadow private float scrollOffs;
+    @Shadow private static CreativeModeTab selectedTab;
 
     @Unique private static Slot inventoryItemGroups$clickedSlot;
 
@@ -40,13 +42,12 @@ public abstract class CreativeModeInventoryScreenMixin {
 
     @Unique private void inventoryItemGroups$mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
         int index = inventoryItemGroups$indexCalculation(Main.tempInventoryItemStack.size(), inventoryItemGroups$clickedSlot.index);
-        for (Group group : Main.groups) {
-            if (group.getIconIndex() == index) {
-                instance.setCarried(ItemStack.EMPTY);
-                Main.itemsChanged(index);
-                break;
-            } else instance.setCarried(itemStack);
-        }
+        Group group = Main.findGroupByIndex(index);
+
+        if (group != null && selectedTab == Main.tabsMapping.get(group.getTab()) && group.getIconIndex() == index) {
+            instance.setCarried(ItemStack.EMPTY);
+            Main.itemsChanged(index);
+        } else instance.setCarried(itemStack);
     }
 
     @Inject(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
@@ -71,12 +72,13 @@ public abstract class CreativeModeInventoryScreenMixin {
 
     @Redirect(method = "selectTab", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;getDisplayItems()Ljava/util/Collection;"))
     private Collection<ItemStack> groupsImplementation(CreativeModeTab instance) {
+        List<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(selectedTab);
         List<ItemStack> newStack = new ArrayList<>(instance.getDisplayItems());
         List<String> removeItems = new ArrayList<>();
 
         Main.hideGroups();
 
-        for (Group group : Main.groups) {
+        for (Group group : groupsOnSelectedTab) {
             removeItems.addAll(group.getItems());
             removeItems.remove(group.getIcon());
         }
@@ -98,6 +100,7 @@ public abstract class CreativeModeInventoryScreenMixin {
 
     @Inject(method = "render", at = @At("HEAD"))
     private void getScrollOffs(CallbackInfo ci) {
+        Main.tempSelectedTab = selectedTab;
         Main.tempScrollOffs = scrollOffs;
     }
 }

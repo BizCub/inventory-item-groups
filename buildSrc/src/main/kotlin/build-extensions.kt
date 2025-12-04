@@ -21,7 +21,8 @@ value class ModData(private val project: Project) {
     val modrinth: String get() = requireNotNull(project.prop("mod.modrinth")) { "Missing 'mod.modrinth'" }
     val curseforge: String get() = requireNotNull(project.prop("mod.curseforge")) { "Missing 'mod.curseforge'" }
     val github: String get() = requireNotNull(project.prop("mod.github")) { "Missing 'mod.github'" }
-    val mc_end: String get() = requireNotNull(project.prop("mod.mc_end")) { "Missing 'mod.mc_end'" }
+    val cloth_config: String get() = requireNotNull(project.prop("mod.cloth_config")) { "Missing 'mod.cloth_config'" }
+    val modmenu: String get() = requireNotNull(project.prop("mod.modmenu")) { "Missing 'mod.modmenu'" }
 
     fun dep(key: String) = requireNotNull(project.prop("deps.$key")) { "Missing 'deps.$key'" }
 }

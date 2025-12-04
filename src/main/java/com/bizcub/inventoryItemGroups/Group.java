@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Group {
-    private String tab;
+    private final String tab;
     private final HashMap<String, Integer> icon = new HashMap<>();
     private final HashMap<String, Integer> items = new HashMap<>();
     private boolean visibility;
@@ -20,10 +20,6 @@ public class Group {
 
     public String getTab() {
         return tab;
-    }
-
-    public void setTab(String tab) {
-        this.tab = tab;
     }
 
     public ArrayList<String> getItems() {

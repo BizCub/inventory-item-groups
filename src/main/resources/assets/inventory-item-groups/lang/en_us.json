@@ -1,0 +1,9 @@
+{
+    "text.autoconfig.inventory_item_groups.title": "Inventory Item Groups Settings",
+    "text.autoconfig.inventory_item_groups.option.general.itemGroups": "Item Groups",
+    "text.autoconfig.inventory_item_groups.option.general.displayMode": "Select tab",
+    "text.autoconfig.inventory_item_groups.option.ItemGroups": "Item Group",
+    "text.autoconfig.inventory_item_groups.option.ItemGroups.tab": "Inventory tab",
+    "text.autoconfig.inventory_item_groups.option.ItemGroups.items": "Items in a group",
+    "text.autoconfig.inventory_item_groups.option.ItemGroups.displayMode": "Select tab"
+}
