@@ -1,6 +1,5 @@
 package com.bizcub.inventoryItemGroups.config;
 
-import com.bizcub.inventoryItemGroups.InventoryItemGroups;
 import com.bizcub.inventoryItemGroups.Main;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
@@ -13,7 +12,7 @@ import net.minecraft.world.InteractionResult;
 import java.util.ArrayList;
 import java.util.List;
 
-@Config(name = InventoryItemGroups.modId)
+@Config(name = Main.modId)
 public class ModConfig extends GlobalData {
     @ConfigEntry.Category("general")
     @ConfigEntry.Gui.TransitiveObject

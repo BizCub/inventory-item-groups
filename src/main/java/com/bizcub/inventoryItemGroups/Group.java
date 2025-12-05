@@ -23,7 +23,7 @@ public class Group {
     }
 
     public ArrayList<String> getItems() {
-        return new ArrayList<>(items.keySet());
+        return Main.sortList(new ArrayList<>(items.keySet()));
     }
 
     public HashMap<String, Integer> getItemsWithIndexes() {
