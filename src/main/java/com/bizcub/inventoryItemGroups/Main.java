@@ -7,16 +7,10 @@ import net.minecraft.world.item.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Arrays;
 
 public class Main {
     public static final String modId = /*$ mod_id {*/"inventory_item_groups"/*$}*/;
 
-    public static ArrayList<ArrayList<String>> itemGroups = new ArrayList<>(Arrays.asList(
-            new ArrayList<>(Arrays.asList("minecraft:cherry_door", "minecraft:spruce_door", "minecraft:birch_door", "minecraft:oak_door")),
-            new ArrayList<>(Arrays.asList("minecraft:cherry_trapdoor", "minecraft:spruce_trapdoor")),
-            new ArrayList<>(Arrays.asList("minecraft:diamond_axe", "minecraft:iron_axe"))
-    ));
     public static HashMap<String, Item> itemsMapping = new HashMap<>();
     public static HashMap<String, CreativeModeTab> tabsMapping = new HashMap<>();
     public static ArrayList<Group> groups = new ArrayList<>();
@@ -138,6 +132,14 @@ public class Main {
         ArrayList<String> fence_gate = new ArrayList<>();
         ArrayList<String> door = new ArrayList<>();
         ArrayList<String> trapdoor = new ArrayList<>();
+        ArrayList<String> pressure_plate = new ArrayList<>();
+        ArrayList<String> button = new ArrayList<>();
+        ArrayList<String> brick = new ArrayList<>();
+        ArrayList<String> wall = new ArrayList<>();
+        ArrayList<String> bar = new ArrayList<>();
+        ArrayList<String> copper = new ArrayList<>();
+        ArrayList<String> chain = new ArrayList<>();
+        ArrayList<String> sandstone = new ArrayList<>();
 
         itemsMapping.forEach((string, item) -> {
             if ((string.contains("log") || string.contains("stem") || string.contains("bamboo_block"))) {
@@ -152,7 +154,7 @@ public class Main {
                 else
                     stripped_wood.add(string);
             }
-            if (string.contains("planks"))
+            if (string.contains("planks") || (string.contains("mosaic") && !string.contains("mosaic_")))
                 plank.add(string);
             if (string.contains("stair"))
                 stair.add(string);
@@ -168,6 +170,24 @@ public class Main {
                     door.add(string);
                 else
                     trapdoor.add(string);
+            if (string.contains("pressure_plate"))
+                pressure_plate.add(string);
+            if (string.contains("button"))
+                button.add(string);
+            if ((string.contains("bricks") || string.contains("chiseled") || string.contains("tiles") || string.contains("polished")) && string.contains("bookshelf"))
+                brick.add(string);
+            if (string.contains("wall"))
+                wall.add(string);
+            if (string.contains("bar"))
+                bar.add(string);
+            if (string.contains("copper"))
+                copper.add(string);
+            if (string.contains("chain"))
+                chain.add(string);
+            if (string.contains("chain"))
+                chain.add(string);
+            if (string.contains("sandstone"))
+                sandstone.add(string);
         });
 
         groups.add(new Group("Building Blocks", sortList(log)));
@@ -181,5 +201,13 @@ public class Main {
         groups.add(new Group("Building Blocks", sortList(fence_gate)));
         groups.add(new Group("Building Blocks", sortList(door)));
         groups.add(new Group("Building Blocks", sortList(trapdoor)));
+        groups.add(new Group("Building Blocks", sortList(pressure_plate)));
+        groups.add(new Group("Building Blocks", sortList(button)));
+        groups.add(new Group("Building Blocks", sortList(brick)));
+        groups.add(new Group("Building Blocks", sortList(wall)));
+        groups.add(new Group("Building Blocks", sortList(bar)));
+        groups.add(new Group("Building Blocks", sortList(copper)));
+        groups.add(new Group("Building Blocks", sortList(chain)));
+        groups.add(new Group("Building Blocks", sortList(sandstone)));
     }
 }

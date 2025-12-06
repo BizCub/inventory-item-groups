@@ -10,12 +10,19 @@ public class Group {
     private boolean visibility;
 
     public Group(String tab, ArrayList<String> items) {
+        items = removeDuplicates(items);
+
         this.tab = tab;
         this.visibility = false;
         this.icon.put(items.getFirst(), -1);
 
         for (String str : items)
-            this.items.put(str, 0);
+            this.items.put(str, -1);
+    }
+
+    public ArrayList<String> removeDuplicates(ArrayList<String> list) {
+        Main.groups.forEach(group -> list.removeAll(group.getItems()));
+        return list;
     }
 
     public String getTab() {
