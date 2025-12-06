@@ -13,6 +13,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
+
 @Mixin(CreativeModeInventoryScreen.ItemPickerMenu.class)
 public abstract class ItemPickerMenuMixin {
 
@@ -31,9 +33,9 @@ public abstract class ItemPickerMenuMixin {
             else group.getItems().forEach(ignore -> items.remove(Main.tempIndex + 1));
 
             Main.tempListChanged = false;
-            Main.tempInventoryItemStack = items;
+            Main.tempInventoryItemStack = new ArrayList<>(items);
             scrollTo(Main.tempScrollOffs);
+            Main.setIndexes();
         }
-        Main.setIndexes();
     }
 }

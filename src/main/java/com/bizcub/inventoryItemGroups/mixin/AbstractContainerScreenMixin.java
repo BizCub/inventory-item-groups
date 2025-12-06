@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @Mixin(AbstractContainerScreen.class)
 public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
@@ -41,7 +41,7 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
 
     @Inject(method = "renderSlot", at = @At("HEAD"))
     private void renderSlotSprites(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
-        List<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.tempSelectedTab);
+        ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.tempSelectedTab);
         int index = inventoryItemGroups$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
             if (inventoryItemGroups$onScreen(slot) && group.isVisibility()) {
@@ -57,7 +57,7 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
 
     @Inject(method = "renderSlot", at = @At("TAIL"))
     private void renderVisibilitySprites(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
-        List<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.tempSelectedTab);
+        ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.tempSelectedTab);
         int index = inventoryItemGroups$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
             if (inventoryItemGroups$onScreen(slot) && group.getIconIndex() == index) {

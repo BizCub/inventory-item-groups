@@ -7,22 +7,22 @@ import net.minecraft.world.item.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Arrays;
 
 public class Main {
     public static final String modId = /*$ mod_id {*/"inventory_item_groups"/*$}*/;
 
-    public static ArrayList<ArrayList<String>> itemGroups = new ArrayList<>(List.of(
-            new ArrayList<>(List.of("minecraft:cherry_door", "minecraft:spruce_door", "minecraft:birch_door", "minecraft:oak_door")),
-            new ArrayList<>(List.of("minecraft:cherry_trapdoor", "minecraft:spruce_trapdoor")),
-            new ArrayList<>(List.of("minecraft:diamond_axe", "minecraft:iron_axe"))
+    public static ArrayList<ArrayList<String>> itemGroups = new ArrayList<>(Arrays.asList(
+            new ArrayList<>(Arrays.asList("minecraft:cherry_door", "minecraft:spruce_door", "minecraft:birch_door", "minecraft:oak_door")),
+            new ArrayList<>(Arrays.asList("minecraft:cherry_trapdoor", "minecraft:spruce_trapdoor")),
+            new ArrayList<>(Arrays.asList("minecraft:diamond_axe", "minecraft:iron_axe"))
     ));
     public static HashMap<String, Item> itemsMapping = new HashMap<>();
     public static HashMap<String, CreativeModeTab> tabsMapping = new HashMap<>();
     public static ArrayList<Group> groups = new ArrayList<>();
 
     public static boolean tempListChanged;
-    public static List<ItemStack> tempInventoryItemStack = new ArrayList<>();
+    public static ArrayList<ItemStack> tempInventoryItemStack = new ArrayList<>();
     public static CreativeModeTab tempSelectedTab;
     public static Group tempGroup;
     public static int tempIndex;
@@ -82,33 +82,39 @@ public class Main {
         return null;
     }
 
-    public static List<Group> groupsOnSelectedTab(CreativeModeTab selectedTab) {
-        List<Group> groupsOnSelectedTab = new ArrayList<>();
-        for (Group group : groups)
+    public static ArrayList<Group> groupsOnSelectedTab(CreativeModeTab selectedTab) {
+        ArrayList<Group> groupsOnSelectedTab = new ArrayList<>();
+        groups.forEach(group -> {
             if (selectedTab == tabsMapping.get(group.getTab()))
                 groupsOnSelectedTab.add(group);
+        });
         return groupsOnSelectedTab;
     }
 
     public static void setIndexes() {
-        List<Group> groupsOnSelectedTab = groupsOnSelectedTab(tempSelectedTab);
+        ArrayList<Group> groupsOnSelectedTab = groupsOnSelectedTab(tempSelectedTab);
         ArrayList<String> newStack = new ArrayList<>();
-        for (ItemStack itemStack : tempInventoryItemStack)
-            newStack.add(itemStack.getItem().toString());
 
-        for (int i = 0; i < tempInventoryItemStack.size()-1; i++) {
-            String item = tempInventoryItemStack.get(i).getItem().toString();
+        tempInventoryItemStack.forEach(itemStack ->
+            newStack.add(itemStack.getItem().toString()));
 
-            for (Group group : groupsOnSelectedTab) {
-                if (group.getItems().contains(item)) {
+        for (Group group : groupsOnSelectedTab) {
+            boolean setIcon = false;
+            for (String item : group.getItems()) {
+                int firstIndex = newStack.indexOf(item);
+                int lastIndex = newStack.lastIndexOf(item);
+                if (newStack.contains(item)) {
                     if (group.isVisibility()) {
-                        if (newStack.indexOf(item) != newStack.lastIndexOf(item) && newStack.indexOf(item) == i)
-                            group.setIconIndex(i);
-                        else group.setItemWithIndex(item, i);
+                        if (firstIndex != lastIndex && !setIcon) {
+                            group.setIconIndex(firstIndex);
+                            group.setItemWithIndex(item, lastIndex);
+                            setIcon = true;
+                        } else
+                            group.setItemWithIndex(item, firstIndex);
                     } else {
-                        group.setIconIndex(i);
-                        for (String items : group.getItems())
-                            group.setItemWithIndex(items, -1);
+                        group.setIconIndex(firstIndex);
+                        group.getItems().forEach(item1 ->
+                            group.setItemWithIndex(item1, -1));
                     }
                 }
             }
@@ -125,21 +131,55 @@ public class Main {
         ArrayList<String> stripped_log = new ArrayList<>();
         ArrayList<String> wood = new ArrayList<>();
         ArrayList<String> stripped_wood = new ArrayList<>();
+        ArrayList<String> plank = new ArrayList<>();
+        ArrayList<String> stair = new ArrayList<>();
+        ArrayList<String> slab = new ArrayList<>();
+        ArrayList<String> fence = new ArrayList<>();
+        ArrayList<String> fence_gate = new ArrayList<>();
+        ArrayList<String> door = new ArrayList<>();
+        ArrayList<String> trapdoor = new ArrayList<>();
 
         itemsMapping.forEach((string, item) -> {
-            if (((string.contains("log") || string.contains("stem") || string.contains("bamboo_block")) && !string.contains("stripped")))
-                log.add(string);
-            if (((string.contains("log") || string.contains("stem") || string.contains("bamboo_block")) && string.contains("stripped")))
-                stripped_log.add(string);
-            if ((string.contains("_wood") || string.contains("hyphae")) && !string.contains("stripped"))
-                wood.add(string);
-            if ((string.contains("wood") || string.contains("hyphae")) && string.contains("stripped"))
-                stripped_wood.add(string);
+            if ((string.contains("log") || string.contains("stem") || string.contains("bamboo_block"))) {
+                if (!string.contains("stripped"))
+                    log.add(string);
+                else
+                    stripped_log.add(string);
+            }
+            if (string.contains("_wood") || string.contains("hyphae")) {
+                if (!string.contains("stripped"))
+                    wood.add(string);
+                else
+                    stripped_wood.add(string);
+            }
+            if (string.contains("planks"))
+                plank.add(string);
+            if (string.contains("stair"))
+                stair.add(string);
+            if (string.contains("slab"))
+                slab.add(string);
+            if (string.contains("fence"))
+                if (!string.contains("gate"))
+                    fence.add(string);
+                else
+                    fence_gate.add(string);
+            if (string.contains("door"))
+                if (!string.contains("trapdoor"))
+                    door.add(string);
+                else
+                    trapdoor.add(string);
         });
 
         groups.add(new Group("Building Blocks", sortList(log)));
         groups.add(new Group("Building Blocks", sortList(stripped_log)));
         groups.add(new Group("Building Blocks", sortList(wood)));
         groups.add(new Group("Building Blocks", sortList(stripped_wood)));
+        groups.add(new Group("Building Blocks", sortList(plank)));
+        groups.add(new Group("Building Blocks", sortList(stair)));
+        groups.add(new Group("Building Blocks", sortList(slab)));
+        groups.add(new Group("Building Blocks", sortList(fence)));
+        groups.add(new Group("Building Blocks", sortList(fence_gate)));
+        groups.add(new Group("Building Blocks", sortList(door)));
+        groups.add(new Group("Building Blocks", sortList(trapdoor)));
     }
 }

@@ -2,7 +2,6 @@ package com.bizcub.inventoryItemGroups.mixin;
 
 import com.bizcub.inventoryItemGroups.Group;
 import com.bizcub.inventoryItemGroups.Main;
-import com.bizcub.inventoryItemGroups.config.ModConfig;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -18,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Mixin(CreativeModeInventoryScreen.class)
 public abstract class CreativeModeInventoryScreenMixin {
@@ -72,11 +70,9 @@ public abstract class CreativeModeInventoryScreenMixin {
 
     @Redirect(method = "selectTab", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;getDisplayItems()Ljava/util/Collection;"))
     private Collection<ItemStack> groupsImplementation(CreativeModeTab instance) {
-        List<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(selectedTab);
-        List<ItemStack> newStack = new ArrayList<>(instance.getDisplayItems());
-        List<String> removeItems = new ArrayList<>();
-
-        Main.hideGroups();
+        ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(selectedTab);
+        ArrayList<ItemStack> newStack = new ArrayList<>(instance.getDisplayItems());
+        ArrayList<String> removeItems = new ArrayList<>();
 
         for (Group group : groupsOnSelectedTab) {
             removeItems.addAll(group.getItems());
@@ -93,14 +89,15 @@ public abstract class CreativeModeInventoryScreenMixin {
                 }
             }
         }
-
+        Main.tempSelectedTab = selectedTab;
         Main.tempInventoryItemStack = newStack;
+        Main.hideGroups();
+        Main.setIndexes();
         return newStack;
     }
 
     @Inject(method = "render", at = @At("HEAD"))
     private void getScrollOffs(CallbackInfo ci) {
-        Main.tempSelectedTab = selectedTab;
         Main.tempScrollOffs = scrollOffs;
     }
 }
