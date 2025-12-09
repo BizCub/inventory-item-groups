@@ -130,95 +130,59 @@ public class Main {
     }
 
     public static void createDefaultGroups() {
-        if (!groups.isEmpty()) return;
+        groups.clear();
 
-        ArrayList<String> log = new ArrayList<>();
-        ArrayList<String> stripped_log = new ArrayList<>();
-        ArrayList<String> wood = new ArrayList<>();
-        ArrayList<String> stripped_wood = new ArrayList<>();
-        ArrayList<String> plank = new ArrayList<>();
-        ArrayList<String> stair = new ArrayList<>();
-        ArrayList<String> slab = new ArrayList<>();
-        ArrayList<String> fence = new ArrayList<>();
-        ArrayList<String> fence_gate = new ArrayList<>();
-        ArrayList<String> door = new ArrayList<>();
-        ArrayList<String> trapdoor = new ArrayList<>();
-        ArrayList<String> pressure_plate = new ArrayList<>();
-        ArrayList<String> button = new ArrayList<>();
-        ArrayList<String> brick = new ArrayList<>();
-        ArrayList<String> wall = new ArrayList<>();
-        ArrayList<String> bar = new ArrayList<>();
-        ArrayList<String> copper = new ArrayList<>();
-        ArrayList<String> chain = new ArrayList<>();
-        ArrayList<String> sandstone = new ArrayList<>();
+        String buildingName = "Building Blocks";
+        String coloredName = "Colored Blocks";
 
-        itemsInTabsMapping.get(tabsMapping.get("Building Blocks")).forEach(itemStack -> {
-            String string = itemStack.getItem().toString();
+        ArrayList<ArrayList<String>> building = new ArrayList<>();
+        ArrayList<ArrayList<String>> colored = new ArrayList<>();
+        for (int i = 0; i < 19; i++) building.add(new ArrayList<>());
+        for (int i = 0; i < 12; i++) colored.add(new ArrayList<>());
 
-            if ((string.contains("log") || string.contains("stem") || string.contains("bamboo_block"))) {
-                if (!string.contains("stripped"))
-                    log.add(string);
-                else
-                    stripped_log.add(string);
+        itemsInTabsMapping.get(tabsMapping.get(buildingName)).forEach(itemStack -> {
+            String item = itemStack.getItem().toString();
+            if (item.contains("log") || item.contains("stem") || item.contains("bamboo_block")) {
+                if (!item.contains("stripped")) building.getFirst().add(item);
+                else building.get(1).add(item);
             }
-            if (string.contains("_wood") || string.contains("hyphae")) {
-                if (!string.contains("stripped"))
-                    wood.add(string);
-                else
-                    stripped_wood.add(string);
+            if (item.contains("wood") || item.contains("hyphae")) {
+                if (!item.contains("stripped")) building.get(2).add(item);
+                else building.get(3).add(item);
             }
-            if (string.contains("planks") || (string.contains("mosaic") && !string.contains("mosaic_")))
-                plank.add(string);
-            if (string.contains("stair"))
-                stair.add(string);
-            if (string.contains("slab"))
-                slab.add(string);
-            if (string.contains("fence"))
-                if (!string.contains("gate"))
-                    fence.add(string);
-                else
-                    fence_gate.add(string);
-            if (string.contains("door"))
-                if (!string.contains("trapdoor"))
-                    door.add(string);
-                else
-                    trapdoor.add(string);
-            if (string.contains("pressure_plate"))
-                pressure_plate.add(string);
-            if (string.contains("button"))
-                button.add(string);
-            if ((string.contains("bricks") || string.contains("chiseled") || string.contains("tiles") || string.contains("polished")))
-                brick.add(string);
-            if (string.contains("wall"))
-                wall.add(string);
-            if (string.contains("bar"))
-                bar.add(string);
-            if (string.contains("copper"))
-                copper.add(string);
-            if (string.contains("chain"))
-                chain.add(string);
-            if (string.contains("sandstone"))
-                sandstone.add(string);
+            if (item.contains("stair")) building.get(4).add(item);
+            if (item.contains("slab")) building.get(5).add(item);
+            if (item.contains("planks") || (item.contains("mosaic"))) building.get(6).add(item);
+            if (item.contains("fence_gate")) building.get(7).add(item);
+            if (item.contains("fence")) building.get(8).add(item);
+            if (item.contains("trapdoor")) building.get(9).add(item);
+            if (item.contains("door")) building.get(10).add(item);
+            if (item.contains("pressure_plate")) building.get(11).add(item);
+            if (item.contains("button")) building.get(12).add(item);
+            if (item.contains("bar")) building.get(13).add(item);
+            if (item.contains("chain")) building.get(14).add(item);
+            if (item.contains("copper")) building.get(15).add(item);
+            if (item.contains("wall")) building.get(16).add(item);
+            if (item.contains("bricks") || item.contains("chiseled") || item.contains("tiles") || item.contains("polished")) building.get(17).add(item);
+            if (item.contains("sandstone")) building.get(18).add(item);
+        });
+        itemsInTabsMapping.get(tabsMapping.get(coloredName)).forEach(itemStack -> {
+            String item = itemStack.getItem().toString();
+            if (item.contains("wool")) colored.getFirst().add(item);
+            if (item.contains("carpet")) colored.get(1).add(item);
+            if (item.contains("glazed_terracotta")) colored.get(2).add(item);
+            if (item.contains("terracotta")) colored.get(3).add(item);
+            if (item.contains("concrete_powder")) colored.get(4).add(item);
+            if (item.contains("concrete")) colored.get(5).add(item);
+            if (item.contains("glass_pane")) colored.get(6).add(item);
+            if (item.contains("glass")) colored.get(7).add(item);
+            if (item.contains("shulker_box")) colored.get(8).add(item);
+            if (item.contains("candle")) colored.get(9).add(item);
+            if (item.contains("banner")) colored.get(10).add(item);
+            if (item.contains("bed")) colored.get(11).add(item);
         });
 
-        groups.add(new Group("Building Blocks", log));
-        groups.add(new Group("Building Blocks", stripped_log));
-        groups.add(new Group("Building Blocks", wood));
-        groups.add(new Group("Building Blocks", stripped_wood));
-        groups.add(new Group("Building Blocks", plank));
-        groups.add(new Group("Building Blocks", stair));
-        groups.add(new Group("Building Blocks", slab));
-        groups.add(new Group("Building Blocks", fence));
-        groups.add(new Group("Building Blocks", fence_gate));
-        groups.add(new Group("Building Blocks", door));
-        groups.add(new Group("Building Blocks", trapdoor));
-        groups.add(new Group("Building Blocks", pressure_plate));
-        groups.add(new Group("Building Blocks", button));
-        groups.add(new Group("Building Blocks", wall));
-        groups.add(new Group("Building Blocks", bar));
-        groups.add(new Group("Building Blocks", chain));
-        groups.add(new Group("Building Blocks", copper));
-        groups.add(new Group("Building Blocks", brick));
-        groups.add(new Group("Building Blocks", sandstone));
+        building.forEach(items -> groups.add(new Group(buildingName, items)));
+        colored.forEach(items -> groups.add(new Group(coloredName, items)));
     }
 }
