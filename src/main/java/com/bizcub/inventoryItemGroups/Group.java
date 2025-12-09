@@ -10,7 +10,7 @@ public class Group {
     private boolean visibility;
 
     public Group(String tab, ArrayList<String> items) {
-        items = removeDuplicates(items);
+        items = Main.sortList(removeDuplicates(items));
 
         this.tab = tab;
         this.visibility = false;

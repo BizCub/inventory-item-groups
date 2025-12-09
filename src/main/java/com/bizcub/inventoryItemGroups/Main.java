@@ -5,6 +5,7 @@ import com.bizcub.inventoryItemGroups.config.ModConfig;
 import net.minecraft.world.item.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -12,6 +13,7 @@ public class Main {
     public static final String modId = /*$ mod_id {*/"inventory_item_groups"/*$}*/;
 
     public static HashMap<String, Item> itemsMapping = new HashMap<>();
+    public static HashMap<CreativeModeTab, Collection<ItemStack>> itemsInTabsMapping = new HashMap<>();
     public static HashMap<String, CreativeModeTab> tabsMapping = new HashMap<>();
     public static ArrayList<Group> groups = new ArrayList<>();
 
@@ -38,18 +40,25 @@ public class Main {
         }
 
         CreativeModeTabs.allTabs().forEach(tab ->
-                tabsMapping.put(tab.getDisplayName().getString(), tab));
+            tabsMapping.put(tab.getDisplayName().getString(), tab));
+    }
+
+    public static void createItemsInTabsMapping() {
+        if (itemsInTabsMapping.isEmpty()) {
+            CreativeModeTabs.allTabs().forEach(creativeModeTab -> {
+                itemsInTabsMapping.put(creativeModeTab, creativeModeTab.getDisplayItems());
+            });
+        }
     }
 
     public static void updateGroups() {
         groups.clear();
         if (Compat.isModLoaded(Compat.clothConfigId) && !ModConfig.getInstance().general.itemGroups.isEmpty()) {
             ModConfig.getInstance().general.itemGroups.forEach(g -> {
-                if (!g.items.isEmpty())
-                    groups.add(new Group(g.tab, new ArrayList<>(g.items)));
+//                if (!g.items.isEmpty())
+//                    groups.add(new Group(g.tab, new ArrayList<>(g.items)));
             });
-        } else
-            createDefaultGroups();
+        }
     }
 
     public static void hideGroups() {
@@ -121,6 +130,8 @@ public class Main {
     }
 
     public static void createDefaultGroups() {
+        if (!groups.isEmpty()) return;
+
         ArrayList<String> log = new ArrayList<>();
         ArrayList<String> stripped_log = new ArrayList<>();
         ArrayList<String> wood = new ArrayList<>();
@@ -141,7 +152,9 @@ public class Main {
         ArrayList<String> chain = new ArrayList<>();
         ArrayList<String> sandstone = new ArrayList<>();
 
-        itemsMapping.forEach((string, item) -> {
+        itemsInTabsMapping.get(tabsMapping.get("Building Blocks")).forEach(itemStack -> {
+            String string = itemStack.getItem().toString();
+
             if ((string.contains("log") || string.contains("stem") || string.contains("bamboo_block"))) {
                 if (!string.contains("stripped"))
                     log.add(string);
@@ -174,7 +187,7 @@ public class Main {
                 pressure_plate.add(string);
             if (string.contains("button"))
                 button.add(string);
-            if ((string.contains("bricks") || string.contains("chiseled") || string.contains("tiles") || string.contains("polished")) && string.contains("bookshelf"))
+            if ((string.contains("bricks") || string.contains("chiseled") || string.contains("tiles") || string.contains("polished")))
                 brick.add(string);
             if (string.contains("wall"))
                 wall.add(string);
@@ -184,30 +197,28 @@ public class Main {
                 copper.add(string);
             if (string.contains("chain"))
                 chain.add(string);
-            if (string.contains("chain"))
-                chain.add(string);
             if (string.contains("sandstone"))
                 sandstone.add(string);
         });
 
-        groups.add(new Group("Building Blocks", sortList(log)));
-        groups.add(new Group("Building Blocks", sortList(stripped_log)));
-        groups.add(new Group("Building Blocks", sortList(wood)));
-        groups.add(new Group("Building Blocks", sortList(stripped_wood)));
-        groups.add(new Group("Building Blocks", sortList(plank)));
-        groups.add(new Group("Building Blocks", sortList(stair)));
-        groups.add(new Group("Building Blocks", sortList(slab)));
-        groups.add(new Group("Building Blocks", sortList(fence)));
-        groups.add(new Group("Building Blocks", sortList(fence_gate)));
-        groups.add(new Group("Building Blocks", sortList(door)));
-        groups.add(new Group("Building Blocks", sortList(trapdoor)));
-        groups.add(new Group("Building Blocks", sortList(pressure_plate)));
-        groups.add(new Group("Building Blocks", sortList(button)));
-        groups.add(new Group("Building Blocks", sortList(brick)));
-        groups.add(new Group("Building Blocks", sortList(wall)));
-        groups.add(new Group("Building Blocks", sortList(bar)));
-        groups.add(new Group("Building Blocks", sortList(copper)));
-        groups.add(new Group("Building Blocks", sortList(chain)));
-        groups.add(new Group("Building Blocks", sortList(sandstone)));
+        groups.add(new Group("Building Blocks", log));
+        groups.add(new Group("Building Blocks", stripped_log));
+        groups.add(new Group("Building Blocks", wood));
+        groups.add(new Group("Building Blocks", stripped_wood));
+        groups.add(new Group("Building Blocks", plank));
+        groups.add(new Group("Building Blocks", stair));
+        groups.add(new Group("Building Blocks", slab));
+        groups.add(new Group("Building Blocks", fence));
+        groups.add(new Group("Building Blocks", fence_gate));
+        groups.add(new Group("Building Blocks", door));
+        groups.add(new Group("Building Blocks", trapdoor));
+        groups.add(new Group("Building Blocks", pressure_plate));
+        groups.add(new Group("Building Blocks", button));
+        groups.add(new Group("Building Blocks", wall));
+        groups.add(new Group("Building Blocks", bar));
+        groups.add(new Group("Building Blocks", chain));
+        groups.add(new Group("Building Blocks", copper));
+        groups.add(new Group("Building Blocks", brick));
+        groups.add(new Group("Building Blocks", sandstone));
     }
 }

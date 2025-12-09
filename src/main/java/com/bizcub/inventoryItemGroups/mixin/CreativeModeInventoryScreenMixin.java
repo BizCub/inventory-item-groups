@@ -70,6 +70,9 @@ public abstract class CreativeModeInventoryScreenMixin {
 
     @Redirect(method = "selectTab", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;getDisplayItems()Ljava/util/Collection;"))
     private Collection<ItemStack> groupsImplementation(CreativeModeTab instance) {
+        Main.createItemsInTabsMapping();
+        Main.createDefaultGroups();
+
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(selectedTab);
         ArrayList<ItemStack> newStack = new ArrayList<>(instance.getDisplayItems());
         ArrayList<String> removeItems = new ArrayList<>();
@@ -89,6 +92,7 @@ public abstract class CreativeModeInventoryScreenMixin {
                 }
             }
         }
+
         Main.tempSelectedTab = selectedTab;
         Main.tempInventoryItemStack = newStack;
         Main.hideGroups();
