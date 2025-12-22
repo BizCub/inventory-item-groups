@@ -14,11 +14,11 @@
         "issues": "https://github.com/BizCub/${github}/issues"
     },
     "entrypoints": {
-        "main": [
+        "client": [
             "com.bizcub.inventoryItemGroups.platforms.Fabric"
         ],
         "modmenu": [
-            "com.bizcub.inventoryItemGroups.config.ModMenuIntegration"
+            "com.bizcub.inventoryItemGroups.platforms.Fabric"
         ]
     },
     "mixins": [

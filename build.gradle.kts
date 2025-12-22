@@ -1,7 +1,7 @@
 plugins {
     id("dev.architectury.loom") version "1.+"
     id("architectury-plugin") version "3.+"
-    id("me.modmuss50.mod-publish-plugin") version "0.8.4"
+    id("me.modmuss50.mod-publish-plugin") version "1.+"
 }
 
 val minecraft = stonecutter.current.version
@@ -17,9 +17,6 @@ var pubStart = findProperty("publish.start").toString()
 if (pubStart == "null") pubStart = minecraft
 var pubEnd = findProperty("publish.end").toString()
 if (pubEnd == "null") pubEnd = minecraft
-
-var neoPatch = findProperty("deps.neoforge_patch").toString()
-if (neoPatch == "null") neoPatch = "1.21+build.4"
 
 base.archivesName.set("$mixinId-$loader")
 version = "${mod.version}+$pubStart"
@@ -69,11 +66,9 @@ dependencies {
     if (isFabric) {
         modImplementation("net.fabricmc:fabric-loader:latest.release")
         modApi("com.terraformersmc:modmenu:${mod.modmenu}")
-        modApi("net.fabricmc.fabric-api:fabric-api:0.134.0+1.21.9")
     }
-    if (isForge) {
+    if (isForge)
         "forge"("net.minecraftforge:forge:$minecraft-${mod.dep("forge_loader")}")
-    }
     if (isNeoForge) {
         val neoVers = minecraft.substring(2)
         val neoLoader = mod.dep("neoforge_loader")

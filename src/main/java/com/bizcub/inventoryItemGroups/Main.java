@@ -1,7 +1,7 @@
 package com.bizcub.inventoryItemGroups;
 
 import com.bizcub.inventoryItemGroups.config.Compat;
-import com.bizcub.inventoryItemGroups.config.ModConfig;
+import com.bizcub.inventoryItemGroups.config.Configs;
 import net.minecraft.world.item.*;
 
 import java.util.ArrayList;
@@ -26,8 +26,7 @@ public class Main {
     public static float tempScrollOffs;
 
     public static void init() {
-        if (Compat.isModLoaded(Compat.clothConfigId))
-            ModConfig.init();
+        if (Compat.isModLoaded(Compat.clothConfigId)) Configs.init();
         createMapping();
         updateGroups();
     }
@@ -45,20 +44,20 @@ public class Main {
 
     public static void createItemsInTabsMapping() {
         if (itemsInTabsMapping.isEmpty()) {
-            CreativeModeTabs.allTabs().forEach(creativeModeTab -> {
-                itemsInTabsMapping.put(creativeModeTab, creativeModeTab.getDisplayItems());
-            });
+            CreativeModeTabs.allTabs().forEach(creativeModeTab ->
+                itemsInTabsMapping.put(creativeModeTab, creativeModeTab.getDisplayItems())
+            );
         }
     }
 
     public static void updateGroups() {
         groups.clear();
-        if (Compat.isModLoaded(Compat.clothConfigId) && !ModConfig.getInstance().general.itemGroups.isEmpty()) {
-            ModConfig.getInstance().general.itemGroups.forEach(g -> {
-//                if (!g.items.isEmpty())
-//                    groups.add(new Group(g.tab, new ArrayList<>(g.items)));
-            });
-        }
+//        if (Compat.isModLoaded(Compat.clothConfigId) && !Configs.getInstance().general.itemGroups.isEmpty()) {
+//            Configs.getInstance().general.itemGroups.forEach(g -> {
+//                if (!g.getItems().isEmpty())
+//                    groups.add(new Group(g.getTab(), new ArrayList<>(g.getItems())));
+//            });
+//        }
     }
 
     public static void hideGroups() {

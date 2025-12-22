@@ -13,36 +13,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Config(name = Main.modId)
-public class ModConfig extends GlobalData {
+public class Configs extends GlobalData {
+
     @ConfigEntry.Category("general")
     @ConfigEntry.Gui.TransitiveObject
     public General general = new General();
 
     public static void init() {
-        AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
+        AutoConfig.register(Configs.class, GsonConfigSerializer::new);
         configSaver();
     }
 
     public static void configSaver() {
-        AutoConfig.getConfigHolder(ModConfig.class).registerSaveListener((manager, data) -> {
+        AutoConfig.getConfigHolder(Configs.class).registerSaveListener((manager, data) -> {
             Main.updateGroups();
             return InteractionResult.SUCCESS;
         });
     }
 
-    public static ModConfig getInstance() {
-        return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+    public static Configs getInstance() {
+        return AutoConfig.getConfigHolder(Configs.class).getConfig();
     }
 
     @Config(name = "general")
     public static class General implements ConfigData {
-        public List<ItemGroups> itemGroups = new ArrayList<>();
+        public List<ItemGroup> itemGroups = new ArrayList<>();
 
         public General() {
         }
     }
 
-    public static class ItemGroups {
+    public static class ItemGroup {
         public String tab;
         public List<String> items = new ArrayList<>();
     }
