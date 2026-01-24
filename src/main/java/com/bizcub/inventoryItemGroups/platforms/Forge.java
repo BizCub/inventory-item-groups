@@ -1,9 +1,8 @@
 //? forge {
-/*package com.bizcub.template.platforms.forge;
+/*package com.bizcub.inventoryItemGroups.platforms;
 
+import com.bizcub.inventoryItemGroups.Main;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod(Forge.modId)
-public class Forge {
-    public static final String modId = /^$ mod_id {^/"sc_arch_template"/^$}^/;
-}*///?}
+@Mod(Main.modId)
+public class Forge {}*///?}

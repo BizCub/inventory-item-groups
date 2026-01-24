@@ -1,7 +1,5 @@
 package com.bizcub.inventoryItemGroups;
 
-import com.bizcub.inventoryItemGroups.config.Compat;
-import com.bizcub.inventoryItemGroups.config.Configs;
 import net.minecraft.world.item.*;
 
 import java.util.ArrayList;
@@ -10,7 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class Main {
-    public static final String modId = /*$ mod_id {*/"inventory_item_groups"/*$}*/;
+    public static final String modId = /*$ mod_id*/ "inventory_item_groups";
 
     public static ArrayList<Group> groups = new ArrayList<>();
 
@@ -25,12 +23,6 @@ public class Main {
     public static int tempIndex;
     public static float tempScrollOffs;
 
-    public static void init() {
-        if (Compat.isModLoaded(Compat.clothConfigId)) Configs.init();
-        createMapping();
-        updateGroups();
-    }
-
     public static void createMapping() {
         for (int i = 1; true; i++) {
             Item item = Item.byId(i);
@@ -40,24 +32,6 @@ public class Main {
 
         CreativeModeTabs.allTabs().forEach(tab ->
             tabsMapping.put(tab.getDisplayName().getString(), tab));
-    }
-
-    public static void createItemsInTabsMapping() {
-        if (itemsInTabsMapping.isEmpty()) {
-            CreativeModeTabs.allTabs().forEach(creativeModeTab ->
-                itemsInTabsMapping.put(creativeModeTab, creativeModeTab.getDisplayItems())
-            );
-        }
-    }
-
-    public static void updateGroups() {
-        groups.clear();
-//        if (Compat.isModLoaded(Compat.clothConfigId) && !Configs.getInstance().general.itemGroups.isEmpty()) {
-//            Configs.getInstance().general.itemGroups.forEach(g -> {
-//                if (!g.getItems().isEmpty())
-//                    groups.add(new Group(g.getTab(), new ArrayList<>(g.getItems())));
-//            });
-//        }
     }
 
     public static void hideGroups() {
@@ -128,7 +102,16 @@ public class Main {
         return list;
     }
 
+    public static void createItemsInTabsMapping() {
+        if (itemsInTabsMapping.isEmpty()) {
+            CreativeModeTabs.allTabs().forEach(creativeModeTab ->
+                    itemsInTabsMapping.put(creativeModeTab, creativeModeTab.getDisplayItems())
+            );
+        }
+    }
+
     public static void createDefaultGroups() {
+        createItemsInTabsMapping();
         groups.clear();
 
         String buildingName = "Building Blocks";
