@@ -1,41 +1,32 @@
 plugins {
-    id("dev.architectury.loom") version "1.+"
+    `multiloader-loader`
     id("architectury-plugin") version "3.+"
+    id("dev.architectury.loom") version "1.+"
     id("me.modmuss50.mod-publish-plugin") version "1.+"
 }
 
-val minecraft = stonecutter.current.version
-val snapshot = prop("mc.snapshot").toString()
-val loader = loom.platform.get().name.lowercase()
-val mixinId = mod.id.replace("_", "-")
-
-val isFabric = loader == "fabric"
-val isForge = loader == "forge"
-val isNeoForge = loader == "neoforge"
-
-var pubStart = findProperty("publish.start").toString()
-if (pubStart == "null") pubStart = minecraft
-var pubEnd = findProperty("publish.end").toString()
-if (pubEnd == "null") pubEnd = minecraft
-
-base.archivesName.set("$mixinId-$loader")
-version = "${mod.version}+$pubStart"
-
-architectury.common(stonecutter.tree.branches.mapNotNull {
-    if (stonecutter.current.project !in it) null
-    else prop("loom.platform")
-})
-
 stonecutter {
-    swaps["mod_id"] = "\"${prop("mod.id")}\""
-    constants.match(loader, "fabric", "forge", "neoforge")
-    java {
-        val java = if (stonecutter.eval(minecraft, ">=1.20.5")) JavaVersion.VERSION_21
-        else if (stonecutter.eval(minecraft, ">=1.18")) JavaVersion.VERSION_17
-        else if (stonecutter.eval(minecraft, ">=1.17")) JavaVersion.VERSION_16
-        else JavaVersion.VERSION_1_8
-        targetCompatibility = java
-        sourceCompatibility = java
+    swaps["mod_id"] = "\"${prop("mod.id")}\";"
+    constants.match(mod.loader, "fabric", "forge", "neoforge")
+}
+
+repositories {
+    maven("https://maven.neoforged.net/releases")
+}
+
+dependencies {
+    minecraft("com.mojang:minecraft:${mod.propIfExist("mc.snapshot", mod.mc)}")
+    mappings(loom.officialMojangMappings())
+
+    if (isFabric) {
+        modImplementation("net.fabricmc:fabric-loader:latest.release")
+        modImplementation("net.fabricmc.fabric-api:fabric-api:${mod.fabric_api}+${mod.mc}")
+    }
+    if (isForge) {
+        "forge"("net.minecraftforge:forge:${mod.mc}-${dep("forge_loader")}")
+    }
+    if (isNeoForge) {
+        "neoForge"("net.neoforged:neoforge:${dep("neoforge_loader")}")
     }
 }
 
@@ -45,50 +36,48 @@ loom {
             options.put("mark-corresponding-synthetics", "1")
         }
     }
-
-    if (isForge) forge.mixinConfigs("${mixinId}.mixins.json")
+    if (isForge) forge.mixinConfigs("${mod.mixin}.mixins.json")
 
     runConfigs.all {
         runDir = "../../run"
     }
 }
 
-repositories {
-    maven("https://maven.neoforged.net/releases/")
-    maven("https://maven.terraformersmc.com/releases/")
-}
+publishMods {
+    fun tokenDir(token: String) = file("C:\\Tokens\\$token.txt").readText()
+    file.set(tasks.remapJar.get().archiveFile)
+    displayName = "${mod.name} ${mod.loader.upperCaseFirst()} ${mod.pub_start} v${mod.version}"
+    changelog = rootProject.file("CHANGELOG.md").readText()
+    version = mod.version
+    type = STABLE
+    modLoaders.add(mod.loader)
+    if (isFabric) modLoaders.add("quilt")
 
-dependencies {
-    minecraft("com.mojang:minecraft:${if (snapshot == "null") minecraft else snapshot}")
-    mappings(loom.officialMojangMappings())
-    modApi("me.shedaniel.cloth:cloth-config-$loader:${mod.cloth_config}")
-
-    if (isFabric) {
-        modImplementation("net.fabricmc:fabric-loader:latest.release")
-        modApi("com.terraformersmc:modmenu:${mod.modmenu}")
+    modrinth {
+        projectId = mod.modrinth
+        accessToken = tokenDir("modrinth")
+        requires("fabric-api")
+        minecraftVersionRange {
+            start = mod.pub_start
+            end = mod.pub_end
+            includeSnapshots = true
+        }
     }
-    if (isForge)
-        "forge"("net.minecraftforge:forge:$minecraft-${mod.dep("forge_loader")}")
-    if (isNeoForge) {
-        val neoVers = minecraft.substring(2)
-        val neoLoader = mod.dep("neoforge_loader")
-        "neoForge"("net.neoforged:neoforge:${if (neoVers.contains(".")) "$neoVers.$neoLoader" else "$neoVers.0.$neoLoader"}")
+    curseforge {
+        projectId = mod.curseforge
+        accessToken = tokenDir("curseforge")
+        requires("fabric-api")
+        minecraftVersionRange {
+            start = mod.pub_start
+            end = mod.pub_end
+        }
     }
-}
-
-tasks.processResources {
-    properties(
-        listOf("fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml", "pack.mcmeta"),
-        "mixin" to mixinId,
-        "id" to mod.id,
-        "name" to mod.name,
-        "description" to mod.description,
-        "version" to mod.version,
-        "modrinth" to mod.modrinth,
-        "github" to mod.github,
-        "author" to "Bizarre Cube",
-        "license" to "MIT"
-    )
+    github {
+        accessToken = tokenDir("github")
+        repository = "BizCub/${mod.github}"
+        commitish = "master"
+        tagName = "v${mod.version}-${mod.loader}+${mod.pub_start}"
+    }
 }
 
 val buildAndCollect = tasks.register<Copy>("buildAndCollect") {
@@ -100,48 +89,9 @@ val buildAndCollect = tasks.register<Copy>("buildAndCollect") {
 
 if (stonecutter.current.isActive) {
     rootProject.tasks.register("buildActive") {
-        group = "project"
         dependsOn(buildAndCollect)
     }
-
     rootProject.tasks.register("runActive") {
-        group = "project"
         dependsOn(tasks.named("runClient"))
-    }
-}
-
-publishMods {
-    file = tasks.remapJar.get().archiveFile
-    displayName = "${mod.name} ${loader.upperCaseFirst()} $pubStart v${mod.version}"
-    changelog = rootProject.file("CHANGELOG.md").readText()
-    version = mod.version
-    type = STABLE
-    modLoaders.add(loader)
-    if (isFabric) modLoaders.add("quilt")
-
-    modrinth {
-        projectId = mod.modrinth
-        accessToken = file("C:\\Tokens\\modrinth.txt").readText()
-        minecraftVersionRange {
-            start = pubStart
-            end = pubEnd
-            includeSnapshots = true
-        }
-    }
-
-    curseforge {
-        projectId = mod.curseforge
-        accessToken = file("C:\\Tokens\\curseforge.txt").readText()
-        minecraftVersionRange {
-            start = pubStart
-            end = pubEnd
-        }
-    }
-
-    github {
-        accessToken = file("C:\\Tokens\\github.txt").readText()
-        repository = "BizCub/${mod.github}"
-        commitish = "master"
-        tagName = "v${mod.version}-$loader+$pubStart"
     }
 }

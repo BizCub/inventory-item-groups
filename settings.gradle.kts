@@ -2,29 +2,27 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
-        maven("https://maven.fabricmc.net/")
-        maven("https://maven.architectury.dev")
-        maven("https://maven.minecraftforge.net")
-        maven("https://maven.neoforged.net/releases/")
         maven("https://maven.kikugie.dev/snapshots")
+        maven("https://maven.architectury.dev")
+        maven("https://maven.fabricmc.net")
+        maven("https://maven.minecraftforge.net")
+        maven("https://maven.neoforged.net/releases")
     }
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.7.10"
-}
-
-stonecutter {
-    kotlinController = true
-    centralScript = "build.gradle.kts"
-    create(rootProject) {
-        fun mc(loader: String, vararg versions: String) {
-            for (version in versions) version("$version-$loader", version)
-        }
-        mc("fabric", "1.21.11", "1.21.9", "1.21")
-//        mc("forge", "1.16.5", "1.17.1", "1.20.6")
-//        mc("neoforge", "1.21")
-    }
+    id("dev.kikugie.stonecutter") version extra["plg.stonecutter"] as String
 }
 
 rootProject.name = extra["mod.name"] as String
+
+stonecutter {
+    create(rootProject) {
+        val fb = "fabric"; val fr = "forge"; val nf = "neoforge"
+        fun match(version: String, vararg loaders: String) = loaders
+            .forEach { version("$version-$it", version) }
+        match("1.21.11", fb)
+        match("1.21.9", fb)
+        match("1.21.1", fb)
+    }
+}
