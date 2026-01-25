@@ -13,10 +13,13 @@ public class Group {
         this.tab = tab;
         this.visibility = false;
         items = Main.sortList(removeDuplicates(items));
-        this.icon.put(items.getFirst(), -1);
 
-        for (String str : items)
-            this.items.put(str, -1);
+        if (!items.isEmpty()) {
+            this.icon.put(items.getFirst(), -1);
+
+            for (String str : items)
+                this.items.put(str, -1);
+        }
     }
 
     public ArrayList<String> removeDuplicates(ArrayList<String> list) {

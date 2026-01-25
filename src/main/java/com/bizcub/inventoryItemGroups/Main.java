@@ -137,7 +137,7 @@ public class Main {
         for (int i = 0; i < 16; i++) functional.add(new ArrayList<>());
         for (int i = 0; i < 5; i++) redstone.add(new ArrayList<>());
         for (int i = 0; i < 11; i++) tool.add(new ArrayList<>());
-        for (int i = 0; i < 8; i++) combat.add(new ArrayList<>());
+        for (int i = 0; i < 10; i++) combat.add(new ArrayList<>());
         for (int i = 0; i < 4; i++) ingredient.add(new ArrayList<>());
 
         itemsInTabsMapping.get(tabsMapping.get(buildingName)).forEach(itemStack -> {
@@ -239,13 +239,15 @@ public class Main {
         itemsInTabsMapping.get(tabsMapping.get(combatName)).forEach(itemStack -> {
             String item = itemStack.getItem().toString();
             if (item.contains("sword")) combat.getFirst().add(item);
-            if (item.contains("axe")) combat.get(1).add(item);
-            if (item.contains("helmet")) combat.get(2).add(item);
-            if (item.contains("chestplate")) combat.get(3).add(item);
-            if (item.contains("leggings")) combat.get(4).add(item);
-            if (item.contains("boots")) combat.get(5).add(item);
-            if (item.contains("horse_armor")) combat.get(6).add(item);
-            if (item.contains("egg")) combat.get(7).add(item);
+            if (item.contains("spear")) combat.get(1).add(item);
+            if (item.contains("axe")) combat.get(2).add(item);
+            if (item.contains("helmet")) combat.get(3).add(item);
+            if (item.contains("chestplate")) combat.get(4).add(item);
+            if (item.contains("leggings")) combat.get(5).add(item);
+            if (item.contains("boots")) combat.get(6).add(item);
+            if (item.contains("horse_armor")) combat.get(7).add(item);
+            if (item.contains("nautilus_armor")) combat.get(8).add(item);
+            if (item.contains("egg")) combat.get(9).add(item);
         });
         itemsInTabsMapping.get(tabsMapping.get(ingredientName)).forEach(itemStack -> {
             String item = itemStack.getItem().toString();
@@ -263,5 +265,7 @@ public class Main {
         tool.forEach(items -> groups.add(new Group(toolName, items)));
         combat.forEach(items -> groups.add(new Group(combatName, items)));
         ingredient.forEach(items -> groups.add(new Group(ingredientName, items)));
+
+        groups.removeIf(group -> group.getItems().isEmpty());
     }
 }

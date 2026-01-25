@@ -22,7 +22,7 @@ stonecutter {
         fun match(version: String, vararg loaders: String) = loaders
             .forEach { version("$version-$it", version) }
         match("1.21.11", fb)
-        match("1.21.9", fb)
+        match("1.21.10", fb)
         match("1.21.1", fb)
     }
 }

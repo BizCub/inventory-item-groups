@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,6 +67,13 @@ public abstract class CreativeModeInventoryScreenMixin {
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
     private void mouseMiddleButtonFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
         inventoryItemGroups$mouseButtonsFix(instance, itemStack);
+    }
+
+    @Inject(method = "mouseReleased", at = @At("RETURN"))
+    private void removeTexturesDisplay(CallbackInfoReturnable<Boolean> cir) {
+        if (selectedTab.getType() != CreativeModeTab.Type.CATEGORY) {
+            Main.groups.clear();
+        }
     }
 
     @Redirect(method = "selectTab", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;getDisplayItems()Ljava/util/Collection;"))
