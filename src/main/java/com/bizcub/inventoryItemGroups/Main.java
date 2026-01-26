@@ -143,7 +143,7 @@ public class Main {
         itemsInTabsMapping.get(tabsMapping.get(buildingName)).forEach(itemStack -> {
             String item = itemStack.getItem().toString();
             if (item.contains("log") || item.contains("stem") || item.contains("bamboo_block")) {
-                if (!item.contains("stripped")) building.getFirst().add(item);
+                if (!item.contains("stripped")) building.get(0).add(item);
                 else building.get(1).add(item);
             }
             if (item.contains("wood") || item.contains("hyphae")) {
@@ -168,7 +168,7 @@ public class Main {
         });
         itemsInTabsMapping.get(tabsMapping.get(coloredName)).forEach(itemStack -> {
             String item = itemStack.getItem().toString();
-            if (item.contains("wool")) colored.getFirst().add(item);
+            if (item.contains("wool")) colored.get(0).add(item);
             if (item.contains("carpet")) colored.get(1).add(item);
             if (item.contains("glazed_terracotta")) colored.get(2).add(item);
             if (item.contains("terracotta")) colored.get(3).add(item);
@@ -183,7 +183,7 @@ public class Main {
         });
         itemsInTabsMapping.get(tabsMapping.get(naturalName)).forEach(itemStack -> {
             String item = itemStack.getItem().toString();
-            if (item.contains("_ore") || item.contains("debris") || item.contains("raw_")) natural.getFirst().add(item);
+            if (item.contains("_ore") || item.contains("debris") || item.contains("raw_")) natural.get(0).add(item);
             if (item.contains("mushroom") || item.contains("fungus")) natural.get(1).add(item);
             if (item.contains("sapling") || item.contains("propagule")) natural.get(2).add(item);
             if (item.contains("fern") || item.contains("_grass") || (item.contains("bush") && !item.contains("_bush")) || item.contains("_sprouts") || item.contains("hanging_moss") || item.contains("_vines")) natural.get(3).add(item);
@@ -197,7 +197,7 @@ public class Main {
         });
         itemsInTabsMapping.get(tabsMapping.get(functionalName)).forEach(itemStack -> {
             String item = itemStack.getItem().toString();
-            if (item.contains("lantern") && !item.contains("sea")) functional.getFirst().add(item);
+            if (item.contains("lantern") && !item.contains("sea")) functional.get(0).add(item);
             if (item.contains("chain")) functional.get(1).add(item);
             if (item.contains("bulb")) functional.get(2).add(item);
             if (item.contains("anvil")) functional.get(3).add(item);
@@ -216,7 +216,7 @@ public class Main {
         });
         itemsInTabsMapping.get(tabsMapping.get(redstoneName)).forEach(itemStack -> {
             String item = itemStack.getItem().toString();
-            if (item.contains("bulb")) redstone.getFirst().add(item);
+            if (item.contains("bulb")) redstone.get(0).add(item);
             if (item.contains("pressure_plate")) redstone.get(1).add(item);
             if (item.contains("minecart") || item.contains("boat") || item.contains("_raft")) redstone.get(2).add(item);
             if (item.contains("chest")) redstone.get(3).add(item);
@@ -224,7 +224,7 @@ public class Main {
         });
         itemsInTabsMapping.get(tabsMapping.get(toolName)).forEach(itemStack -> {
             String item = itemStack.getItem().toString();
-            if (item.contains("shovel")) tool.getFirst().add(item);
+            if (item.contains("shovel")) tool.get(0).add(item);
             if (item.contains("pickaxe")) tool.get(1).add(item);
             if (item.contains("axe")) tool.get(2).add(item);
             if (item.contains("hoe")) tool.get(3).add(item);
@@ -238,7 +238,7 @@ public class Main {
         });
         itemsInTabsMapping.get(tabsMapping.get(combatName)).forEach(itemStack -> {
             String item = itemStack.getItem().toString();
-            if (item.contains("sword")) combat.getFirst().add(item);
+            if (item.contains("sword")) combat.get(0).add(item);
             if (item.contains("spear")) combat.get(1).add(item);
             if (item.contains("axe")) combat.get(2).add(item);
             if (item.contains("helmet")) combat.get(3).add(item);
@@ -251,7 +251,7 @@ public class Main {
         });
         itemsInTabsMapping.get(tabsMapping.get(ingredientName)).forEach(itemStack -> {
             String item = itemStack.getItem().toString();
-            if (item.contains("dye")) ingredient.getFirst().add(item);
+            if (item.contains("dye")) ingredient.get(0).add(item);
             if (item.contains("banner_pattern")) ingredient.get(1).add(item);
             if (item.contains("pottery_sherd")) ingredient.get(2).add(item);
             if (item.contains("smithing_template")) ingredient.get(3).add(item);
@@ -266,6 +266,11 @@ public class Main {
         combat.forEach(items -> groups.add(new Group(combatName, items)));
         ingredient.forEach(items -> groups.add(new Group(ingredientName, items)));
 
+        validateGroups();
+    }
+
+    private static void validateGroups() {
         groups.removeIf(group -> group.getItems().isEmpty());
+        groups.removeIf(group -> group.getItems().size() < 3);
     }
 }

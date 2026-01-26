@@ -15,7 +15,7 @@ public class Group {
         items = Main.sortList(removeDuplicates(items));
 
         if (!items.isEmpty()) {
-            this.icon.put(items.getFirst(), -1);
+            this.icon.put(items.get(0), -1);
 
             for (String str : items)
                 this.items.put(str, -1);
@@ -53,7 +53,7 @@ public class Group {
     }
 
     public String getIcon() {
-        return icon.keySet().stream().toList().getFirst();
+        return icon.keySet().stream().toList().get(0);
     }
 
     public int getIconIndex() {

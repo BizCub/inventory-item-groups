@@ -2,7 +2,9 @@ package com.bizcub.inventoryItemGroups.mixin;
 
 import com.bizcub.inventoryItemGroups.Group;
 import com.bizcub.inventoryItemGroups.Main;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.CreativeModeTab;
@@ -20,14 +22,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Mixin(CreativeModeInventoryScreen.class)
-public abstract class CreativeModeInventoryScreenMixin {
+public class CreativeModeInventoryScreenMixin extends Screen {
 
     @Shadow private float scrollOffs;
     @Shadow private static CreativeModeTab selectedTab;
 
-    @Unique private static Slot inventoryItemGroups$clickedSlot;
+    @Unique private static Slot iig$clickedSlot;
 
-    @Unique private int inventoryItemGroups$indexCalculation(int inventorySize, int slotIndex) {
+    protected CreativeModeInventoryScreenMixin(Component component) {
+        super(component);
+    }
+
+    @Unique private int iig$indexCalculation(int inventorySize, int slotIndex) {
         float rows = (float) inventorySize / 9;
         rows = (float) Math.ceil(rows);
         int index = 0;
@@ -39,8 +45,8 @@ public abstract class CreativeModeInventoryScreenMixin {
         return index + slotIndex;
     }
 
-    @Unique private void inventoryItemGroups$mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
-        int index = inventoryItemGroups$indexCalculation(Main.tempInventoryItemStack.size(), inventoryItemGroups$clickedSlot.index);
+    @Unique private void iig$mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
+        int index = iig$indexCalculation(Main.tempInventoryItemStack.size(), iig$clickedSlot.index);
         Group group = Main.findGroupByIndex(index);
 
         if (group != null && selectedTab == Main.tabsMapping.get(group.getTab()) && group.getIconIndex() == index) {
@@ -51,22 +57,22 @@ public abstract class CreativeModeInventoryScreenMixin {
 
     @Inject(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
     private void slotClicked(Slot slot, int i, int j, ClickType clickType, CallbackInfo ci) {
-        inventoryItemGroups$clickedSlot = slot;
+        iig$clickedSlot = slot;
     }
 
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
     private void mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
-        inventoryItemGroups$mouseButtonsFix(instance, itemStack);
+        iig$mouseButtonsFix(instance, itemStack);
     }
 
     @Inject(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
     private void getSlot(Slot slot, int i, int j, ClickType clickType, CallbackInfo ci) {
-        inventoryItemGroups$clickedSlot = slot;
+        iig$clickedSlot = slot;
     }
 
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
     private void mouseMiddleButtonFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
-        inventoryItemGroups$mouseButtonsFix(instance, itemStack);
+        iig$mouseButtonsFix(instance, itemStack);
     }
 
     @Inject(method = "mouseReleased", at = @At("RETURN"))
@@ -111,5 +117,11 @@ public abstract class CreativeModeInventoryScreenMixin {
     @Inject(method = "render", at = @At("HEAD"))
     private void getScrollOffs(CallbackInfo ci) {
         Main.tempScrollOffs = scrollOffs;
+    }
+
+    @Override
+    public void onClose() {
+        Main.groups.clear();
+        super.onClose();
     }
 }

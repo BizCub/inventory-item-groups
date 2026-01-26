@@ -2,9 +2,11 @@ package com.bizcub.inventoryItemGroups.mixin;
 
 import com.bizcub.inventoryItemGroups.Group;
 import com.bizcub.inventoryItemGroups.Main;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-/*? >=1.21.2*/ import net.minecraft.client.renderer.RenderPipelines;
+/*? <=1.21.5*/ //import net.minecraft.client.renderer.RenderType;
+/*? >=1.21.6*/ import net.minecraft.client.renderer.RenderPipelines;
 /*? >=1.21.11*/ import net.minecraft.resources.Identifier;
 /*? <=1.21.10*/ //import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -24,60 +26,75 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
 
     @Shadow @Final protected T menu;
 
-    @Unique private static boolean inventoryItemGroups$onScreen(Slot slot) {
+    @Unique private static boolean iig$onScreen(Slot slot) {
         return slot.index <= 44;
     }
 
     @Unique
-    /*? >=1.21.11*/ private static Identifier getSprite(String location) {
-    /*? <=1.21.10*/ //private static ResourceLocation getSprite(String location) {
-        String id = "inventory-item-groups";
-        String path = "container/" + location;
-        /*? >=1.21.11*/ return Identifier.fromNamespaceAndPath(id, path);
-        /*? <=1.21.10*/ //return ResourceLocation.fromNamespaceAndPath(id, path);
-    }
-
-    @Unique
-    private int inventoryItemGroups$calculateIndex(Slot slot) {
+    private int iig$calculateIndex(Slot slot) {
         int index = 0;
-        if (menu.slots.size() > 1 && menu.slots.getFirst() != menu.slots.get(1))
-            index = Main.tempInventoryItemStack.indexOf(menu.slots.get(1).getItem()) - 1;
+        var slots = menu.slots;
+        if (!slots.isEmpty()) {
+            if (slots.size() > 1 && slots.get(0) != slots.get(1))
+                index = Main.tempInventoryItemStack.indexOf(slots.get(1).getItem()) - 1;
+        }
         return index + slot.index;
     }
 
     @Unique
-    private void renderSprite(GuiGraphics guiGraphics, String location, int x, int y, int width, int height) {
-        guiGraphics.blitSprite(getSprite(location), x, y, width, height);
+    private /*? >=1.21.11 {*/ Identifier /*?} else {*/ /*ResourceLocation *//*?} */ iig$getSprite(String location) {
+        String id = Main.modId;
+        String path = "container/" + location;
+        /*? >=1.21.11*/ return Identifier.fromNamespaceAndPath(id, path);
+        /*? >=1.21 && <=1.21.10*/ //return ResourceLocation.fromNamespaceAndPath(id, path);
+        /*? <=1.20.6*/ //return new ResourceLocation(id, "textures/gui/sprites/" + path + ".png");
+    }
+
+    @Unique
+    private void iig$renderSprite(GuiGraphics guiGraphics, String location, int x, int y, int size) {
+        //? >=1.21.6 {
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, iig$getSprite(location), x, y, size, size);
+
+        //?} >=1.21.2 {
+        /*guiGraphics.blitSprite(RenderType::guiTextured, iig$getSprite(location), x, y, size, size);
+
+        *///?} >=1.21 {
+        /*RenderSystem.disableDepthTest();
+        guiGraphics.blitSprite(iig$getSprite(location), x, y, size, size);
+        RenderSystem.enableDepthTest();
+
+        *///?} else {
+        /*RenderSystem.disableDepthTest();
+        guiGraphics.blit(iig$getSprite(location), x, y, 0, 0, size, size, size, size);
+        RenderSystem.enableDepthTest();*///?}
     }
 
     @Inject(method = "renderSlot", at = @At("HEAD"))
-    /*? >=1.21.11*/ private void renderSlotSprites(GuiGraphics guiGraphics, Slot slot, int i, int j, CallbackInfo ci) {
-    /*? <=1.21.10*/ //private void renderSlotSprites(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
+    private void renderSlotSprites(GuiGraphics guiGraphics, Slot slot, /*? >=1.21.11 {*/ int i, int j, /*?}*/ CallbackInfo ci) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.tempSelectedTab);
-        int index = inventoryItemGroups$calculateIndex(slot);
+        int index = iig$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
-            if (inventoryItemGroups$onScreen(slot) && group.isVisibility()) {
+            if (iig$onScreen(slot) && group.isVisibility()) {
                 if (group.getIconIndex() == index)
-                    renderSprite(guiGraphics, "icon_slot", slot.x-1, slot.y-1, 18, 18);
+                    iig$renderSprite(guiGraphics, "icon_slot", slot.x-1, slot.y-1, 18);
 
                 for (String str : group.getItems())
                     if (group.getItemsWithIndexes().get(str) == index)
-                        renderSprite(guiGraphics, "item_slot", slot.x-1, slot.y-1, 18, 18);
+                        iig$renderSprite(guiGraphics, "item_slot", slot.x-1, slot.y-1, 18);
             }
         }
     }
 
     @Inject(method = "renderSlot", at = @At("TAIL"))
-    /*? >=1.21.11*/ private void renderVisibilitySprites(GuiGraphics guiGraphics, Slot slot, int i, int j, CallbackInfo ci) {
-    /*? <=1.21.10*/ //private void renderVisibilitySprites(GuiGraphics guiGraphics, Slot slot, CallbackInfo ci) {
+    private void renderVisibilitySprites(GuiGraphics guiGraphics, Slot slot, /*? >=1.21.11 {*/ int i, int j, /*?}*/ CallbackInfo ci) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.tempSelectedTab);
-        int index = inventoryItemGroups$calculateIndex(slot);
+        int index = iig$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
-            if (inventoryItemGroups$onScreen(slot) && group.getIconIndex() == index) {
+            if (iig$onScreen(slot) && group.getIconIndex() == index) {
                 if (group.isVisibility())
-                    renderSprite(guiGraphics, "minus", slot.x, slot.y, 16, 16);
+                    iig$renderSprite(guiGraphics, "minus", slot.x, slot.y, 16);
                 else
-                    renderSprite(guiGraphics, "plus", slot.x, slot.y, 16, 16);
+                    iig$renderSprite(guiGraphics, "plus", slot.x, slot.y, 16);
             }
         }
     }

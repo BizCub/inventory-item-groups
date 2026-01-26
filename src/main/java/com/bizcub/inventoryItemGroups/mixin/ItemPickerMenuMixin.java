@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 @Mixin(CreativeModeInventoryScreen.ItemPickerMenu.class)
 public abstract class ItemPickerMenuMixin {
@@ -28,8 +29,11 @@ public abstract class ItemPickerMenuMixin {
             Group group = Main.tempGroup;
             group.setVisibility(!group.isVisibility());
 
-            if (group.isVisibility())
-                group.getItems().reversed().forEach(str -> items.add(Main.tempIndex + 1, new ItemStack(Main.itemsMapping.get(str))));
+            if (group.isVisibility()) {
+                ArrayList<String> itemsColl = group.getItems();
+                Collections.reverse(itemsColl);
+                itemsColl.forEach(str -> items.add(Main.tempIndex + 1, new ItemStack(Main.itemsMapping.get(str))));
+            }
             else group.getItems().forEach(ignore -> items.remove(Main.tempIndex + 1));
 
             Main.tempListChanged = false;
