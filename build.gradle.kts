@@ -6,7 +6,15 @@ plugins {
 
 stonecutter {
     constants.match(mod.loader, "fabric", "forge", "neoforge")
+
     swaps["mod_id"] = "\"${prop("mod.id")}\";"
+
+    replacements.string(scp >= "1.21.6") {
+        replace("net.minecraft.client.renderer.RenderType", "net.minecraft.client.renderer.RenderPipelines")
+    }
+    replacements.string(scp >= "1.21.11") {
+        replace("import net.minecraft.resources.ResourceLocation", "import net.minecraft.resources.Identifier")
+    }
 }
 
 repositories {
