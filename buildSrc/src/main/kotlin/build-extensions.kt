@@ -1,5 +1,4 @@
 import dev.kikugie.stonecutter.build.StonecutterBuildExtension
-import dev.kikugie.stonecutter.controller.StonecutterControllerExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.language.jvm.tasks.ProcessResources
@@ -9,8 +8,10 @@ fun Project.prop(key: String): String? = findProperty(key)?.toString()
 fun Project.dep(key: String): String? = findProperty("dep.$key")?.toString()
 fun String.upperCaseFirst() = replaceFirstChar { if (it.isLowerCase()) it.uppercaseChar() else it }
 
-val Project.scb get() = extensions.getByType<StonecutterBuildExtension>()
-val Project.scc get() = extensions.getByType<StonecutterControllerExtension>()
+val Project.sc get() = extensions.getByType<StonecutterBuildExtension>()
+val Project.scc get() = sc.current
+val Project.scp get() = sc.current.parsed
+val Project.scv get() = sc.current.version
 
 val Project.isFabric: Boolean get() = mod.loader == "fabric"
 val Project.isForge: Boolean get() = mod.loader == "forge"
@@ -25,8 +26,8 @@ fun ProcessResources.properties(files: Iterable<String>, vararg properties: Pair
 
 @JvmInline
 value class ModData(private val project: Project) {
-    val mc: String get() = project.scb.current.version
-    val loader: String get() = project.scb.current.project.substringAfterLast("-")
+    val mc: String get() = project.scv
+    val loader: String get() = project.scc.project.substringAfterLast("-")
     val id: String get() = modProp("id")
     val mixin: String get() = modProp("id").replace("_", "-")
     val name: String get() = modProp("name")

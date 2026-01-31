@@ -1,13 +1,12 @@
 plugins {
     `multiloader-loader`
-    id("architectury-plugin") version "3.+"
     id("dev.architectury.loom") version "1.+"
     id("me.modmuss50.mod-publish-plugin") version "1.+"
 }
 
 stonecutter {
-    swaps["mod_id"] = "\"${prop("mod.id")}\";"
     constants.match(mod.loader, "fabric", "forge", "neoforge")
+    swaps["mod_id"] = "\"${prop("mod.id")}\";"
 }
 
 repositories {
@@ -27,19 +26,6 @@ dependencies {
     }
     if (isNeoForge) {
         "neoForge"("net.neoforged:neoforge:${dep("neoforge_loader")}")
-    }
-}
-
-loom {
-    decompilers {
-        get("vineflower").apply {
-            options.put("mark-corresponding-synthetics", "1")
-        }
-    }
-    if (isForge) forge.mixinConfigs("${mod.mixin}.mixins.json")
-
-    runConfigs.all {
-        runDir = "../../run"
     }
 }
 
@@ -80,18 +66,28 @@ publishMods {
     }
 }
 
-val buildAndCollect = tasks.register<Copy>("buildAndCollect") {
+loom {
+    if (isForge) forge.mixinConfigs("${mod.mixin}.mixins.json")
+
+    runConfigs.getByName("client") { runDir = "../../run/client" }
+    runConfigs.getByName("server") { runDir = "../../run/server" }
+
+    decompilers {
+        get("vineflower").apply {
+            options.put("mark-corresponding-synthetics", "1")
+        }
+    }
+}
+
+tasks.register<Copy>("buildAndCollect") {
     group = "build"
     from(tasks.remapJar.get().archiveFile)
     into(rootProject.layout.buildDirectory.file("libs/${mod.version}"))
     dependsOn("build")
 }
 
-if (stonecutter.current.isActive) {
-    rootProject.tasks.register("buildActive") {
-        dependsOn(buildAndCollect)
-    }
-    rootProject.tasks.register("runActive") {
-        dependsOn(tasks.named("runClient"))
-    }
+if (scc.isActive) {
+    rootProject.tasks.register("buildActive") { dependsOn(tasks.named("buildAndCollect")) }
+    rootProject.tasks.register("runActiveClient") { dependsOn(tasks.named("runClient")) }
+    rootProject.tasks.register("runActiveServer") { dependsOn(tasks.named("runServer")) }
 }

@@ -11,7 +11,8 @@ stonecutter active "1.21.11-fabric"
 
 idea.project.settings {
     runConfigurations {
-        register<Gradle>("0 Run Client") { taskNames = listOf("runActive") }
+        register<Gradle>("0 Run Client") { taskNames = listOf("runActiveClient") }
+        register<Gradle>("0 Run Server") { taskNames = listOf("runActiveServer") }
         register<Gradle>("1 Build Active") { taskNames = listOf("buildActive") }
         register<Gradle>("1 Build All") { taskNames = listOf("buildAndCollect") }
         register<Gradle>("2 Publish Mods") { taskNames = listOf("PublishMods") }
