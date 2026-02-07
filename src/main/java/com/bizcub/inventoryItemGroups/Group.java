@@ -1,28 +1,30 @@
 package com.bizcub.inventoryItemGroups;
 
+import net.minecraft.world.item.ItemStack;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Group {
     private final String tab;
-    private final HashMap<String, Integer> icon = new HashMap<>();
-    private final HashMap<String, Integer> items = new HashMap<>();
+    private final HashMap<ItemStack, Integer> icon = new HashMap<>();
+    private final HashMap<ItemStack, Integer> itemStacks = new HashMap<>();
     private boolean visibility;
 
-    public Group(String tab, ArrayList<String> items) {
+    public Group(String tab, ArrayList<ItemStack> itemStacks) {
         this.tab = tab;
         this.visibility = false;
-        items = Main.sortList(removeDuplicates(items));
+        itemStacks = removeDuplicates(itemStacks);
 
-        if (!items.isEmpty()) {
-            this.icon.put(items.get(0), -1);
+        if (!itemStacks.isEmpty()) {
+            this.icon.put(itemStacks.get(0), -1);
 
-            for (String str : items)
-                this.items.put(str, -1);
+            for (ItemStack itemStack : itemStacks)
+                this.itemStacks.put(itemStack, -1);
         }
     }
 
-    public ArrayList<String> removeDuplicates(ArrayList<String> list) {
+    public ArrayList<ItemStack> removeDuplicates(ArrayList<ItemStack> list) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.tabsMapping.get(tab));
         groupsOnSelectedTab.forEach(group -> list.removeAll(group.getItems()));
         return list;
@@ -32,16 +34,16 @@ public class Group {
         return tab;
     }
 
-    public ArrayList<String> getItems() {
-        return Main.sortList(new ArrayList<>(items.keySet()));
+    public ArrayList<ItemStack> getItems() {
+        return new ArrayList<>(itemStacks.keySet());
     }
 
-    public HashMap<String, Integer> getItemsWithIndexes() {
-        return items;
+    public HashMap<ItemStack, Integer> getItemsWithIndexes() {
+        return itemStacks;
     }
 
-    public void setItemWithIndex(String item, int index) {
-        this.items.put(item, index);
+    public void setItemWithIndex(ItemStack item, int index) {
+        this.itemStacks.put(item, index);
     }
 
     public boolean isVisibility() {
@@ -52,7 +54,7 @@ public class Group {
         this.visibility = visibility;
     }
 
-    public String getIcon() {
+    public ItemStack getIcon() {
         return icon.keySet().stream().toList().get(0);
     }
 

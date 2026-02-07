@@ -24,14 +24,14 @@ import java.util.Collection;
 @Mixin(CreativeModeInventoryScreen.class)
 public class CreativeModeInventoryScreenMixin extends Screen {
 
+    protected CreativeModeInventoryScreenMixin(Component component) {
+        super(component);
+    }
+
     @Shadow private float scrollOffs;
     @Shadow private static CreativeModeTab selectedTab;
 
     @Unique private static Slot iig$clickedSlot;
-
-    protected CreativeModeInventoryScreenMixin(Component component) {
-        super(component);
-    }
 
     @Unique private int iig$indexCalculation(int inventorySize, int slotIndex) {
         float rows = (float) inventorySize / 9;
@@ -83,13 +83,13 @@ public class CreativeModeInventoryScreenMixin extends Screen {
     }
 
     @Redirect(method = "selectTab", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;getDisplayItems()Ljava/util/Collection;"))
-    private Collection<ItemStack> groupsImplementation(CreativeModeTab instance) {
+    private Collection<ItemStack> groupsImplementation(CreativeModeTab selectedTab) {
         Main.createMapping();
         Main.createDefaultGroups();
 
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(selectedTab);
-        ArrayList<ItemStack> newStack = new ArrayList<>(instance.getDisplayItems());
-        ArrayList<String> removeItems = new ArrayList<>();
+        ArrayList<ItemStack> newStack = new ArrayList<>(selectedTab.getDisplayItems());
+        ArrayList<ItemStack> removeItems = new ArrayList<>();
 
         for (Group group : groupsOnSelectedTab) {
             removeItems.addAll(group.getItems());
@@ -97,10 +97,10 @@ public class CreativeModeInventoryScreenMixin extends Screen {
         }
 
         for (int i = 0; i < newStack.size(); i++) {
-            String name = newStack.get(i).getItem().toString();
+            ItemStack itemStack = newStack.get(i);
 
-            for (String item : removeItems) {
-                if (name.equals(item)) {
+            for (ItemStack removableItemStacks : removeItems) {
+                if (itemStack.equals(removableItemStacks)) {
                     newStack.remove(i);
                     i--;
                 }

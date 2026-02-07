@@ -1,0 +1,1 @@
+* Items that differ only in their components have been added to groups

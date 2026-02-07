@@ -30,9 +30,9 @@ public abstract class ItemPickerMenuMixin {
             group.setVisibility(!group.isVisibility());
 
             if (group.isVisibility()) {
-                ArrayList<String> itemsColl = group.getItems();
+                ArrayList<ItemStack> itemsColl = group.getItems();
                 Collections.reverse(itemsColl);
-                itemsColl.forEach(str -> items.add(Main.tempIndex + 1, new ItemStack(Main.itemsMapping.get(str))));
+                itemsColl.forEach(itemStack -> items.add(Main.tempIndex + 1, itemStack));
             }
             else group.getItems().forEach(ignore -> items.remove(Main.tempIndex + 1));
 

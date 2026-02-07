@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,12 +41,11 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
     }
 
     @Unique
-    private /*? >=1.21.11 {*/ Identifier /*?} else {*/ /*ResourceLocation *//*?} */ iig$getSprite(String location) {
-        String id = Main.modId;
+    private /*? >=1.21.11 {*/ Identifier /*?} else {*/ /*Identifier *//*?} */ iig$getSprite(String location) {
+        String id = Main.MOD_ID;
         String path = "container/" + location;
-        /*? >=1.21.11*/ return Identifier.fromNamespaceAndPath(id, path);
-        /*? >=1.21 && <=1.21.10*/ //return ResourceLocation.fromNamespaceAndPath(id, path);
-        /*? <=1.20.6*/ //return new ResourceLocation(id, "textures/gui/sprites/" + path + ".png");
+        /*? >=1.21*/ return Identifier.fromNamespaceAndPath(id, path);
+        /*? <=1.20.6*/ //return new Identifier(id, "textures/gui/sprites/" + path + ".png");
     }
 
     @Unique
@@ -76,8 +76,8 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
                 if (group.getIconIndex() == index)
                     iig$renderSprite(guiGraphics, "icon_slot", slot.x-1, slot.y-1, 18);
 
-                for (String str : group.getItems())
-                    if (group.getItemsWithIndexes().get(str) == index)
+                for (ItemStack itemStack : group.getItems())
+                    if (group.getItemsWithIndexes().get(itemStack) == index)
                         iig$renderSprite(guiGraphics, "item_slot", slot.x-1, slot.y-1, 18);
             }
         }

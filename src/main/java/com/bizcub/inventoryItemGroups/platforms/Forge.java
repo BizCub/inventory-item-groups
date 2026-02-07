@@ -4,5 +4,5 @@
 import com.bizcub.inventoryItemGroups.Main;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod(Main.modId)
+@Mod(Main.MOD_ID)
 public class Forge {}*///?}
