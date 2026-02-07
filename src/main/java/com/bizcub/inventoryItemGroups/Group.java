@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class Group {
     private final String tab;
     private final HashMap<ItemStack, Integer> icon = new HashMap<>();
-    private final HashMap<ItemStack, Integer> itemStacks = new HashMap<>();
+    private final ArrayList<HashMap<ItemStack, Integer>> itemStacks = new ArrayList<>();
     private boolean visibility;
 
     public Group(String tab, ArrayList<ItemStack> itemStacks) {
@@ -17,10 +17,12 @@ public class Group {
         itemStacks = removeDuplicates(itemStacks);
 
         if (!itemStacks.isEmpty()) {
-            this.icon.put(itemStacks.get(0), -1);
+            this.icon.put(itemStacks.getFirst(), -1);
 
-            for (ItemStack itemStack : itemStacks)
-                this.itemStacks.put(itemStack, -1);
+            for (ItemStack itemStack : itemStacks) {
+                this.itemStacks.add(new HashMap<>());
+                this.itemStacks.getLast().put(itemStack, -1);
+            }
         }
     }
 
@@ -35,15 +37,21 @@ public class Group {
     }
 
     public ArrayList<ItemStack> getItems() {
-        return new ArrayList<>(itemStacks.keySet());
+        ArrayList<ItemStack> list = new ArrayList<>();
+        this.itemStacks.forEach(itemStacksMap -> list.add(itemStacksMap.keySet().iterator().next()));
+        return list;
     }
 
-    public HashMap<ItemStack, Integer> getItemsWithIndexes() {
+    public ArrayList<HashMap<ItemStack, Integer>> getItemsWithIndexes() {
         return itemStacks;
     }
 
     public void setItemWithIndex(ItemStack item, int index) {
-        this.itemStacks.put(item, index);
+        this.itemStacks.forEach(itemStacksMap -> {
+            if (itemStacksMap.containsKey(item)) {
+                itemStacksMap.put(item, index);
+            }
+        });
     }
 
     public boolean isVisibility() {
@@ -55,7 +63,7 @@ public class Group {
     }
 
     public ItemStack getIcon() {
-        return icon.keySet().stream().toList().get(0);
+        return icon.keySet().stream().toList().getFirst();
     }
 
     public int getIconIndex() {

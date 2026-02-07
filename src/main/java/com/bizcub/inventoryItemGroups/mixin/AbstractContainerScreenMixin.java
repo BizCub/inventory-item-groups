@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Mixin(AbstractContainerScreen.class)
 public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
@@ -31,17 +32,16 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
 
     @Unique
     private int iig$calculateIndex(Slot slot) {
-        int index = 0;
+        int result = 0;
         var slots = menu.slots;
-        if (!slots.isEmpty()) {
-            if (slots.size() > 1 && slots.get(0) != slots.get(1))
-                index = Main.tempInventoryItemStack.indexOf(slots.get(1).getItem()) - 1;
-        }
-        return index + slot.index;
+        if (!slots.isEmpty() && slots.size() > 1)
+            result = Main.tempInventoryItemStack.indexOf(slots.get(1).getItem());
+        if (!slots.getFirst().getItem().equals(slots.get(1).getItem())) result--;
+        return result + slot.index;
     }
 
     @Unique
-    private /*? >=1.21.11 {*/ Identifier /*?} else {*/ /*Identifier *//*?} */ iig$getSprite(String location) {
+    private Identifier iig$getSprite(String location) {
         String id = Main.MOD_ID;
         String path = "container/" + location;
         /*? >=1.21*/ return Identifier.fromNamespaceAndPath(id, path);
@@ -52,15 +52,12 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
     private void iig$renderSprite(GuiGraphics guiGraphics, String location, int x, int y, int size) {
         //? >=1.21.6 {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, iig$getSprite(location), x, y, size, size);
-
         //?} >=1.21.2 {
         /*guiGraphics.blitSprite(RenderType::guiTextured, iig$getSprite(location), x, y, size, size);
-
         *///?} >=1.21 {
         /*RenderSystem.disableDepthTest();
         guiGraphics.blitSprite(iig$getSprite(location), x, y, size, size);
         RenderSystem.enableDepthTest();
-
         *///?} else {
         /*RenderSystem.disableDepthTest();
         guiGraphics.blit(iig$getSprite(location), x, y, 0, 0, size, size, size, size);
@@ -77,8 +74,9 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
                     iig$renderSprite(guiGraphics, "icon_slot", slot.x-1, slot.y-1, 18);
 
                 for (ItemStack itemStack : group.getItems())
-                    if (group.getItemsWithIndexes().get(itemStack) == index)
-                        iig$renderSprite(guiGraphics, "item_slot", slot.x-1, slot.y-1, 18);
+                    for (HashMap<ItemStack, Integer> itemStacksMap : group.getItemsWithIndexes())
+                        if (itemStacksMap.containsKey(itemStack) && itemStacksMap.containsValue(index))
+                            iig$renderSprite(guiGraphics, "item_slot", slot.x-1, slot.y-1, 18);
             }
         }
     }
