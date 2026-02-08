@@ -15,6 +15,7 @@ project.extra["loom.platform"] = mod.loader
 tasks.processResources {
     properties(
         listOf("fabric.mod.json", "META-INF/*.toml"),
+        "ModMenu"       to $$"$ModMenu",
         "id"            to mod.id,
         "mixin"         to mod.mixin,
         "name"          to mod.name,

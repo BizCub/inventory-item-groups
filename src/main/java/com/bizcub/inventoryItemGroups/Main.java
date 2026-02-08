@@ -1,5 +1,7 @@
 package com.bizcub.inventoryItemGroups;
 
+import com.bizcub.inventoryItemGroups.config.Compat;
+import com.bizcub.inventoryItemGroups.config.Configs;
 import net.minecraft.world.item.*;
 
 import java.util.*;

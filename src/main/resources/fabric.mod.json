@@ -13,7 +13,14 @@
         "homepage": "https://modrinth.com/project/${modrinth}",
         "issues": "https://github.com/BizCub/${github}/issues"
     },
-    "entrypoints": {},
+    "entrypoints": {
+        "main": [
+            "com.bizcub.inventoryItemGroups.platforms.Fabric"
+        ],
+        "modmenu": [
+            "com.bizcub.inventoryItemGroups.platforms.Fabric$ModMenu"
+        ]
+    },
     "mixins": [
         "${mixin}.mixins.json"
     ]

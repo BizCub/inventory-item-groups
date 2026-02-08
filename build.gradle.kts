@@ -6,6 +6,7 @@ plugins {
 
 stonecutter {
     constants.match(mod.loader, "fabric", "forge", "neoforge")
+    constants["is_cloth_config_available"] = isClothConfigAvailable
 
     swaps["mod_id"] = "\"${prop("mod.id")}\";"
 
@@ -19,15 +20,18 @@ stonecutter {
 
 repositories {
     maven("https://maven.neoforged.net/releases")
+    maven("https://maven.terraformersmc.com/releases")
+    maven("https://maven.shedaniel.me")
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:${mod.propIfExist("mc.snapshot", mod.mc)}")
     mappings(loom.officialMojangMappings())
+    modApi("me.shedaniel.cloth:cloth-config-${mod.loader}:${mod.cloth_config}")
 
     if (isFabric) {
         modImplementation("net.fabricmc:fabric-loader:latest.release")
-        modImplementation("net.fabricmc.fabric-api:fabric-api:${mod.fabric_api}+${mod.mc}")
+        modImplementation("com.terraformersmc:modmenu:${mod.modmenu}")
     }
     if (isForge) {
         "forge"("net.minecraftforge:forge:${mod.mc}-${dep("forge_loader")}")
@@ -50,7 +54,8 @@ publishMods {
     modrinth {
         projectId = mod.modrinth
         accessToken = tokenDir("modrinth")
-        requires("fabric-api")
+        if (isFabric) optional("modmenu")
+        if (isClothConfigAvailable) optional("cloth-config")
         minecraftVersionRange {
             start = mod.pub_start
             end = mod.pub_end
@@ -60,7 +65,8 @@ publishMods {
     curseforge {
         projectId = mod.curseforge
         accessToken = tokenDir("curseforge")
-        requires("fabric-api")
+        if (isFabric) optional("modmenu")
+        if (isClothConfigAvailable) optional("cloth-config")
         minecraftVersionRange {
             start = mod.pub_start
             end = mod.pub_end

@@ -1,0 +1,8 @@
+{
+    "text.inventory_item_groups.title": "Настройки Inventory Item Groups",
+    "text.inventory_item_groups.category.main": "Основные",
+    "text.inventory_item_groups.category.groups": "Группы предметов",
+    "text.inventory_item_groups.category.groups.not_in_world": "Чтобы редактировать группы предметов нужно находиться в мире",
+    "text.inventory_item_groups.category.groups.ids": "Ids",
+    "text.inventory_item_groups.category.groups.ids.list": "%1$s -> %2$s"
+}
