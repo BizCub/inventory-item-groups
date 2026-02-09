@@ -231,7 +231,7 @@ public class Main {
             for (String containedItem : containedItems) {
                 for (String nonContainedItem : nonContainedItems) {
                     if (itemName.contains(containedItem) && !itemName.contains(nonContainedItem)) {
-                        rawDefaultGroups.getLast().add(itemStack);
+                        rawDefaultGroups.get(rawDefaultGroups.size()-1).add(itemStack);
                         flag = true;
                         break;
                     }

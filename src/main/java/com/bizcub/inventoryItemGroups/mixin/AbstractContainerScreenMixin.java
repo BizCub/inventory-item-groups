@@ -36,7 +36,7 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
         var slots = menu.slots;
         if (!slots.isEmpty() && slots.size() > 1)
             result = Main.tempInventoryItemStack.indexOf(slots.get(1).getItem());
-        if (!slots.getFirst().getItem().equals(slots.get(1).getItem())) result--;
+        if (!slots.get(0).getItem().equals(slots.get(1).getItem())) result--;
         return result + slot.index;
     }
 

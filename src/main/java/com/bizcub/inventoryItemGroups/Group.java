@@ -17,11 +17,11 @@ public class Group {
         itemStacks = removeDuplicates(itemStacks);
 
         if (!itemStacks.isEmpty()) {
-            this.icon.put(itemStacks.getFirst(), -1);
+            this.icon.put(itemStacks.get(0), -1);
 
             for (ItemStack itemStack : itemStacks) {
                 this.itemStacks.add(new HashMap<>());
-                this.itemStacks.getLast().put(itemStack, -1);
+                this.itemStacks.get(this.itemStacks.size()-1).put(itemStack, -1);
             }
         }
     }
@@ -63,7 +63,7 @@ public class Group {
     }
 
     public ItemStack getIcon() {
-        return icon.keySet().stream().toList().getFirst();
+        return icon.keySet().stream().toList().get(0);
     }
 
     public int getIconIndex() {

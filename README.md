@@ -2,7 +2,7 @@
 
 This mod adds item groups to the Creative mode menu. It's based on a feature from the Bedrock edition.
 
-![preview](https://cdn.modrinth.com/data/cached_images/f09fcee477e05e2a45a3b95007b035c8b172adaa_0.webp)
+![preview](https://cdn.modrinth.com/data/cached_images/d7d786a50f7edea9e78131546ed9f94fd3c492fc.png)
 
 ## Usage
 
