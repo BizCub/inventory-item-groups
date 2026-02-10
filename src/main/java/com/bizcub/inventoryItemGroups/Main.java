@@ -1,6 +1,5 @@
 package com.bizcub.inventoryItemGroups;
 
-import com.bizcub.inventoryItemGroups.config.Compat;
 import com.bizcub.inventoryItemGroups.config.Configs;
 import net.minecraft.world.item.*;
 
@@ -86,11 +85,26 @@ public class Main {
         }
     }
 
-    public static void createDefaultGroupsOnSelectedTab(CreativeModeTab selectedTab) {
+    public static void createGroups() {
         rawDefaultGroups.clear();
         groups.clear();
+        CreativeModeTab selectedTab = tempSelectedTab;
 
-        if (selectedTab.getDisplayName().getString().equals("Building Blocks")) {
+        if (Configs.load().addGroupsOverOld) Main.createDefaultGroups();
+
+        for (Configs.ItemGroup group : Configs.load().groups) {
+            List<String> tempListOfItems = group.itemNames.stream().map(Object::toString).toList();
+            if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals(group.tabName))
+                addItems(tempListOfItems);
+        }
+
+        validateGroups();
+    }
+
+    public static void createDefaultGroups() {
+        CreativeModeTab selectedTab = tempSelectedTab;
+
+        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("buildingBlocks")) {
             addItems(List.of("log", "stem", "bamboo_block"), List.of("stripped"));
             addItems(List.of("wood", "hyphae"), List.of("stripped"));
             addItems(List.of("log", "stem", "bamboo_block"));
@@ -109,8 +123,9 @@ public class Main {
             addItems(List.of("copper"));
             addItems(List.of("wall"));
             addItems(List.of("bricks", "chiseled", "tiles", "polished"));
+            addItems(List.of("sandstone"));
         }
-        if (selectedTab.getDisplayName().getString().equals("Colored Blocks")) {
+        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("coloredBlocks")) {
             addItems(List.of("wool"));
             addItems(List.of("carpet"));
             addItems(List.of("glazed_terracotta"));
@@ -124,7 +139,7 @@ public class Main {
             addItems(List.of("banner"));
             addItems(List.of("bed"));
         }
-        if (selectedTab.getDisplayName().getString().equals("Natural Blocks")) {
+        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("natural")) {
             addItems(List.of("_ore", "debris", "raw_"));
             addItems(List.of("mushroom", "fungus"));
             addItems(List.of("sapling", "propagule"));
@@ -137,7 +152,7 @@ public class Main {
             addItems(List.of(":stone", "diorite", "andesite", "granite", "tuff", "basalt", "blackstone", "deepslate"));
             addItems(List.of("log", "stem"));
         }
-        if (selectedTab.getDisplayName().getString().equals("Functional Blocks")) {
+        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("functional")) {
             addItems(List.of("lantern", "sea"));
             addItems(List.of("chain"));
             addItems(List.of("bulb"));
@@ -156,14 +171,14 @@ public class Main {
             addItems(List.of("infested"));
             addItems(List.of("painting"));
         }
-        if (selectedTab.getDisplayName().getString().equals("Redstone Blocks")) {
+        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("redstone")) {
             addItems(List.of("bulb"));
             addItems(List.of("pressure_plate"));
             addItems(List.of("minecart", "boat", "_raft"));
             addItems(List.of("chest"));
             addItems(List.of("rail"));
         }
-        if (selectedTab.getDisplayName().getString().equals("Tools & Utilities")) {
+        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("tools")) {
             addItems(List.of("shovel"));
             addItems(List.of("pickaxe"));
             addItems(List.of("axe"));
@@ -177,7 +192,7 @@ public class Main {
             addItems(List.of("disc"));
             addItems(List.of("goat_horn"));
         }
-        if (selectedTab.getDisplayName().getString().equals("Combat")) {
+        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("combat")) {
             addItems(List.of("sword"));
             addItems(List.of("spear"));
             addItems(List.of("axe"));
@@ -191,7 +206,7 @@ public class Main {
             addItems(List.of("tipped_arrow"));
             addItems(List.of("firework_rocket"));
         }
-        if (selectedTab.getDisplayName().getString().equals("Food & Drinks")) {
+        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("foodAndDrink")) {
             addItems(List.of("suspicious_stew"));
             addItems(List.of("ominous_bottle"));
             addItems(List.of("splash_potion"));
@@ -200,16 +215,13 @@ public class Main {
             addItems(List.of("cooked"));
             addItems(List.of("beef", "porkchop", "mutton", "chicken", "rabbit", ":cod", "salmon"), List.of("rabbit_"));
         }
-        if (selectedTab.getDisplayName().getString().equals("Ingredients")) {
+        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("ingredients")) {
             addItems(List.of("dye"));
             addItems(List.of("banner_pattern"));
             addItems(List.of("pottery_sherd"));
             addItems(List.of("smithing_template"));
             addItems(List.of("enchanted_book"));
         }
-
-        rawDefaultGroups.forEach(itemStacks -> groups.add(new Group(selectedTab.getDisplayName().getString(), itemStacks)));
-        validateGroups();
     }
 
     private static void addItems(List<String> containedItems) {
@@ -242,7 +254,21 @@ public class Main {
     }
 
     private static void validateGroups() {
+        CreativeModeTab selectedTab = tempSelectedTab;
+
+        rawDefaultGroups.forEach(itemStacks -> groups.add(new Group(selectedTab.getDisplayName().getString(), itemStacks)));
+
         groups.removeIf(group -> group.getItems().isEmpty());
         groups.removeIf(group -> group.getItems().size() < 3);
+    }
+
+    public static String convertComponentToId(String tabId) {
+        int firstIndex = tabId.indexOf("'");
+        if (tabId.startsWith("key=", firstIndex - 4)) {
+            tabId = tabId.substring(firstIndex + 1);
+            tabId = tabId.substring(0, tabId.indexOf("'"));
+            tabId = tabId.substring(tabId.lastIndexOf(".") + 1);
+        }
+        return tabId;
     }
 }

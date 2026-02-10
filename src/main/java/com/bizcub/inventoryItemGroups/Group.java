@@ -1,20 +1,25 @@
 package com.bizcub.inventoryItemGroups;
 
+import com.bizcub.inventoryItemGroups.config.Configs;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Group {
+    private boolean visibility;
     private final String tab;
     private final HashMap<ItemStack, Integer> icon = new HashMap<>();
     private final ArrayList<HashMap<ItemStack, Integer>> itemStacks = new ArrayList<>();
-    private boolean visibility;
 
     public Group(String tab, ArrayList<ItemStack> itemStacks) {
         this.tab = tab;
         this.visibility = false;
         itemStacks = removeDuplicates(itemStacks);
+        itemStacks = sort(itemStacks);
 
         if (!itemStacks.isEmpty()) {
             this.icon.put(itemStacks.get(0), -1);
@@ -24,6 +29,19 @@ public class Group {
                 this.itemStacks.get(this.itemStacks.size()-1).put(itemStack, -1);
             }
         }
+    }
+
+    public ArrayList<ItemStack> sort(ArrayList<ItemStack> itemStacks) {
+        LinkedHashMap<String, ItemStack> map = new LinkedHashMap<>();
+        for (ItemStack itemStack : itemStacks) map.put(itemStack.getItem().toString(), itemStack);
+
+        if (Configs.load().sort == Configs.Sort.ALPHABETICALLY) {
+            map = map.entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        }
+
+        return new ArrayList<>(map.values());
     }
 
     public ArrayList<ItemStack> removeDuplicates(ArrayList<ItemStack> list) {

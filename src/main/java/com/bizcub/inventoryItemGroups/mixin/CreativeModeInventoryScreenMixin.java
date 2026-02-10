@@ -33,7 +33,40 @@ public class CreativeModeInventoryScreenMixin extends Screen {
 
     @Unique private static Slot iig$clickedSlot;
 
-    @Unique private int iig$indexCalculation(int inventorySize, int slotIndex) {
+    @Redirect(method = "selectTab", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;getDisplayItems()Ljava/util/Collection;"))
+    private Collection<ItemStack> groupsImplementation(CreativeModeTab selectedTab) {
+        Main.tempSelectedTab = selectedTab;
+        Main.createMapping();
+        Main.createGroups();
+
+        ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(selectedTab);
+        ArrayList<ItemStack> newStack = new ArrayList<>(selectedTab.getDisplayItems());
+        ArrayList<ItemStack> removeItems = new ArrayList<>();
+
+        for (Group group : groupsOnSelectedTab) {
+            removeItems.addAll(group.getItems());
+            removeItems.remove(group.getIcon());
+        }
+
+        for (int i = 0; i < newStack.size(); i++) {
+            ItemStack itemStack = newStack.get(i);
+
+            for (ItemStack removableItemStacks : removeItems) {
+                if (itemStack.equals(removableItemStacks)) {
+                    newStack.remove(i);
+                    i--;
+                }
+            }
+        }
+
+        Main.tempInventoryItemStack = newStack;
+        Main.hideGroups();
+        Main.setIndexes();
+        return newStack;
+    }
+
+    @Unique
+    private int iig$indexCalculation(int inventorySize, int slotIndex) {
         float rows = (float) inventorySize / 9;
         rows = (float) Math.ceil(rows);
         int index = 0;
@@ -45,7 +78,8 @@ public class CreativeModeInventoryScreenMixin extends Screen {
         return index + slotIndex;
     }
 
-    @Unique private void iig$mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
+    @Unique
+    private void iig$mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
         int index = iig$indexCalculation(Main.tempInventoryItemStack.size(), iig$clickedSlot.index);
         Group group = Main.findGroupByIndex(index);
 
@@ -82,46 +116,14 @@ public class CreativeModeInventoryScreenMixin extends Screen {
         }
     }
 
-    @Redirect(method = "selectTab", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;getDisplayItems()Ljava/util/Collection;"))
-    private Collection<ItemStack> groupsImplementation(CreativeModeTab selectedTab) {
-        Main.tempSelectedTab = selectedTab;
-        Main.createMapping();
-        Main.createDefaultGroupsOnSelectedTab(selectedTab);
-
-        ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(selectedTab);
-        ArrayList<ItemStack> newStack = new ArrayList<>(selectedTab.getDisplayItems());
-        ArrayList<ItemStack> removeItems = new ArrayList<>();
-
-        for (Group group : groupsOnSelectedTab) {
-            removeItems.addAll(group.getItems());
-            removeItems.remove(group.getIcon());
-        }
-
-        for (int i = 0; i < newStack.size(); i++) {
-            ItemStack itemStack = newStack.get(i);
-
-            for (ItemStack removableItemStacks : removeItems) {
-                if (itemStack.equals(removableItemStacks)) {
-                    newStack.remove(i);
-                    i--;
-                }
-            }
-        }
-
-        Main.tempInventoryItemStack = newStack;
-        Main.hideGroups();
-        Main.setIndexes();
-        return newStack;
+    @Override
+    public void onClose() {
+        Main.groups.clear();
+        super.onClose();
     }
 
     @Inject(method = "render", at = @At("HEAD"))
     private void getScrollOffs(CallbackInfo ci) {
         Main.tempScrollOffs = scrollOffs;
-    }
-
-    @Override
-    public void onClose() {
-        Main.groups.clear();
-        super.onClose();
     }
 }

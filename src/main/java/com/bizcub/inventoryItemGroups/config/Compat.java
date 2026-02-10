@@ -5,8 +5,9 @@ package com.bizcub.inventoryItemGroups.config;
 /*? neoforge*/ //import net.neoforged.fml.ModList;
 
 public class Compat {
-    /*? fabric*/ public static final String clothConfigId = "cloth-config";
-    /*? forge || neoforge*/ //public static final String clothConfigId = "cloth_config";
+    public static final String CLOTH_CONFIG_ID =
+            /*? fabric*/ "cloth-config";
+            /*? forge || neoforge*/ //"cloth_config";
 
     public static boolean isModLoaded(String modId) {
         /*? fabric*/ return FabricLoader.getInstance().isModLoaded(modId);
@@ -14,6 +15,6 @@ public class Compat {
     }
 
     public static boolean isClothConfigLoaded() {
-        return isModLoaded(clothConfigId);
+        return isModLoaded(CLOTH_CONFIG_ID);
     }
 }

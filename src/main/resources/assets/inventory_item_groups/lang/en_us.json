@@ -1,8 +1,19 @@
 {
     "text.inventory_item_groups.title": "Настройки Inventory Item Groups",
     "text.inventory_item_groups.category.main": "Основные",
+
+    "text.inventory_item_groups.category.main.sort": "Сортировка предметов",
+    "text.inventory_item_groups.category.main.sort.default": "По умолчанию",
+    "text.inventory_item_groups.category.main.sort.alphabetically": "По алфавиту",
+
     "text.inventory_item_groups.category.groups": "Группы предметов",
     "text.inventory_item_groups.category.groups.not_in_world": "Чтобы редактировать группы предметов нужно находиться в мире",
     "text.inventory_item_groups.category.groups.ids": "Ids",
-    "text.inventory_item_groups.category.groups.ids.list": "%1$s -> %2$s"
+    "text.inventory_item_groups.category.groups.ids.list": "%1$s -> %2$s",
+    "text.inventory_item_groups.category.groups.group": "Группы предметов",
+    "text.inventory_item_groups.category.groups.group.name": "Группа",
+    "text.inventory_item_groups.category.groups.group.tab_name": "Id вкладки предметов",
+    "text.inventory_item_groups.category.groups.group.list_of_items": "Предметы во вкладке",
+    "text.inventory_item_groups.category.groups.addGroupsOverOld": "Добавить все группы",
+    "text.inventory_item_groups.category.groups.addGroupsOverOld.tooltip": "Добавить группы вместе с группами по умолчанию"
 }
