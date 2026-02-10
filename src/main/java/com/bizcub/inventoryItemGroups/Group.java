@@ -1,6 +1,7 @@
 package com.bizcub.inventoryItemGroups;
 
 import com.bizcub.inventoryItemGroups.config.Configs;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -11,11 +12,11 @@ import java.util.stream.Collectors;
 
 public class Group {
     private boolean visibility;
-    private final String tab;
+    private final CreativeModeTab tab;
     private final HashMap<ItemStack, Integer> icon = new HashMap<>();
     private final ArrayList<HashMap<ItemStack, Integer>> itemStacks = new ArrayList<>();
 
-    public Group(String tab, ArrayList<ItemStack> itemStacks) {
+    public Group(CreativeModeTab tab, ArrayList<ItemStack> itemStacks) {
         this.tab = tab;
         this.visibility = false;
         itemStacks = removeDuplicates(itemStacks);
@@ -45,12 +46,12 @@ public class Group {
     }
 
     public ArrayList<ItemStack> removeDuplicates(ArrayList<ItemStack> list) {
-        ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.tabsMapping.get(tab));
+        ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(tab);
         groupsOnSelectedTab.forEach(group -> list.removeAll(group.getItems()));
         return list;
     }
 
-    public String getTab() {
+    public CreativeModeTab getTab() {
         return tab;
     }
 

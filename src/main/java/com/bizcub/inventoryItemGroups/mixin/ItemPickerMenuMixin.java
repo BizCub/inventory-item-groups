@@ -1,6 +1,7 @@
 package com.bizcub.inventoryItemGroups.mixin;
 
 import com.bizcub.inventoryItemGroups.Group;
+import com.bizcub.inventoryItemGroups.GroupVisibilityToggle;
 import com.bizcub.inventoryItemGroups.Main;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.core.NonNullList;
@@ -21,24 +22,25 @@ public abstract class ItemPickerMenuMixin {
 
     @Shadow @Final public NonNullList<@NotNull ItemStack> items;
 
-    @Shadow public abstract void scrollTo(float f);
+    @Shadow public abstract void scrollTo(float scrollOffs);
 
     @Inject(method = "getCarried", at = @At("HEAD"))
     private void toggleGroupVisibility(CallbackInfoReturnable<ItemStack> cir) {
-        if (Main.tempListChanged) {
-            Group group = Main.tempGroup;
+        GroupVisibilityToggle toggle = Main.itemsChanged;
+        if (toggle.isListChanged()) {
+            Group group = toggle.getGroup();
             group.setVisibility(!group.isVisibility());
 
             if (group.isVisibility()) {
                 ArrayList<ItemStack> itemsColl = group.getItems();
                 Collections.reverse(itemsColl);
-                itemsColl.forEach(itemStack -> items.add(Main.tempIndex + 1, itemStack));
+                itemsColl.forEach(itemStack -> items.add(toggle.getItemIndex() + 1, itemStack));
             }
-            else group.getItems().forEach(ignore -> items.remove(Main.tempIndex + 1));
+            else group.getItems().forEach(ignore -> items.remove(toggle.getItemIndex() + 1));
 
-            Main.tempListChanged = false;
-            Main.tempInventoryItemStack = new ArrayList<>(items);
-            scrollTo(Main.tempScrollOffs);
+            toggle.off();
+            scrollTo(toggle.getScrollOffs());
+            Main.tempItemStacks = new ArrayList<>(items);
             Main.setIndexes();
         }
     }

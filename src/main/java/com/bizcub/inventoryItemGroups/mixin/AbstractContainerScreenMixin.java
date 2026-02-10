@@ -2,7 +2,6 @@ package com.bizcub.inventoryItemGroups.mixin;
 
 import com.bizcub.inventoryItemGroups.Group;
 import com.bizcub.inventoryItemGroups.Main;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -35,7 +34,7 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
         int result = 0;
         var slots = menu.slots;
         if (!slots.isEmpty() && slots.size() > 1)
-            result = Main.tempInventoryItemStack.indexOf(slots.get(1).getItem());
+            result = Main.tempItemStacks.indexOf(slots.get(1).getItem());
         if (!slots.get(0).getItem().equals(slots.get(1).getItem())) result--;
         return result + slot.index;
     }
@@ -66,7 +65,7 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
 
     @Inject(method = "renderSlot", at = @At("HEAD"))
     private void renderSlotSprites(GuiGraphics guiGraphics, Slot slot, /*? >=1.21.11 {*/ int i, int j, /*?}*/ CallbackInfo ci) {
-        ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.tempSelectedTab);
+        ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = iig$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
             if (iig$onScreen(slot) && group.isVisibility()) {
@@ -83,7 +82,7 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
 
     @Inject(method = "renderSlot", at = @At("TAIL"))
     private void renderVisibilitySprites(GuiGraphics guiGraphics, Slot slot, /*? >=1.21.11 {*/ int i, int j, /*?}*/ CallbackInfo ci) {
-        ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.tempSelectedTab);
+        ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = iig$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
             if (iig$onScreen(slot) && group.getIconIndex() == index) {

@@ -35,8 +35,7 @@ public class CreativeModeInventoryScreenMixin extends Screen {
 
     @Redirect(method = "selectTab", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;getDisplayItems()Ljava/util/Collection;"))
     private Collection<ItemStack> groupsImplementation(CreativeModeTab selectedTab) {
-        Main.tempSelectedTab = selectedTab;
-        Main.createMapping();
+        Main.selectedTab = selectedTab;
         Main.createGroups();
 
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(selectedTab);
@@ -59,8 +58,7 @@ public class CreativeModeInventoryScreenMixin extends Screen {
             }
         }
 
-        Main.tempInventoryItemStack = newStack;
-        Main.hideGroups();
+        Main.tempItemStacks = newStack;
         Main.setIndexes();
         return newStack;
     }
@@ -80,12 +78,12 @@ public class CreativeModeInventoryScreenMixin extends Screen {
 
     @Unique
     private void iig$mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
-        int index = iig$indexCalculation(Main.tempInventoryItemStack.size(), iig$clickedSlot.index);
+        int index = iig$indexCalculation(Main.tempItemStacks.size(), iig$clickedSlot.index);
         Group group = Main.findGroupByIndex(index);
 
-        if (group != null && selectedTab == Main.tabsMapping.get(group.getTab()) && group.getIconIndex() == index) {
+        if (group != null && selectedTab.equals(group.getTab()) && group.getIconIndex() == index) {
             instance.setCarried(ItemStack.EMPTY);
-            Main.itemsChanged(index);
+            Main.itemsChanged.toggle(index, scrollOffs);
         } else instance.setCarried(itemStack);
     }
 
@@ -120,10 +118,5 @@ public class CreativeModeInventoryScreenMixin extends Screen {
     public void onClose() {
         Main.groups.clear();
         super.onClose();
-    }
-
-    @Inject(method = "render", at = @At("HEAD"))
-    private void getScrollOffs(CallbackInfo ci) {
-        Main.tempScrollOffs = scrollOffs;
     }
 }

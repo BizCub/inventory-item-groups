@@ -43,16 +43,7 @@ public class Configs {
                 .setParentScreen(parent)
                 .setTitle(getTranslate("title"))
                 .setSavingRunnable(config::save);
-
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
-
-        ConfigCategory main = builder.getOrCreateCategory(getTranslate("category.main"));
-        main.addEntry(entryBuilder.startEnumSelector(getTranslate("category.main.sort"), Sort.class, config.sort)
-                .setDefaultValue(Sort.DEFAULT)
-                .setEnumNameProvider(e -> getTranslate(((Configs.Sort) e).getKey()))
-                .setSaveConsumer(value -> config.sort = value)
-                .build()
-        );
 
         ConfigCategory groups = builder.getOrCreateCategory(getTranslate("category.groups"));
         groups.addEntry(entryBuilder.startBooleanToggle(getTranslate("category.groups.addGroupsOverOld"), config.addGroupsOverOld)
@@ -111,15 +102,23 @@ public class Configs {
             String tabId = Main.convertComponentToId(creativeModeTab.getDisplayName().getContents().toString());
             if (!tabId.equals("hotbar") && !tabId.equals("search") && !tabId.equals("op") && !tabId.equals("inventory")) {
                 ids.add(entryBuilder.startTextDescription(
-                        getTranslate("category.groups.ids.list",
+                        getTranslate("category.groups.ids.entry",
                                 Component.literal(creativeModeTab.getDisplayName().getString()),
                                 Component.literal(tabId).withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("chat.copy"))).withClickEvent(new ClickEvent.CopyToClipboard(tabId))).withStyle(style -> style.withColor(ChatFormatting.WHITE))
                         ).withStyle(style -> style.withColor(ChatFormatting.GRAY))
                 ).build());
             }
         }
-
         groups.addEntry(ids.build());
+
+        ConfigCategory main = builder.getOrCreateCategory(getTranslate("category.main"));
+        main.addEntry(entryBuilder.startEnumSelector(getTranslate("category.main.sort"), Sort.class, config.sort)
+                .setDefaultValue(Sort.DEFAULT)
+                .setEnumNameProvider(e -> getTranslate(((Configs.Sort) e).getKey()))
+                .setSaveConsumer(value -> config.sort = value)
+                .build()
+        );
+
         return builder.build();
     }
 

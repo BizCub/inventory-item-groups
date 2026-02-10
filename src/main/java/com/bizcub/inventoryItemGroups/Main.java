@@ -9,37 +9,11 @@ public class Main {
     public static final String MOD_ID = /*$ mod_id*/ "inventory_item_groups";
 
     public static ArrayList<Group> groups = new ArrayList<>();
+    public static CreativeModeTab selectedTab;
+    public static GroupVisibilityToggle itemsChanged = new GroupVisibilityToggle();
+    public static ArrayList<ItemStack> tempItemStacks = new ArrayList<>();
+
     public static ArrayList<ArrayList<ItemStack>> rawDefaultGroups = new ArrayList<>();
-    public static HashMap<String, CreativeModeTab> tabsMapping = new HashMap<>();
-
-    public static boolean tempListChanged;
-    public static ArrayList<ItemStack> tempInventoryItemStack = new ArrayList<>();
-    public static CreativeModeTab tempSelectedTab;
-    public static Group tempGroup;
-    public static int tempIndex;
-    public static float tempScrollOffs;
-
-    public static void createMapping() {
-        CreativeModeTabs.allTabs().forEach(tab ->
-            tabsMapping.put(tab.getDisplayName().getString(), tab));
-    }
-
-    public static void hideGroups() {
-        groups.forEach(group -> {
-            group.setVisibility(false);
-            group.getItems().forEach(item ->
-                group.setItemWithIndex(item, -1));
-        });
-    }
-
-    public static void itemsChanged(int index) {
-        tempListChanged = true;
-        tempIndex = index;
-        groups.forEach(group -> {
-            if (group.getIconIndex() == index)
-                tempGroup = group;
-        });
-    }
 
     public static Group findGroupByIndex(int index) {
         for (Group group : groups)
@@ -52,15 +26,15 @@ public class Main {
     public static ArrayList<Group> groupsOnSelectedTab(CreativeModeTab selectedTab) {
         ArrayList<Group> groupsOnSelectedTab = new ArrayList<>();
         groups.forEach(group -> {
-            if (selectedTab == tabsMapping.get(group.getTab()))
+            if (selectedTab.equals(group.getTab()))
                 groupsOnSelectedTab.add(group);
         });
         return groupsOnSelectedTab;
     }
 
     public static void setIndexes() {
-        ArrayList<Group> groupsOnSelectedTab = groupsOnSelectedTab(tempSelectedTab);
-        ArrayList<ItemStack> newStack = new ArrayList<>(tempInventoryItemStack);
+        ArrayList<Group> groupsOnSelectedTab = groupsOnSelectedTab(selectedTab);
+        ArrayList<ItemStack> newStack = new ArrayList<>(tempItemStacks);
 
         for (Group group : groupsOnSelectedTab) {
             boolean setIcon = false;
@@ -88,7 +62,6 @@ public class Main {
     public static void createGroups() {
         rawDefaultGroups.clear();
         groups.clear();
-        CreativeModeTab selectedTab = tempSelectedTab;
 
         if (Configs.load().addGroupsOverOld) Main.createDefaultGroups();
 
@@ -98,20 +71,19 @@ public class Main {
                 addItems(tempListOfItems);
         }
 
+        rawDefaultGroups.forEach(itemStacks -> groups.add(new Group(selectedTab, itemStacks)));
         validateGroups();
     }
 
     public static void createDefaultGroups() {
-        CreativeModeTab selectedTab = tempSelectedTab;
-
         if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("buildingBlocks")) {
             addItems(List.of("log", "stem", "bamboo_block"), List.of("stripped"));
             addItems(List.of("wood", "hyphae"), List.of("stripped"));
             addItems(List.of("log", "stem", "bamboo_block"));
             addItems(List.of("wood", "hyphae"));
-            addItems(List.of("planks", "mosaic"));
             addItems(List.of("stair"));
             addItems(List.of("slab"));
+            addItems(List.of("planks", "mosaic"));
             addItems(List.of("fence_gate"));
             addItems(List.of("fence"));
             addItems(List.of("trapdoor"));
@@ -236,7 +208,7 @@ public class Main {
         rawDefaultGroups.add(new ArrayList<>());
         if (nonContainedItems.isEmpty()) nonContainedItems = List.of("1111111");
 
-        for (ItemStack itemStack : tempSelectedTab.getDisplayItems()) {
+        for (ItemStack itemStack : selectedTab.getDisplayItems()) {
             String itemName = itemStack.getItem().toString();
             boolean flag = false;
 
@@ -254,10 +226,6 @@ public class Main {
     }
 
     private static void validateGroups() {
-        CreativeModeTab selectedTab = tempSelectedTab;
-
-        rawDefaultGroups.forEach(itemStacks -> groups.add(new Group(selectedTab.getDisplayName().getString(), itemStacks)));
-
         groups.removeIf(group -> group.getItems().isEmpty());
         groups.removeIf(group -> group.getItems().size() < 3);
     }
