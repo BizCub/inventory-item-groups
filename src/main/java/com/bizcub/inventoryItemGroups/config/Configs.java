@@ -104,7 +104,7 @@ public class Configs {
                 ids.add(entryBuilder.startTextDescription(
                         getTranslate("category.groups.ids.entry",
                                 Component.literal(creativeModeTab.getDisplayName().getString()),
-                                Component.literal(tabId).withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.translatable("chat.copy"))).withClickEvent(new ClickEvent.CopyToClipboard(tabId))).withStyle(style -> style.withColor(ChatFormatting.WHITE))
+                                Component.literal(tabId).withStyle(style -> style.withHoverEvent(getHoverEvent(Component.translatable("chat.copy"))).withClickEvent(getClickEvent(tabId))).withStyle(style -> style.withColor(ChatFormatting.WHITE))
                         ).withStyle(style -> style.withColor(ChatFormatting.GRAY))
                 ).build());
             }
@@ -167,6 +167,20 @@ public class Configs {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static HoverEvent getHoverEvent(Component component) {
+        /*? >=1.21.2*/ return new HoverEvent.ShowText(
+        /*? <=1.21.1*/ //return new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+            component
+        );
+    }
+
+    private static ClickEvent getClickEvent(String tabId) {
+        /*? >=1.21.2*/ return new ClickEvent.CopyToClipboard(
+        /*? <=1.21.1*/ //return new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD,
+                tabId
+        );
     }
 
     private static Component getTranslate(String text) {

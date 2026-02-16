@@ -76,7 +76,8 @@ public class Main {
     }
 
     public static void createDefaultGroups() {
-        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("buildingBlocks")) {
+        String selectedTabId = convertComponentToId(selectedTab.getDisplayName().getContents().toString());
+        if (selectedTabId.equals("buildingBlocks")) {
             addItems(List.of("log", "stem", "bamboo_block"), List.of("stripped"));
             addItems(List.of("wood", "hyphae"), List.of("stripped"));
             addItems(List.of("log", "stem", "bamboo_block"));
@@ -97,7 +98,7 @@ public class Main {
             addItems(List.of("bricks", "chiseled", "tiles", "polished"));
             addItems(List.of("sandstone"));
         }
-        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("coloredBlocks")) {
+        if (selectedTabId.equals("coloredBlocks")) {
             addItems(List.of("wool"));
             addItems(List.of("carpet"));
             addItems(List.of("glazed_terracotta"));
@@ -111,7 +112,7 @@ public class Main {
             addItems(List.of("banner"));
             addItems(List.of("bed"));
         }
-        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("natural")) {
+        if (selectedTabId.equals("natural")) {
             addItems(List.of("_ore", "debris", "raw_"));
             addItems(List.of("mushroom", "fungus"));
             addItems(List.of("sapling", "propagule"));
@@ -124,7 +125,7 @@ public class Main {
             addItems(List.of(":stone", "diorite", "andesite", "granite", "tuff", "basalt", "blackstone", "deepslate"));
             addItems(List.of("log", "stem"));
         }
-        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("functional")) {
+        if (selectedTabId.equals("functional")) {
             addItems(List.of("lantern", "sea"));
             addItems(List.of("chain"));
             addItems(List.of("bulb"));
@@ -143,14 +144,14 @@ public class Main {
             addItems(List.of("infested"));
             addItems(List.of("painting"));
         }
-        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("redstone")) {
+        if (selectedTabId.equals("redstone")) {
             addItems(List.of("bulb"));
             addItems(List.of("pressure_plate"));
             addItems(List.of("minecart", "boat", "_raft"));
             addItems(List.of("chest"));
             addItems(List.of("rail"));
         }
-        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("tools")) {
+        if (selectedTabId.equals("tools")) {
             addItems(List.of("shovel"));
             addItems(List.of("pickaxe"));
             addItems(List.of("axe"));
@@ -164,7 +165,7 @@ public class Main {
             addItems(List.of("disc"));
             addItems(List.of("goat_horn"));
         }
-        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("combat")) {
+        if (selectedTabId.equals("combat")) {
             addItems(List.of("sword"));
             addItems(List.of("spear"));
             addItems(List.of("axe"));
@@ -178,7 +179,7 @@ public class Main {
             addItems(List.of("tipped_arrow"));
             addItems(List.of("firework_rocket"));
         }
-        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("foodAndDrink")) {
+        if (selectedTabId.equals("foodAndDrink")) {
             addItems(List.of("suspicious_stew"));
             addItems(List.of("ominous_bottle"));
             addItems(List.of("splash_potion"));
@@ -187,7 +188,7 @@ public class Main {
             addItems(List.of("cooked"));
             addItems(List.of("beef", "porkchop", "mutton", "chicken", "rabbit", ":cod", "salmon"), List.of("rabbit_"));
         }
-        if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals("ingredients")) {
+        if (selectedTabId.equals("ingredients")) {
             addItems(List.of("dye"));
             addItems(List.of("banner_pattern"));
             addItems(List.of("pottery_sherd"));

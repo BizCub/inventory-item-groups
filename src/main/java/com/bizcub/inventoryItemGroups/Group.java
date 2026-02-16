@@ -33,16 +33,16 @@ public class Group {
     }
 
     public ArrayList<ItemStack> sort(ArrayList<ItemStack> itemStacks) {
-        LinkedHashMap<String, ItemStack> map = new LinkedHashMap<>();
-        for (ItemStack itemStack : itemStacks) map.put(itemStack.getItem().toString(), itemStack);
+        LinkedHashMap<ItemStack, String> map = new LinkedHashMap<>();
+        for (ItemStack itemStack : itemStacks) map.put(itemStack, itemStack.getItem().toString());
 
         if (Configs.load().sort == Configs.Sort.ALPHABETICALLY) {
             map = map.entrySet().stream()
-                    .sorted(Map.Entry.comparingByKey())
+                    .sorted(Map.Entry.comparingByValue())
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         }
 
-        return new ArrayList<>(map.values());
+        return new ArrayList<>(map.keySet());
     }
 
     public ArrayList<ItemStack> removeDuplicates(ArrayList<ItemStack> list) {
