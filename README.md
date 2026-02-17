@@ -6,11 +6,30 @@ This mod adds item groups to the Creative mode menu. It's based on a feature fro
 
 ## Usage
 
-To use the mod, simply install it in the mods folder. In Creative mode, press the plus sign to open a group and the minus sign to close it. Neoforge doesn't require any additional dependencies, but Fabric requires the Fabric API.
+To use the mod, simply install it in the mods folder. In Creative mode, press the plus sign to open a group and the minus sign to close it.
+
+The mod has a configuration option. It allows you to customize item sorting within groups and create your own custom item groups that can be used without the default ones.
+
+To add a group to a specific menu tab, find the menu tab IDs on the group settings page, copy the desired one, and enter it in the "Tab ID" field. To add items to this group, enter the item ID displayed in the tooltip (when F3+H is enabled) or part of the ID contained in the item.
+
+Below is an example of adding an item group to the blocks tab in the Cobllemon mod:
+
+![preview](https://cdn.modrinth.com/data/cached_images/349ba2c08131813a7c635f7663e0956c346691f6.png)
+
+<details>
+<summary>Configuration Settings</summary>
+
+![preview](https://cdn.modrinth.com/data/cached_images/8383820bb9399710222aeb837543ec3e76803874.png)
+
+</details>
+
+---
+
+If desired, you can completely disable the default groups by unchecking the "Add all groups" option.
+
+Another customization option is item sorting within a group. Currently, there are two modes: default and alphabetical.
 
 ## Other
-
-* Initially, the ability to create custom groups was planned. However, no mod was suitable for customization. I planned for each group to have a list of item IDs and a menu tab ID. Another issue is that items are initialized only in the world, which makes it difficult to customize them outside of the game world.
 
 * The Fabric API is required so that the game displays the translation keys instead of their values. This is because Fabric Loader doesn't load mod resources by default.
 
