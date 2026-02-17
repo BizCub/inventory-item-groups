@@ -1,5 +1,5 @@
 //? fabric {
-package com.bizcub.inventoryItemGroups.platforms;
+package com.bizcub.inventoryItemGroups.platform;
 
 import com.bizcub.inventoryItemGroups.config.Configs;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;

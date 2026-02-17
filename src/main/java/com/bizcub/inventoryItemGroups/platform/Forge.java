@@ -1,5 +1,5 @@
 //? forge {
-/*package com.bizcub.inventoryItemGroups.platforms;
+/*package com.bizcub.inventoryItemGroups.platform;
 
 import com.bizcub.inventoryItemGroups.Main;
 import net.minecraftforge.fml.common.Mod;

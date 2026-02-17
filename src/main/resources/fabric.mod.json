@@ -15,10 +15,10 @@
     },
     "entrypoints": {
         "main": [
-            "com.bizcub.inventoryItemGroups.platforms.Fabric"
+            "com.bizcub.inventoryItemGroups.platform.Fabric"
         ],
         "modmenu": [
-            "com.bizcub.inventoryItemGroups.platforms.Fabric$ModMenu"
+            "com.bizcub.inventoryItemGroups.platform.Fabric$ModMenu"
         ]
     },
     "mixins": [
