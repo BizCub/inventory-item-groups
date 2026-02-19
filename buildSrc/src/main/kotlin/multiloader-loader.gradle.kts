@@ -19,5 +19,11 @@ if (isNeoForge) {
     project.extra["dep.neoforge_loader"] = neoForge
 }
 
+if (isForge) {
+    if (!isClothConfigAvailable) {
+        project.extra["mod.cloth_config"] = "17.0.144"
+    }
+}
+
 base.archivesName.set("${mod.mixin}-${mod.loader}")
 version = "${mod.version}+${mod.pub_start}"

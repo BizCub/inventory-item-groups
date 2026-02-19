@@ -10,11 +10,12 @@ stonecutter {
 
     swaps["mod_id"] = "\"${prop("mod.id")}\";"
 
-    replacements.string(scp >= "1.21.6") {
-        replace("net.minecraft.client.renderer.RenderType", "net.minecraft.client.renderer.RenderPipelines")
-    }
     replacements.string(scp >= "1.21.11") {
         replace("ResourceLocation", "Identifier")
+    }
+    replacements.string(scp >= "1.21.6") {
+        replace("net.minecraft.client.renderer.RenderType",
+            "net.minecraft.client.renderer.RenderPipelines")
     }
 }
 

@@ -1,5 +1,6 @@
 package com.bizcub.inventoryItemGroups;
 
+import com.bizcub.inventoryItemGroups.config.Compat;
 import com.bizcub.inventoryItemGroups.config.Configs;
 import net.minecraft.world.item.*;
 
@@ -63,12 +64,15 @@ public class Main {
         rawDefaultGroups.clear();
         groups.clear();
 
-        if (Configs.load().addGroupsOverOld) Main.createDefaultGroups();
+        if (Compat.isClothConfigLoaded() && Configs.load().addGroupsOverOld
+                || !Compat.isClothConfigLoaded()) Main.createDefaultGroups();
 
-        for (Configs.ItemGroup group : Configs.load().groups) {
-            List<String> tempListOfItems = group.itemNames.stream().map(Object::toString).toList();
-            if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals(group.tabName))
-                addItems(tempListOfItems);
+        if (Compat.isClothConfigLoaded()) {
+            for (Configs.ItemGroup group : Configs.load().groups) {
+                List<String> tempListOfItems = group.itemNames.stream().map(Object::toString).toList();
+                if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals(group.tabName))
+                    addItems(tempListOfItems);
+            }
         }
 
         rawDefaultGroups.forEach(itemStacks -> groups.add(new Group(selectedTab, itemStacks)));
