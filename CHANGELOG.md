@@ -1,2 +1,3 @@
-* Cloth Config is no longer a required dependency.
-* Forge has been added.
+* Group names have been added
+* It is now possible to specify a group name in the configuration
+* The Sea Lantern is no longer included in the Lanterns

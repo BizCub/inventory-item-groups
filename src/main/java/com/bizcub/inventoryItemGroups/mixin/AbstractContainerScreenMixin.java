@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
@@ -16,15 +17,20 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Mixin(AbstractContainerScreen.class)
-public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
+public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
 
     @Shadow @Final protected T menu;
+    @Shadow protected Slot hoveredSlot;
+
+    @Shadow protected abstract List<Component> getTooltipFromContainerItem(ItemStack arg);
 
     @Unique private static boolean iig$onScreen(Slot slot) {
         return slot.index <= 44;
@@ -92,6 +98,18 @@ public class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
                 else
                     iig$renderSprite(guiGraphics, "plus", slot.x, slot.y, 16);
             }
+        }
+    }
+
+    @Redirect(method = "renderTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;getTooltipFromContainerItem(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
+    private List<Component> renderGroupName(AbstractContainerScreen instance, ItemStack arg) {
+        int slot = iig$calculateIndex(hoveredSlot);
+        Group group = Main.findGroupByIndex(slot);
+
+        if (group != null && slot == group.getIconIndex()) {
+            return List.of(group.getName());
+        } else {
+            return this.getTooltipFromContainerItem(arg);
         }
     }
 }

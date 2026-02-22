@@ -2,6 +2,7 @@ package com.bizcub.inventoryItemGroups;
 
 import com.bizcub.inventoryItemGroups.config.Compat;
 import com.bizcub.inventoryItemGroups.config.Configs;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
@@ -15,9 +16,11 @@ public class Group {
     private boolean visibility;
     private final CreativeModeTab tab;
     private final HashMap<ItemStack, Integer> icon = new HashMap<>();
+    private final Component name;
     private final ArrayList<HashMap<ItemStack, Integer>> itemStacks = new ArrayList<>();
 
-    public Group(CreativeModeTab tab, ArrayList<ItemStack> itemStacks) {
+    public Group(Component name, CreativeModeTab tab, ArrayList<ItemStack> itemStacks) {
+        this.name = name;
         this.tab = tab;
         this.visibility = false;
         itemStacks = removeDuplicates(itemStacks);
@@ -50,6 +53,10 @@ public class Group {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(tab);
         groupsOnSelectedTab.forEach(group -> list.removeAll(group.getItems()));
         return list;
+    }
+
+    public Component getName() {
+        return name;
     }
 
     public CreativeModeTab getTab() {

@@ -33,6 +33,7 @@ public class Configs {
     private static final Path CONFIG_PATH = Paths.get("config", Main.MOD_ID + ".json");
 
     public boolean addGroupsOverOld;
+    public boolean translateGroups;
     public Sort sort = Sort.ALPHABETICALLY;
     public List<ItemGroup> groups = new ArrayList<>();
 
@@ -52,6 +53,12 @@ public class Configs {
                 .setSaveConsumer(value -> config.addGroupsOverOld = value)
                 .build()
         );
+        groups.addEntry(entryBuilder.startBooleanToggle(getTranslate("category.groups.translateGroups"), config.translateGroups)
+                .setDefaultValue(true)
+                .setTooltip(getTranslate("category.groups.translateGroups.tooltip"))
+                .setSaveConsumer(value -> config.translateGroups = value)
+                .build()
+        );
         groups.addEntry(new NestedListListEntry<ItemGroup, MultiElementListEntry<ItemGroup>>(
                 getTranslate("category.groups.group"),
                 config.groups,
@@ -63,7 +70,8 @@ public class Configs {
                 true,
                 true,
                 (elem, nestedListListEntry) -> {
-                    Configs.ItemGroup currentElem = elem != null ? elem : new Configs.ItemGroup("", new ArrayList<>());
+                    Configs.ItemGroup currentElem = elem != null ? elem : new Configs.ItemGroup("", "", new ArrayList<>());
+                    if (currentElem.groupName == null) currentElem.groupName = "name";
                     return new MultiElementListEntry<>(
                             getTranslate("category.groups.group.name"),
                             currentElem,
@@ -81,6 +89,10 @@ public class Configs {
                                     //        .setSaveConsumer(value -> currentElem.name = value)
                                     //        .setSuggestionMode(false)
                                     //        .build(),
+                                    entryBuilder.startStrField(getTranslate("category.groups.group.group_name"), currentElem.groupName)
+                                            .setDefaultValue("")
+                                            .setSaveConsumer(value -> currentElem.groupName = value)
+                                            .build(),
                                     entryBuilder.startStrField(getTranslate("category.groups.group.tab_name"), currentElem.tabName)
                                             .setDefaultValue("")
                                             .setSaveConsumer(value -> currentElem.tabName = value)
@@ -123,10 +135,12 @@ public class Configs {
     }
 
     public static class ItemGroup {
+        public String groupName;
         public String tabName;
         public List<Object> itemNames;
 
-        public ItemGroup(String tabName, List<Object> itemNames) {
+        public ItemGroup(String groupName, String tabName, List<Object> itemNames) {
+            this.groupName = groupName;
             this.tabName = tabName;
             this.itemNames = itemNames;
         }
