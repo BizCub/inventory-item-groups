@@ -70,7 +70,7 @@ public class Configs {
                 true,
                 true,
                 (elem, nestedListListEntry) -> {
-                    Configs.ItemGroup currentElem = elem != null ? elem : new Configs.ItemGroup("", "", new ArrayList<>());
+                    Configs.ItemGroup currentElem = elem != null ? elem : new Configs.ItemGroup("", "", new ArrayList<>(), new ArrayList<>());
                     if (currentElem.groupName == null) currentElem.groupName = "name";
                     return new MultiElementListEntry<>(
                             getTranslate("category.groups.group.name"),
@@ -97,11 +97,20 @@ public class Configs {
                                             .setDefaultValue("")
                                             .setSaveConsumer(value -> currentElem.tabName = value)
                                             .build(),
-                                    entryBuilder.startStrList(getTranslate("category.groups.group.list_of_items"), currentElem.itemNames.stream().map(Object::toString).toList())
+                                    entryBuilder.startStrList(getTranslate("category.groups.group.equivalentItems"), currentElem.equivalentItems.stream().map(Object::toString).toList())
                                             .setDefaultValue(List.of())
+                                            .setTooltip(getTranslate("category.groups.group.equivalentItems.tooltip"))
                                             .setSaveConsumer(objects -> {
-                                                currentElem.itemNames.clear();
-                                                currentElem.itemNames.addAll(objects);
+                                                currentElem.equivalentItems.clear();
+                                                currentElem.equivalentItems.addAll(objects);
+                                            })
+                                            .build(),
+                                    entryBuilder.startStrList(getTranslate("category.groups.group.containedItems"), currentElem.containedItems.stream().map(Object::toString).toList())
+                                            .setDefaultValue(List.of())
+                                            .setTooltip(getTranslate("category.groups.group.containedItems.tooltip"))
+                                            .setSaveConsumer(objects -> {
+                                                currentElem.containedItems.clear();
+                                                currentElem.containedItems.addAll(objects);
                                             })
                                             .build()
                             ),
@@ -137,12 +146,14 @@ public class Configs {
     public static class ItemGroup {
         public String groupName;
         public String tabName;
-        public List<Object> itemNames;
+        public List<Object> equivalentItems;
+        public List<Object> containedItems;
 
-        public ItemGroup(String groupName, String tabName, List<Object> itemNames) {
+        public ItemGroup(String groupName, String tabName, List<Object> containedItems, List<Object> equivalentItems) {
             this.groupName = groupName;
             this.tabName = tabName;
-            this.itemNames = itemNames;
+            this.equivalentItems = equivalentItems;
+            this.containedItems = containedItems;
         }
     }
 

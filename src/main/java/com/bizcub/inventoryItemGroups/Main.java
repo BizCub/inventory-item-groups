@@ -66,13 +66,14 @@ public class Main {
         groups.clear();
 
         if (Compat.isClothConfigLoaded() && Configs.load().addGroupsOverOld
-                || !Compat.isClothConfigLoaded()) Main.createDefaultGroups();
+                || !Compat.isClothConfigLoaded()) createDefaultGroups();
 
         if (Compat.isClothConfigLoaded()) {
             for (Configs.ItemGroup group : Configs.load().groups) {
-                List<String> tempListOfItems = group.itemNames.stream().map(Object::toString).toList();
+                List<String> tempListOfItems = group.containedItems.stream().map(Object::toString).toList();
+                List<String> tempListOfItemIds = group.equivalentItems.stream().map(Object::toString).toList();
                 if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals(group.tabName))
-                    addItems(group.groupName, false, tempListOfItems);
+                    addConfigItems(group.groupName, tempListOfItems, tempListOfItemIds, Configs.load().translateGroups);
             }
         }
 
@@ -93,130 +94,138 @@ public class Main {
     public static void createDefaultGroups() {
         String selectedTabId = convertComponentToId(selectedTab.getDisplayName().getContents().toString());
         if (selectedTabId.equals("buildingBlocks")) {
-            addItems("logs", true, List.of("log", "stem", "bamboo_block"), List.of("stripped"));
-            addItems("woods", true, List.of("wood", "hyphae"), List.of("stripped"));
-            addItems("stripped_logs", true, List.of("log", "stem", "bamboo_block"));
-            addItems("stripped_woods", true, List.of("wood", "hyphae"));
-            addItems("stairs", true, List.of("stair"));
-            addItems("slabs", true, List.of("slab"));
-            addItems("planks", true, List.of("planks", "mosaic"));
-            addItems("fence_gates", true, List.of("fence_gate"));
-            addItems("fences", true, List.of("fence"));
-            addItems("trapdoors", true, List.of("trapdoor"));
-            addItems("doors", true, List.of("door"));
-            addItems("pressure_plates", true, List.of("pressure_plate"));
-            addItems("buttons", true, List.of("button"));
-            addItems("bars", true, List.of("bar"));
-            addItems("chains", true, List.of("chain"));
-            addItems("copper", true, List.of("copper"));
-            addItems("walls", true, List.of("wall"));
-            addItems("decorative_stone", true, List.of("bricks", "chiseled", "tiles", "polished"));
-            addItems("sandstone", true, List.of("sandstone"));
+            addDefaultItems("logs", List.of("log", "stem", "bamboo_block"), List.of("stripped"));
+            addDefaultItems("woods", List.of("wood", "hyphae"), List.of("stripped"));
+            addDefaultItems("stripped_logs", List.of("log", "stem", "bamboo_block"));
+            addDefaultItems("stripped_woods", List.of("wood", "hyphae"));
+            addDefaultItems("stairs", List.of("stair"));
+            addDefaultItems("slabs", List.of("slab"));
+            addDefaultItems("planks", List.of("planks", "mosaic"));
+            addDefaultItems("fence_gates", List.of("fence_gate"));
+            addDefaultItems("fences", List.of("fence"));
+            addDefaultItems("trapdoors", List.of("trapdoor"));
+            addDefaultItems("doors", List.of("door"));
+            addDefaultItems("pressure_plates", List.of("pressure_plate"));
+            addDefaultItems("buttons", List.of("button"));
+            addDefaultItems("bars", List.of("bar"));
+            addDefaultItems("chains", List.of("chain"));
+            addDefaultItems("copper", List.of("copper"));
+            addDefaultItems("walls", List.of("wall"));
+            addDefaultItems("decorative_stone", List.of("bricks", "chiseled", "tiles", "polished"));
+            addDefaultItems("sandstone", List.of("sandstone"));
         }
         if (selectedTabId.equals("coloredBlocks")) {
-            addItems("wool", true, List.of("wool"));
-            addItems("carpets", true, List.of("carpet"));
-            addItems("glazed_terracotta", true, List.of("glazed_terracotta"));
-            addItems("terracotta", true, List.of("terracotta"));
-            addItems("concrete_powder", true, List.of("concrete_powder"));
-            addItems("concrete", true, List.of("concrete"));
-            addItems("glass_panes", true, List.of("glass_pane"));
-            addItems("glass", true, List.of("glass"));
-            addItems("shulker_boxes", true, List.of("shulker_box"));
-            addItems("candles", true, List.of("candle"));
-            addItems("banners", true, List.of("banner"));
-            addItems("beds", true, List.of("bed"));
+            addDefaultItems("wool", List.of("wool"));
+            addDefaultItems("carpets", List.of("carpet"));
+            addDefaultItems("glazed_terracotta", List.of("glazed_terracotta"));
+            addDefaultItems("terracotta", List.of("terracotta"));
+            addDefaultItems("concrete_powder", List.of("concrete_powder"));
+            addDefaultItems("concrete", List.of("concrete"));
+            addDefaultItems("glass_panes", List.of("glass_pane"));
+            addDefaultItems("glass", List.of("glass"));
+            addDefaultItems("shulker_boxes", List.of("shulker_box"));
+            addDefaultItems("candles", List.of("candle"));
+            addDefaultItems("banners", List.of("banner"));
+            addDefaultItems("beds", List.of("bed"));
         }
         if (selectedTabId.equals("natural")) {
-            addItems("ores", true, List.of("_ore", "debris", "raw_"));
-            addItems("mushrooms", true, List.of("mushroom", "fungus"));
-            addItems("saplings", true, List.of("sapling", "propagule"));
-            addItems("ground_cover", true, List.of("fern", "_grass", "bush", "_sprouts", "hanging_moss", "_vines"), List.of("_bush"));
-            addItems("seeds", true, List.of("seeds", "_pod"));
-            addItems("flowers", true, List.of("dandelion", "poppy", "orchid", "allium", "tulip", "daisy", "cornflower", "torchflower", "azure_bluet", "valley", "cactus_flower", "eyeblossom", "rose", "petals", "wildflower", "crimson_roots", "warped_roots", "sunflower", "peony", "lilac", "pitcher_plant"));
-            addItems("leaves", true, List.of("leaves"));
-            addItems("coral_blocks", true, List.of("coral_block"));
-            addItems("coral_decorations", true, List.of("coral"));
-            addItems("stone", true, List.of(":stone", "diorite", "andesite", "granite", "tuff", "basalt", "blackstone", "deepslate"));
-            addItems("logs", true, List.of("log", "stem"));
+            addDefaultItems("ores", List.of("_ore", "debris", "raw_"));
+            addDefaultItems("mushrooms", List.of("mushroom", "fungus"));
+            addDefaultItems("saplings", List.of("sapling", "propagule"));
+            addDefaultItems("ground_cover", List.of("fern", "_grass", "bush", "_sprouts", "hanging_moss", "_vines"), List.of("_bush"));
+            addDefaultItems("seeds", List.of("seeds", "_pod"));
+            addDefaultItems("flowers", List.of("dandelion", "poppy", "orchid", "allium", "tulip", "daisy", "cornflower", "torchflower", "azure_bluet", "valley", "cactus_flower", "eyeblossom", "rose", "petals", "wildflower", "crimson_roots", "warped_roots", "sunflower", "peony", "lilac", "pitcher_plant"));
+            addDefaultItems("leaves", List.of("leaves"));
+            addDefaultItems("coral_blocks", List.of("coral_block"));
+            addDefaultItems("coral_decorations", List.of("coral"));
+            addDefaultItems("stone", List.of(":stone", "diorite", "andesite", "granite", "tuff", "basalt", "blackstone", "deepslate"));
+            addDefaultItems("logs", List.of("log", "stem"));
         }
         if (selectedTabId.equals("functional")) {
-            addItems("lanterns", true, List.of("lantern"), List.of("sea"));
-            addItems("chains", true, List.of("chain"));
-            addItems("bulbs", true, List.of("bulb"));
-            addItems("anvils", true, List.of("anvil"));
-            addItems("lightning_rods", true, List.of("lightning_rod"));
-            addItems("shelves", true, List.of("_shelf"));
-            addItems("hanging_signs", true, List.of("hanging_sign"));
-            addItems("signs", true, List.of("sign"));
-            addItems("chests", true, List.of("chest"));
-            addItems("shulker_boxes", true, List.of("shulker_box"));
-            addItems("beds", true, List.of("_bed"));
-            addItems("candles", true, List.of("candle"));
-            addItems("banners", true, List.of("banner"));
-            addItems("skulls", true, List.of("head", "skull"));
-            addItems("golem_statues", true, List.of("golem_statue"));
-            addItems("infested_stone", true, List.of("infested"));
-            addItems("paintings", true, List.of("painting"));
+            addDefaultItems("lanterns", List.of("lantern"), List.of("sea"));
+            addDefaultItems("chains", List.of("chain"));
+            addDefaultItems("bulbs", List.of("bulb"));
+            addDefaultItems("anvils", List.of("anvil"));
+            addDefaultItems("lightning_rods", List.of("lightning_rod"));
+            addDefaultItems("shelves", List.of("_shelf"));
+            addDefaultItems("hanging_signs", List.of("hanging_sign"));
+            addDefaultItems("signs", List.of("sign"));
+            addDefaultItems("chests", List.of("chest"));
+            addDefaultItems("shulker_boxes", List.of("shulker_box"));
+            addDefaultItems("beds", List.of("_bed"));
+            addDefaultItems("candles", List.of("candle"));
+            addDefaultItems("banners", List.of("banner"));
+            addDefaultItems("skulls", List.of("head", "skull"));
+            addDefaultItems("golem_statues", List.of("golem_statue"));
+            addDefaultItems("infested_stone", List.of("infested"));
+            addDefaultItems("paintings", List.of("painting"));
         }
         if (selectedTabId.equals("redstone")) {
-            addItems("bulbs", true, List.of("bulb"));
-            addItems("pressure_plates", true, List.of("pressure_plate"));
-            addItems("transport", true, List.of("minecart", "boat", "_raft"));
-            addItems("chests", true, List.of("chest"));
-            addItems("rails", true, List.of("rail"));
+            addDefaultItems("bulbs", List.of("bulb"));
+            addDefaultItems("pressure_plates", List.of("pressure_plate"));
+            addDefaultItems("transport", List.of("minecart", "boat", "_raft"));
+            addDefaultItems("chests", List.of("chest"));
+            addDefaultItems("rails", List.of("rail"));
         }
         if (selectedTabId.equals("tools")) {
-            addItems("shovels", true, List.of("shovel"));
-            addItems("pickaxes", true, List.of("pickaxe"));
-            addItems("axes", true, List.of("axe"));
-            addItems("hoes", true, List.of("hoe"));
-            addItems("bundles", true, List.of("bundle"));
-            addItems("harnesses", true, List.of("harness"));
-            addItems("chest_boats", true, List.of("chest_boat", "chest_raft"));
-            addItems("boats", true, List.of("boat", "_raft"));
-            addItems("rails", true, List.of("rail"));
-            addItems("minecarts", true, List.of("minecart"));
-            addItems("discs", true, List.of("disc"));
-            addItems("goat_horns", true, List.of("goat_horn"));
+            addDefaultItems("shovels", List.of("shovel"));
+            addDefaultItems("pickaxes", List.of("pickaxe"));
+            addDefaultItems("axes", List.of("axe"));
+            addDefaultItems("hoes", List.of("hoe"));
+            addDefaultItems("bundles", List.of("bundle"));
+            addDefaultItems("harnesses", List.of("harness"));
+            addDefaultItems("chest_boats", List.of("chest_boat", "chest_raft"));
+            addDefaultItems("boats", List.of("boat", "_raft"));
+            addDefaultItems("rails", List.of("rail"));
+            addDefaultItems("minecarts", List.of("minecart"));
+            addDefaultItems("discs", List.of("disc"));
+            addDefaultItems("goat_horns", List.of("goat_horn"));
         }
         if (selectedTabId.equals("combat")) {
-            addItems("swords", true, List.of("sword"));
-            addItems("spears", true, List.of("spear"));
-            addItems("axes", true, List.of("axe"));
-            addItems("helmets", true, List.of("helmet"));
-            addItems("chestplates", true, List.of("chestplate"));
-            addItems("leggings", true, List.of("leggings"));
-            addItems("boots", true, List.of("boots"));
-            addItems("horse_armor", true, List.of("horse_armor"));
-            addItems("nautilus_armor", true, List.of("nautilus_armor"));
-            addItems("eggs", true, List.of("egg"));
-            addItems("tipped_arrows", true, List.of("tipped_arrow"));
-            addItems("firework_rockets", true, List.of("firework_rocket"));
+            addDefaultItems("swords", List.of("sword"));
+            addDefaultItems("spears", List.of("spear"));
+            addDefaultItems("axes", List.of("axe"));
+            addDefaultItems("helmets", List.of("helmet"));
+            addDefaultItems("chestplates", List.of("chestplate"));
+            addDefaultItems("leggings", List.of("leggings"));
+            addDefaultItems("boots", List.of("boots"));
+            addDefaultItems("horse_armor", List.of("horse_armor"));
+            addDefaultItems("nautilus_armor", List.of("nautilus_armor"));
+            addDefaultItems("eggs", List.of("egg"));
+            addDefaultItems("tipped_arrows", List.of("tipped_arrow"));
+            addDefaultItems("firework_rockets", List.of("firework_rocket"));
         }
         if (selectedTabId.equals("foodAndDrink")) {
-            addItems("suspicious_stews", true, List.of("suspicious_stew"));
-            addItems("ominous_bottles", true, List.of("ominous_bottle"));
-            addItems("splash_potions", true, List.of("splash_potion"));
-            addItems("lingering_potions", true, List.of("lingering_potion"));
-            addItems("potions", true, List.of("potion"));
-            addItems("cooked_food", true, List.of("cooked"));
-            addItems("raw_food", true, List.of("beef", "porkchop", "mutton", "chicken", "rabbit", ":cod", "salmon"), List.of("rabbit_"));
+            addDefaultItems("suspicious_stews", List.of("suspicious_stew"));
+            addDefaultItems("ominous_bottles", List.of("ominous_bottle"));
+            addDefaultItems("splash_potions", List.of("splash_potion"));
+            addDefaultItems("lingering_potions", List.of("lingering_potion"));
+            addDefaultItems("potions", List.of("potion"));
+            addDefaultItems("cooked_food", List.of("cooked"));
+            addDefaultItems("raw_food", List.of("beef", "porkchop", "mutton", "chicken", "rabbit", ":cod", "salmon"), List.of("rabbit_"));
         }
         if (selectedTabId.equals("ingredients")) {
-            addItems("dyes", true, List.of("dye"));
-            addItems("banner_patterns", true, List.of("banner_pattern"));
-            addItems("pottery_sherds", true, List.of("pottery_sherd"));
-            addItems("smithing_templates", true, List.of("smithing_template"));
-            addItems("enchanted_books", true, List.of("enchanted_book"));
+            addDefaultItems("dyes", List.of("dye"));
+            addDefaultItems("banner_patterns", List.of("banner_pattern"));
+            addDefaultItems("pottery_sherds", List.of("pottery_sherd"));
+            addDefaultItems("smithing_templates", List.of("smithing_template"));
+            addDefaultItems("enchanted_books", List.of("enchanted_book"));
         }
     }
 
-    private static void addItems(String groupName, boolean hasTranslation, List<String> containedItems) {
-        addItems(groupName, hasTranslation, containedItems, List.of());
+    private static void addDefaultItems(String groupName, List<String> containedItems) {
+        addItems(groupName, containedItems, List.of(), List.of(), true);
     }
 
-    private static void addItems(String groupName, boolean hasTranslation, List<String> containedItems, List<String> nonContainedItems) {
+    private static void addDefaultItems(String groupName, List<String> containedItems, List<String> nonContainedItems) {
+        addItems(groupName, containedItems, nonContainedItems, List.of(), true);
+    }
+
+    private static void addConfigItems(String groupName, List<String> containedItems, List<String> equivalentItems, boolean hasTranslation) {
+        addItems(groupName, containedItems, List.of(), equivalentItems, hasTranslation);
+    }
+
+    private static void addItems(String groupName, List<String> containedItems, List<String> nonContainedItems, List<String> equivalentItems, boolean hasTranslation) {
         rawDefaultGroups.add(new RawGroup());
         RawGroup rawGroup = rawDefaultGroups.get(rawDefaultGroups.size()-1);
         if (nonContainedItems.isEmpty()) nonContainedItems = List.of("1111111");
@@ -228,16 +237,27 @@ public class Main {
             for (String containedItem : containedItems) {
                 for (String nonContainedItem : nonContainedItems) {
                     if (itemName.contains(containedItem) && !itemName.contains(nonContainedItem)) {
-                        rawGroup.items.add(itemStack);
-                        rawGroup.name = groupName;
-                        rawGroup.hasTranslation = hasTranslation;
+                        addRawGroup(rawGroup, groupName, itemStack, hasTranslation);
                         flag = true;
                         break;
                     }
                 }
                 if (flag) break;
             }
+
+            for (String equivalentItem : equivalentItems) {
+                if (equivalentItem.equals(itemName.split(":")[1])) {
+                    addRawGroup(rawGroup, groupName, itemStack, hasTranslation);
+                    break;
+                }
+            }
         }
+    }
+
+    private static void addRawGroup(RawGroup rawGroup, String groupName, ItemStack itemStack, boolean hasTranslation) {
+        rawGroup.items.add(itemStack);
+        rawGroup.name = groupName;
+        rawGroup.hasTranslation = hasTranslation;
     }
 
     private static void validateGroups() {
