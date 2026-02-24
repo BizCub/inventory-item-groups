@@ -11,19 +11,10 @@ public class Main {
     public static final String MOD_ID = /*$ mod_id*/ "inventory_item_groups";
 
     public static ArrayList<Group> groups = new ArrayList<>();
+    public static ArrayList<RawGroup> rawDefaultGroups = new ArrayList<>();
     public static CreativeModeTab selectedTab;
     public static GroupVisibilityToggle itemsChanged = new GroupVisibilityToggle();
     public static ArrayList<ItemStack> tempItemStacks = new ArrayList<>();
-
-    public static ArrayList<RawGroup> rawDefaultGroups = new ArrayList<>();
-
-    public static Group findGroupByIndex(int index) {
-        for (Group group : groups)
-            for (HashMap<ItemStack, Integer> itemStacksMap : group.getItemsWithIndexes())
-                if (itemStacksMap.containsValue(index) || group.getIconIndex() == index)
-                    return group;
-        return null;
-    }
 
     public static ArrayList<Group> groupsOnSelectedTab(CreativeModeTab selectedTab) {
         ArrayList<Group> groupsOnSelectedTab = new ArrayList<>();
@@ -32,6 +23,14 @@ public class Main {
                 groupsOnSelectedTab.add(group);
         });
         return groupsOnSelectedTab;
+    }
+
+    public static Group findGroupByIndex(int index) {
+        for (Group group : groups)
+            for (HashMap<ItemStack, Integer> itemStacksMap : group.getItemsWithIndexes())
+                if (itemStacksMap.containsValue(index) || group.getIconIndex() == index)
+                    return group;
+        return null;
     }
 
     public static void setIndexes() {
@@ -61,6 +60,53 @@ public class Main {
         }
     }
 
+    private static void addDefaultItems(String groupName, List<String> containedItems) {
+        addItems(groupName, containedItems, List.of(), List.of(), true);
+    }
+
+    private static void addDefaultItems(String groupName, List<String> containedItems, List<String> nonContainedItems) {
+        addItems(groupName, containedItems, nonContainedItems, List.of(), true);
+    }
+
+    private static void addConfigItems(String groupName, List<String> containedItems, List<String> equivalentItems, boolean hasTranslation) {
+        addItems(groupName, containedItems, List.of(), equivalentItems, hasTranslation);
+    }
+
+    private static void addItems(String groupName, List<String> containedItems, List<String> nonContainedItems, List<String> equivalentItems, boolean hasTranslation) {
+        rawDefaultGroups.add(new RawGroup());
+        RawGroup rawGroup = rawDefaultGroups.get(rawDefaultGroups.size()-1);
+        if (nonContainedItems.isEmpty()) nonContainedItems = List.of("1111111");
+
+        for (ItemStack itemStack : selectedTab.getDisplayItems()) {
+            String itemName = itemStack.getItem().toString();
+            boolean flag = false;
+
+            for (String containedItem : containedItems) {
+                for (String nonContainedItem : nonContainedItems) {
+                    if (itemName.contains(containedItem) && !itemName.contains(nonContainedItem)) {
+                        addRawGroup(rawGroup, groupName, itemStack, hasTranslation);
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag) break;
+            }
+
+            for (String equivalentItem : equivalentItems) {
+                if (equivalentItem.equals(itemName.split(":")[1])) {
+                    addRawGroup(rawGroup, groupName, itemStack, hasTranslation);
+                    break;
+                }
+            }
+        }
+    }
+
+    private static void addRawGroup(RawGroup rawGroup, String groupName, ItemStack itemStack, boolean hasTranslation) {
+        rawGroup.items.add(itemStack);
+        rawGroup.name = groupName;
+        rawGroup.hasTranslation = hasTranslation;
+    }
+
     public static void createGroups() {
         rawDefaultGroups.clear();
         groups.clear();
@@ -79,16 +125,6 @@ public class Main {
 
         rawDefaultGroups.forEach(rawGroup -> groups.add(new Group(getGroupTranslate(rawGroup), selectedTab, rawGroup.items)));
         validateGroups();
-    }
-
-    public static Component getGroupTranslate(RawGroup rawGroup) {
-        if (rawGroup.name == null) rawGroup.name = "name";
-
-        if ((Compat.isClothConfigLoaded() && Configs.load().translateGroups) || rawGroup.hasTranslation) {
-            return Component.translatable("groupName.inventory_item_groups." + rawGroup.name);
-        } else {
-            return Component.literal(rawGroup.name);
-        }
     }
 
     public static void createDefaultGroups() {
@@ -213,53 +249,6 @@ public class Main {
         }
     }
 
-    private static void addDefaultItems(String groupName, List<String> containedItems) {
-        addItems(groupName, containedItems, List.of(), List.of(), true);
-    }
-
-    private static void addDefaultItems(String groupName, List<String> containedItems, List<String> nonContainedItems) {
-        addItems(groupName, containedItems, nonContainedItems, List.of(), true);
-    }
-
-    private static void addConfigItems(String groupName, List<String> containedItems, List<String> equivalentItems, boolean hasTranslation) {
-        addItems(groupName, containedItems, List.of(), equivalentItems, hasTranslation);
-    }
-
-    private static void addItems(String groupName, List<String> containedItems, List<String> nonContainedItems, List<String> equivalentItems, boolean hasTranslation) {
-        rawDefaultGroups.add(new RawGroup());
-        RawGroup rawGroup = rawDefaultGroups.get(rawDefaultGroups.size()-1);
-        if (nonContainedItems.isEmpty()) nonContainedItems = List.of("1111111");
-
-        for (ItemStack itemStack : selectedTab.getDisplayItems()) {
-            String itemName = itemStack.getItem().toString();
-            boolean flag = false;
-
-            for (String containedItem : containedItems) {
-                for (String nonContainedItem : nonContainedItems) {
-                    if (itemName.contains(containedItem) && !itemName.contains(nonContainedItem)) {
-                        addRawGroup(rawGroup, groupName, itemStack, hasTranslation);
-                        flag = true;
-                        break;
-                    }
-                }
-                if (flag) break;
-            }
-
-            for (String equivalentItem : equivalentItems) {
-                if (equivalentItem.equals(itemName.split(":")[1])) {
-                    addRawGroup(rawGroup, groupName, itemStack, hasTranslation);
-                    break;
-                }
-            }
-        }
-    }
-
-    private static void addRawGroup(RawGroup rawGroup, String groupName, ItemStack itemStack, boolean hasTranslation) {
-        rawGroup.items.add(itemStack);
-        rawGroup.name = groupName;
-        rawGroup.hasTranslation = hasTranslation;
-    }
-
     private static void validateGroups() {
         groups.removeIf(group -> group.getItems().isEmpty());
         groups.removeIf(group -> group.getItems().size() < 3);
@@ -273,5 +262,15 @@ public class Main {
             tabId = tabId.substring(tabId.lastIndexOf(".") + 1);
         }
         return tabId;
+    }
+
+    public static Component getGroupTranslate(RawGroup rawGroup) {
+        if (rawGroup.name == null) rawGroup.name = "name";
+
+        if ((Compat.isClothConfigLoaded() && Configs.load().translateGroups) || rawGroup.hasTranslation) {
+            return Component.translatable("groupName.inventory_item_groups." + rawGroup.name);
+        } else {
+            return Component.literal(rawGroup.name);
+        }
     }
 }
