@@ -2,7 +2,10 @@ package com.bizcub.inventoryItemGroups.mixin;
 
 import com.bizcub.inventoryItemGroups.Group;
 import com.bizcub.inventoryItemGroups.Main;
+import com.bizcub.inventoryItemGroups.config.Compat;
+import com.bizcub.inventoryItemGroups.config.Configs;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -27,13 +30,16 @@ import java.util.List;
 @Mixin(AbstractContainerScreen.class)
 public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
 
+    @Unique private int tick = 0;
+    @Unique private int seconds = 0;
+
     @Shadow @Final protected T menu;
     @Shadow protected Slot hoveredSlot;
 
     @Shadow protected abstract List<Component> getTooltipFromContainerItem(ItemStack arg);
 
-    @Unique private static boolean iig$onScreen(Slot slot) {
-        return slot.index <= 44;
+    @Unique private static boolean iig$onScreen(int index) {
+        return index <= 44;
     }
 
     @Unique
@@ -70,12 +76,33 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         RenderSystem.enableDepthTest();*///?}
     }
 
+    @Inject(method = "renderTooltip", at = @At("HEAD"))
+    private void getTicks(CallbackInfo ci) {
+        tick++;
+        if (tick == Minecraft.getInstance().options.framerateLimit().get()) {
+            tick = 0;
+            seconds++;
+        }
+    }
+
+    @Redirect(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;getItem()Lnet/minecraft/world/item/ItemStack;", ordinal = 0))
+    private ItemStack renderItems(Slot slot) {
+        int index = iig$calculateIndex(slot);
+        Group group = Main.findGroupByIndex(index);
+
+        if (Compat.isClothConfigLoaded() && Configs.getConfig().showGroupItems
+                && group != null && group.getIconIndex() == index && iig$onScreen(slot.index)) {
+            return group.getItems().get(seconds % group.getItems().size());
+        }
+        return slot.getItem();
+    }
+
     @Inject(method = "renderSlot", at = @At("HEAD"))
     private void renderSlotSprites(GuiGraphics guiGraphics, Slot slot, /*? >=1.21.11 {*/ int i, int j, /*?}*/ CallbackInfo ci) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = iig$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
-            if (iig$onScreen(slot) && group.isVisibility()) {
+            if (iig$onScreen(slot.index) && group.isVisibility()) {
                 if (group.getIconIndex() == index)
                     iig$renderSprite(guiGraphics, "icon_slot", slot.x-1, slot.y-1, 18);
 
@@ -92,7 +119,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = iig$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
-            if (iig$onScreen(slot) && group.getIconIndex() == index) {
+            if (iig$onScreen(slot.index) && group.getIconIndex() == index) {
                 if (group.isVisibility())
                     iig$renderSprite(guiGraphics, "minus", slot.x, slot.y, 16);
                 else

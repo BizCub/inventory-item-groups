@@ -1,6 +1,7 @@
 //? fabric {
 package com.bizcub.inventoryItemGroups.platform;
 
+import com.bizcub.inventoryItemGroups.config.Compat;
 import com.bizcub.inventoryItemGroups.config.Configs;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
@@ -10,7 +11,7 @@ public class Fabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-
+        if (Compat.isClothConfigLoaded()) Configs.load();
     }
 
     public static class ModMenu implements ModMenuApi {

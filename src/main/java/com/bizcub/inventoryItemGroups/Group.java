@@ -40,7 +40,7 @@ public class Group {
         LinkedHashMap<ItemStack, String> map = new LinkedHashMap<>();
         for (ItemStack itemStack : itemStacks) map.put(itemStack, itemStack.getItem().toString());
 
-        if (Compat.isClothConfigLoaded() && Configs.load().sort == Configs.Sort.ALPHABETICALLY) {
+        if (Compat.isClothConfigLoaded() && Configs.getConfig().sort == Configs.Sort.ALPHABETICALLY) {
             map = map.entrySet().stream()
                     .sorted(Map.Entry.comparingByValue())
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));

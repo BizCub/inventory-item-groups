@@ -79,6 +79,7 @@ public class Main {
 
         for (ItemStack itemStack : selectedTab.getDisplayItems()) {
             String itemName = itemStack.getItem().toString();
+            String itemNameWithoutNamespace = itemName.contains(":") ? itemName.split(":")[1] : itemName;
             boolean flag = false;
 
             for (String containedItem : containedItems) {
@@ -93,7 +94,7 @@ public class Main {
             }
 
             for (String equivalentItem : equivalentItems) {
-                if (equivalentItem.equals(itemName.split(":")[1])) {
+                if (equivalentItem.equals(itemNameWithoutNamespace)) {
                     addRawGroup(rawGroup, groupName, itemStack, hasTranslation);
                     break;
                 }
@@ -111,15 +112,15 @@ public class Main {
         rawDefaultGroups.clear();
         groups.clear();
 
-        if (Compat.isClothConfigLoaded() && Configs.load().addGroupsOverOld
+        if (Compat.isClothConfigLoaded() && Configs.getConfig().addGroupsOverOld
                 || !Compat.isClothConfigLoaded()) createDefaultGroups();
 
         if (Compat.isClothConfigLoaded()) {
-            for (Configs.ItemGroup group : Configs.load().groups) {
+            for (Configs.ItemGroup group : Configs.getConfig().groups) {
                 List<String> tempListOfItems = group.containedItems.stream().map(Object::toString).toList();
                 List<String> tempListOfItemIds = group.equivalentItems.stream().map(Object::toString).toList();
                 if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals(group.tabName))
-                    addConfigItems(group.groupName, tempListOfItems, tempListOfItemIds, Configs.load().translateGroups);
+                    addConfigItems(group.groupName, tempListOfItems, tempListOfItemIds, Configs.getConfig().translateGroups);
             }
         }
 
@@ -267,7 +268,7 @@ public class Main {
     public static Component getGroupTranslate(RawGroup rawGroup) {
         if (rawGroup.name == null) rawGroup.name = "name";
 
-        if ((Compat.isClothConfigLoaded() && Configs.load().translateGroups) || rawGroup.hasTranslation) {
+        if ((Compat.isClothConfigLoaded() && Configs.getConfig().translateGroups) || rawGroup.hasTranslation) {
             return Component.translatable("groupName.inventory_item_groups." + rawGroup.name);
         } else {
             return Component.literal(rawGroup.name);

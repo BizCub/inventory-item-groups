@@ -11,7 +11,6 @@
     "text.inventory_item_groups.category.groups.group.containedItems.tooltip": "Items with part Id",
     "text.inventory_item_groups.category.groups.group.equivalentItems": "Equivalent Item Ids",
     "text.inventory_item_groups.category.groups.group.equivalentItems.tooltip": "Items with a full Id match",
-    "text.inventory_item_groups.category.groups.group.list_of_items": "Items in Tab",
     "text.inventory_item_groups.category.groups.addGroupsOverOld": "Add all groups",
     "text.inventory_item_groups.category.groups.addGroupsOverOld.tooltip": "Add groups along with the default groups",
     "text.inventory_item_groups.category.groups.translateGroups": "Translate groups",
@@ -20,6 +19,8 @@
     "text.inventory_item_groups.category.main.sort": "Item Sorting",
     "text.inventory_item_groups.category.main.sort.default": "Default",
     "text.inventory_item_groups.category.main.sort.alphabetically": "Alphabetically",
+    "text.inventory_item_groups.category.main.show_group_items": "Show items in group",
+    "text.inventory_item_groups.category.main.show_group_items.tooltip": "Whether to show items instead of the group icon",
 
     "groupName.inventory_item_groups.logs": "Logs",
     "groupName.inventory_item_groups.woods": "Woods",

@@ -34,11 +34,13 @@ public class Configs {
 
     public boolean addGroupsOverOld;
     public boolean translateGroups;
-    public Sort sort = Sort.ALPHABETICALLY;
+    public boolean showGroupItems;
+    public Sort sort = Sort.DEFAULT;
     public List<ItemGroup> groups = new ArrayList<>();
+    public static Configs config;
 
     public static Screen getConfigScreen(Screen parent) {
-        Configs config = load();
+        load();
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
@@ -54,7 +56,7 @@ public class Configs {
                 .build()
         );
         groups.addEntry(entryBuilder.startBooleanToggle(getTranslate("category.groups.translateGroups"), config.translateGroups)
-                .setDefaultValue(true)
+                .setDefaultValue(false)
                 .setTooltip(getTranslate("category.groups.translateGroups.tooltip"))
                 .setSaveConsumer(value -> config.translateGroups = value)
                 .build()
@@ -139,6 +141,12 @@ public class Configs {
                 .setSaveConsumer(value -> config.sort = value)
                 .build()
         );
+        main.addEntry(entryBuilder.startBooleanToggle(getTranslate("category.main.show_group_items"), config.showGroupItems)
+                .setDefaultValue(false)
+                .setTooltip(getTranslate("category.main.show_group_items.tooltip"))
+                .setSaveConsumer(value -> config.showGroupItems = value)
+                .build()
+        );
 
         return builder.build();
     }
@@ -172,15 +180,21 @@ public class Configs {
         }
     }
 
-    public static Configs load() {
-        if (Files.exists(CONFIG_PATH)) {
+    public static Configs getConfig() {
+        return config;
+    }
+
+    public static void load() {
+        if (CONFIG_PATH.toFile().exists()) {
             try (BufferedReader reader = Files.newBufferedReader(CONFIG_PATH)) {
-                return GSON.fromJson(reader, Configs.class);
+                config = GSON.fromJson(reader, Configs.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            config = new Configs();
+            config.addGroupsOverOld = true;
         }
-        return new Configs();
     }
 
     public void save() {

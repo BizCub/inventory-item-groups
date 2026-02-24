@@ -1,6 +1,4 @@
 {
-    "modmenu.descriptionTranslation.inventory_item_groups": "Добавляет группы предметов в инвентарь в творческом меню",
-
     "text.inventory_item_groups.title": "Настройки Inventory Item Groups",
     "text.inventory_item_groups.category.groups": "Группы предметов",
     "text.inventory_item_groups.category.groups.ids": "Id вкладок меню",
@@ -21,6 +19,8 @@
     "text.inventory_item_groups.category.main.sort": "Сортировка предметов",
     "text.inventory_item_groups.category.main.sort.default": "По умолчанию",
     "text.inventory_item_groups.category.main.sort.alphabetically": "По алфавиту",
+    "text.inventory_item_groups.category.main.show_group_items": "Показать предметы группы",
+    "text.inventory_item_groups.category.main.show_group_items.tooltip": "Показывать ли предметы вместо иконки группы",
 
     "groupName.inventory_item_groups.logs": "Брёвна",
     "groupName.inventory_item_groups.woods": "Древесина",
@@ -118,5 +118,7 @@
     "groupName.inventory_item_groups.banner_patterns": "Узоры флагов",
     "groupName.inventory_item_groups.pottery_sherds": "Глиняные черепки",
     "groupName.inventory_item_groups.smithing_templates": "Кузнечные шаблоны",
-    "groupName.inventory_item_groups.enchanted_books": "Зачарованные книги"
+    "groupName.inventory_item_groups.enchanted_books": "Зачарованные книги",
+
+    "modmenu.descriptionTranslation.inventory_item_groups": "Добавляет группы предметов в инвентарь в творческом меню"
 }
