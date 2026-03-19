@@ -8,6 +8,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+//~ if >=1.21.6 'RenderType' -> 'RenderPipelines'
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -90,11 +91,10 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         int index = iig$calculateIndex(slot);
         Group group = Main.findGroupByIndex(index);
 
-        if (Compat.isClothConfigLoaded() && Configs.getConfig().showGroupItems
-                && group != null && group.getIconIndex() == index && iig$onScreen(slot.index)) {
-            return group.getItems().get(seconds % group.getItems().size());
-        }
-        return slot.getItem();
+        return (Compat.isClothConfigLoaded() && Configs.getConfig().showGroupItems
+                && group != null && group.getIconIndex() == index && iig$onScreen(slot.index))
+                ? group.getItems().get(seconds % group.getItems().size())
+                : slot.getItem();
     }
 
     @Inject(method = "renderSlot", at = @At("HEAD"))
@@ -133,10 +133,8 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         int slot = iig$calculateIndex(hoveredSlot);
         Group group = Main.findGroupByIndex(slot);
 
-        if (group != null && slot == group.getIconIndex()) {
-            return List.of(group.getName());
-        } else {
-            return this.getTooltipFromContainerItem(arg);
-        }
+        return (group != null && slot == group.getIconIndex())
+                ? List.of(group.getName())
+                : this.getTooltipFromContainerItem(arg);
     }
 }

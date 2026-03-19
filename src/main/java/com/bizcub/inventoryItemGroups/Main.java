@@ -268,10 +268,8 @@ public class Main {
     public static Component getGroupTranslate(RawGroup rawGroup) {
         if (rawGroup.name == null) rawGroup.name = "name";
 
-        if ((Compat.isClothConfigLoaded() && Configs.getConfig().translateGroups) || rawGroup.hasTranslation) {
-            return Component.translatable("groupName.inventory_item_groups." + rawGroup.name);
-        } else {
-            return Component.literal(rawGroup.name);
-        }
+        return (Compat.isClothConfigLoaded() && Configs.getConfig().translateGroups) || rawGroup.hasTranslation
+                ? Component.translatable("group_name.inventory_item_groups." + rawGroup.name)
+                : Component.literal(rawGroup.name);
     }
 }
