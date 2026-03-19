@@ -29,6 +29,24 @@ If desired, you can completely disable the default groups by unchecking the "Add
 
 Another customization option is item sorting within a group. Currently, there are two modes: default and alphabetical.
 
+You can translate the created group. The "Translate Groups" option must be enabled. To do this, [create a resource pack](https://minecraft.wiki/w/Tutorial:Creating_a_resource_pack) and write a translation using the translation key from the example, then change the group name and ID to your own.
+
+
+<details>
+<summary>Translation example</summary>
+
+![preview](https://cdn.modrinth.com/data/cached_images/3c412e345ffaa5de06f0f2448fc65bc37a738825.png)
+
+File path: assets\minecraft\lang\en_us.json
+
+```json
+{
+  "group_name.inventory_item_groups.random_items": "Randoms"
+}
+```
+
+</details>
+
 ## Other
 
 * The Fabric API is required so that the game displays the translation keys instead of their values. This is because Fabric Loader doesn't load mod resources by default.
