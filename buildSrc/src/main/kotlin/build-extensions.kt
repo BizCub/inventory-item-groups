@@ -1,12 +1,19 @@
 import dev.kikugie.stonecutter.build.StonecutterBuildExtension
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.language.jvm.tasks.ProcessResources
 
+fun String.upperCaseFirst() = replaceFirstChar { if (it.isLowerCase()) it.uppercaseChar() else it }
+
 val Project.mod: ModData get() = ModData(this)
 fun Project.prop(key: String): String? = findProperty(key)?.toString()
-fun Project.dep(key: String): String? = findProperty("dep.$key")?.toString()
-fun String.upperCaseFirst() = replaceFirstChar { if (it.isLowerCase()) it.uppercaseChar() else it }
+fun Project.getProp(key: String) = prop(propName(key))
+fun Project.setProp(key: String, value: Any?) = value.also { extra[versionExactlyProp(key)] = it }
+fun Project.propName(key: String) = if (prop(versionExactlyProp(key)) != null) versionExactlyProp(key) else versionProp(key)
+fun Project.propIf(key: String, fallback: String?) = prop(propName(key)) ?: fallback
+fun Project.versionProp(key: String) = "${mod.mc}.$key"
+fun Project.versionExactlyProp(key: String) = "${mod.mc}-${mod.loader}.$key"
 
 val Project.sc get() = extensions.getByType<StonecutterBuildExtension>()
 val Project.scc get() = sc.current
@@ -34,16 +41,12 @@ value class ModData(private val project: Project) {
     val name: String get() = modProp("name")
     val description: String get() = modProp("description")
     val version: String get() = modProp("version")
-    val pub_start: String get() = propIfExist("pub.start", mc).toString()
-    val pub_end: String get() = propIfExist("pub.end", mc).toString()
     val modrinth: String get() = modProp("modrinth")
     val curseforge: String get() = modProp("curseforge")
     val github: String get() = modProp("github")
-    val cloth_config: String get() = modProp("cloth_config")
-    val fabric_api: String get() = modProp("fabric_api")
-    val modmenu: String get() = modProp("modmenu")
+    val pub_start: String get() = project.propIf("pub_start", mc).toString()
+    val pub_end: String get() = project.propIf("pub_end", mc).toString()
 
-    fun propIfExist(key: String, fallback: String) = if (project.prop(key) != null) project.prop(key) else fallback
     fun modPropOrNull(key: String) = project.prop("mod.$key")
     fun modProp(key: String) = requireNotNull(modPropOrNull(key)) { "Missing 'mod.$key'" }
 }

@@ -1,0 +1,57 @@
+# Fabric versions see: https://fabricmc.net/develop
+# Forge versions see: https://files.minecraftforge.net
+# NeoForge versions see: https://neoforged.net
+# Extra dependencies see: https://linkie.shedaniel.dev/dependencies
+
+["1.20.1"]
+forge="47.4.10"
+cloth_config="11.1.136"
+fabric_api="0.92.7+1.20.1"
+modmenu="7.2.2"
+pub_start="1.20"
+pub_end="1.20.6"
+
+["1.21.1"]
+forge="52.1.0"
+neoforge="218"
+cloth_config="15.0.140"
+fabric_api="0.116.8+1.21.1"
+modmenu="11.0.3"
+pub_start="1.21"
+
+["1.21.3"]
+forge="53.1.0"
+neoforge="95"
+cloth_config="17.0.807"
+fabric_api="0.114.1+1.21.3"
+modmenu="12.0.0"
+pub_start="1.21.2"
+pub_end="1.21.5"
+
+["1.21.8"]
+forge="58.1.0"
+neoforge="52"
+cloth_config="19.0.147"
+fabric_api="0.136.1+1.21.8"
+modmenu="15.0.1"
+pub_start="1.21.6"
+
+["1.21.10"]
+forge="60.1.0"
+neoforge="64"
+cloth_config="20.0.149"
+fabric_api="0.138.4+1.21.10"
+modmenu="16.0.0"
+pub_start="1.21.9"
+
+["1.21.11"]
+forge="61.0.8"
+neoforge="37-beta"
+cloth_config="21.11.153"
+fabric_api="0.141.3+1.21.11"
+modmenu="17.0.0-beta.2"
+pub_end="latest"
+
+["26.1"]
+version="26.1-pre-2"
+fabric_api="0.143.14+26.1"
