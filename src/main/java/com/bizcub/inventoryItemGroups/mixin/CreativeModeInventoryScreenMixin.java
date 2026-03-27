@@ -5,7 +5,7 @@ import com.bizcub.inventoryItemGroups.Main;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -88,7 +88,7 @@ public class CreativeModeInventoryScreenMixin extends Screen {
     }
 
     @Inject(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
-    private void slotClicked(Slot slot, int i, int j, ClickType clickType, CallbackInfo ci) {
+    private void slotClicked(Slot slot, int i, int j, ContainerInput clickType, CallbackInfo ci) {
         iig$clickedSlot = slot;
     }
 
@@ -98,7 +98,7 @@ public class CreativeModeInventoryScreenMixin extends Screen {
     }
 
     @Inject(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
-    private void getSlot(Slot slot, int i, int j, ClickType clickType, CallbackInfo ci) {
+    private void getSlot(Slot slot, int i, int j, ContainerInput clickType, CallbackInfo ci) {
         iig$clickedSlot = slot;
     }
 

@@ -16,6 +16,9 @@
     "entrypoints": {
         "main": [
             "com.bizcub.inventoryItemGroups.platform.Fabric"
+        ],
+        "modmenu": [
+            "com.bizcub.inventoryItemGroups.platform.Fabric$ModMenu"
         ]
     },
     "mixins": [

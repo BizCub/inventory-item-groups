@@ -1,55 +1,55 @@
 plugins {
-    id("java")
+    id("multiloader-common")
+    id("me.modmuss50.mod-publish-plugin")
+}
+
+sc.constants["is_cloth_config_available"] = isClothConfigAvailable
+
+sc.replacements {
+    string(scp >= "26.1") {
+        replace("GuiGraphics", "GuiGraphicsExtractor")
+        replace("ClickType", "ContainerInput")
+        replace("renderTooltip", "extractTooltip")
+        replace("renderSlot", "extractSlot")
+    }
+    string(scp >= "1.21.11") {
+        replace("ResourceLocation", "Identifier")
+    }
 }
 
 if (isForge) {
-    setProp("forge", "${mod.mc}-${getProp("forge")}")
-
     if (!isClothConfigAvailable) {
         setProp("cloth_config", "17.0.144")
     }
 }
 
+reps.clear()
+reps.add(Repository("https://maven.shedaniel.me"))
+
+deps.clear()
+deps.add(Dependency("me.shedaniel.cloth:cloth-config-${mod.loader}:${getProp("cloth_config")}", "api"))
+
+if (isFabric) {
+    reps.add(Repository("https://maven.terraformersmc.com/releases"))
+
+    deps.add(Dependency("net.fabricmc:fabric-loader:latest.release", "implementation"))
+    deps.add(Dependency("net.fabricmc.fabric-api:fabric-api:${getProp("fabric_api")}", "implementation"))
+    deps.add(Dependency("com.terraformersmc:modmenu:${getProp("modmenu")}", "api"))
+}
+
 if (isNeoForge) {
-    val neoVersion = mod.mc.substring(2)
-    val neoLoader = getProp("neoforge")
-    setProp("neoforge", if (neoVersion.contains(".")) "$neoVersion.$neoLoader" else "$neoVersion.0.$neoLoader")
+    reps.add(Repository("https://maven.neoforged.net/releases"))
 }
 
-project.extra["loom.platform"] = mod.loader
-
-configurations.all {
-    resolutionStrategy {
-        force("net.fabricmc:fabric-loader:latest.release")
+publishMods {
+    modrinth {
+        if (isClothConfigAvailable) optional("cloth-config")
+        if (isFabric) requires("fabric-api")
+        if (isFabric) optional("modmenu")
     }
-}
-
-base.archivesName.set("${mod.mixin}-${mod.loader}")
-version = "${mod.version}+${mod.pub_start}"
-
-tasks.processResources {
-    properties(
-        listOf("fabric.mod.json", "META-INF/*.toml"),
-        "id"            to mod.id,
-        "mixin"         to mod.mixin,
-        "name"          to mod.name,
-        "description"   to mod.description,
-        "version"       to mod.version,
-        "modrinth"      to mod.modrinth,
-        "github"        to mod.github,
-        "author"        to "Bizarre Cube",
-        "license"       to "MIT"
-    )
-}
-
-java {
-    val java = when {
-        scp >= "26.1"   -> 25
-        scp >= "1.20.5" -> 21
-        scp >= "1.18"   -> 17
-        scp >= "1.17"   -> 16
-        else            -> 8
+    curseforge {
+        if (isClothConfigAvailable) optional("cloth-config")
+        if (isFabric) requires("fabric-api")
+        if (isFabric) optional("modmenu")
     }
-    targetCompatibility = JavaVersion.toVersion(java)
-    sourceCompatibility = JavaVersion.toVersion(java)
 }

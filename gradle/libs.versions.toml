@@ -1,0 +1,22 @@
+[versions]
+stonecutter = "0.9+"
+loom = "1.15-SNAPSHOT"
+loom-architectury = "1.13-SNAPSHOT"
+forge = "7.0.17"
+neoforged = "2.0.140"
+publish = "1.1.0"
+idea-ext = "1.3"
+
+[plugins]
+loom = { id = "net.fabricmc.fabric-loom", version.ref = "loom" }
+loom-remap = { id = "net.fabricmc.fabric-loom-remap", version.ref = "loom" }
+loom-architectury = { id = "dev.architectury.loom", version.ref = "loom-architectury" }
+forge = { id = "net.minecraftforge.gradle", version.ref = "forge" }
+neoforged = { id = "net.neoforged.moddev", version.ref = "neoforged" }
+publish = { id = "me.modmuss50.mod-publish-plugin" }
+stonecutter = { id = "dev.kikugie.stonecutter" }
+idea-ext = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "idea-ext" }
+
+[libraries]
+stonecutter = { module = "dev.kikugie:stonecutter", version.ref = "stonecutter" }
+publish = { module = "me.modmuss50:mod-publish-plugin", version.ref = "publish" }

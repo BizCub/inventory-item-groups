@@ -6,7 +6,7 @@ import com.bizcub.inventoryItemGroups.config.Compat;
 import com.bizcub.inventoryItemGroups.config.Configs;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 //~ if >=1.21.6 'RenderType' -> 'RenderPipelines'
 import net.minecraft.client.renderer.RenderPipelines;
@@ -62,7 +62,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     @Unique
-    private void iig$renderSprite(GuiGraphics guiGraphics, String location, int x, int y, int size) {
+    private void iig$renderSprite(GuiGraphicsExtractor guiGraphics, String location, int x, int y, int size) {
         //? >=1.21.6 {
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, iig$getSprite(location), x, y, size, size);
         //?} >=1.21.2 {
@@ -77,7 +77,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         RenderSystem.enableDepthTest();*///?}
     }
 
-    @Inject(method = "renderTooltip", at = @At("HEAD"))
+    @Inject(method = "extractTooltip", at = @At("HEAD"))
     private void getTicks(CallbackInfo ci) {
         tick++;
         if (tick == Minecraft.getInstance().options.framerateLimit().get()) {
@@ -86,7 +86,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         }
     }
 
-    @Redirect(method = "renderSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;getItem()Lnet/minecraft/world/item/ItemStack;", ordinal = 0))
+    @Redirect(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;getItem()Lnet/minecraft/world/item/ItemStack;", ordinal = 0))
     private ItemStack renderItems(Slot slot) {
         int index = iig$calculateIndex(slot);
         Group group = Main.findGroupByIndex(index);
@@ -97,8 +97,8 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
                 : slot.getItem();
     }
 
-    @Inject(method = "renderSlot", at = @At("HEAD"))
-    private void renderSlotSprites(GuiGraphics guiGraphics, Slot slot, /*? >=1.21.11 {*/ int i, int j, /*?}*/ CallbackInfo ci) {
+    @Inject(method = "extractSlot", at = @At("HEAD"))
+    private void extractSlotSprites(GuiGraphicsExtractor guiGraphics, Slot slot, /*? >=1.21.11 {*/ int i, int j, /*?}*/ CallbackInfo ci) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = iig$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
@@ -114,8 +114,8 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         }
     }
 
-    @Inject(method = "renderSlot", at = @At("TAIL"))
-    private void renderVisibilitySprites(GuiGraphics guiGraphics, Slot slot, /*? >=1.21.11 {*/ int i, int j, /*?}*/ CallbackInfo ci) {
+    @Inject(method = "extractSlot", at = @At("TAIL"))
+    private void renderVisibilitySprites(GuiGraphicsExtractor guiGraphics, Slot slot, /*? >=1.21.11 {*/ int i, int j, /*?}*/ CallbackInfo ci) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = iig$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
@@ -128,7 +128,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         }
     }
 
-    @Redirect(method = "renderTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;getTooltipFromContainerItem(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
+    @Redirect(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;getTooltipFromContainerItem(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
     private List<Component> renderGroupName(AbstractContainerScreen instance, ItemStack arg) {
         int slot = iig$calculateIndex(hoveredSlot);
         Group group = Main.findGroupByIndex(slot);
