@@ -7,13 +7,13 @@ apply(from = ml.scriptPath)
 
 multiloader {
     repositories {
-        for (rep in reps) maven(rep.name)
+        for (rep in reps) maven(rep.repository)
     }
 
     dependencies {
-        minecraft("com.mojang:minecraft:${mod.mcSpecified}")
+        minecraft("com.mojang:minecraft:${mod.mcExact}")
         if (isObfuscated) "mappings"(loom.officialMojangMappings())
-        for (dep in deps) add(if (isObfuscated) dep.modImpl else dep.impl, dep.name)
+        for (dep in deps) add(if (isObfuscated) dep.modConfiguration else dep.configuration, dep.dependency)
     }
 
     loom {

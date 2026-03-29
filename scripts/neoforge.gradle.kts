@@ -7,11 +7,11 @@ apply(from = ml.scriptPath)
 
 multiloader {
     repositories {
-        for (rep in reps) maven(rep.name)
+        for (rep in reps) maven(rep.repository)
     }
 
     dependencies {
-        for (dep in deps) dep.impl(dep.name)
+        for (dep in deps) dep.configuration(dep.dependency)
     }
 
     neoForge {

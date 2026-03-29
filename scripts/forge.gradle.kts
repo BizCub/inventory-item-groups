@@ -10,7 +10,7 @@ multiloader {
         minecraft.mavenizer(this)
         maven(fg.forgeMaven)
         maven(fg.minecraftLibsMaven)
-        for (rep in reps) maven(rep.name)
+        for (rep in reps) maven(rep.repository)
     }
 
     dependencies {
@@ -18,8 +18,8 @@ multiloader {
         annotationProcessor("net.minecraftforge:eventbus-validator:7.0.0")
         for (dep in deps) {
             when (dep.id) {
-                "cloth-config-forge" -> compileOnly(dep.name)
-                else -> dep.impl(dep.name)
+                "cloth-config-forge" -> compileOnly(dep.dependency)
+                else -> dep.configuration(dep.dependency)
             }
         }
     }
