@@ -1,41 +1,44 @@
 plugins {
     multiloader
     alias(libs.plugins.loom.architectury)
-    alias(libs.plugins.publish)
 }
 
-loom.silentMojangMappingsLicense()
+apply(from = ml.scriptPath)
 
-repositories {
-    for (rep in reps) maven(rep.name)
-}
+multiloader {
+    loom.silentMojangMappingsLicense()
 
-dependencies {
-    minecraft(minecraftDep)
-    mappings(loom.officialMojangMappings())
-    "forge"("net.minecraftforge:forge:${getProp("forge")}")
-    for (dep in deps) dep.impl(dep.name)
-}
+    repositories {
+        for (rep in reps) maven(rep.name)
+    }
 
-loom {
-    runConfigs.getByName("client") { runDir = clientRunPath }
-    runConfigs.getByName("server") { runDir = serverRunPath }
+    dependencies {
+        minecraft("com.mojang:minecraft:${mod.mcSpecified}")
+        mappings(loom.officialMojangMappings())
+        "forge"("net.minecraftforge:forge:${getProp("forge")}")
+        for (dep in deps) dep.impl(dep.name)
+    }
 
-    forge.mixinConfigs("${mod.mixin}.mixins.json")
+    loom {
+        runConfigs.getByName("client") { runDir = clientRunPath }
+        runConfigs.getByName("server") { runDir = serverRunPath }
 
-    decompilers {
-        get("vineflower").apply {
-            options.put("mark-corresponding-synthetics", "1")
+        forge.mixinConfigs("${mod.mixin}.mixins.json")
+
+        decompilers {
+            get("vineflower").apply {
+                options.put("mark-corresponding-synthetics", "1")
+            }
         }
     }
-}
 
-val builtFile = tasks.remapJar.get().archiveFile
+    val builtFile = tasks.remapJar.get().archiveFile
 
-publishMods {
-    file.set(builtFile)
-}
+    publishMods {
+        file.set(builtFile)
+    }
 
-tasks.named<Copy>("buildAndCollect") {
-    from(builtFile)
+    tasks.named<Copy>("buildAndCollect") {
+        from(builtFile)
+    }
 }

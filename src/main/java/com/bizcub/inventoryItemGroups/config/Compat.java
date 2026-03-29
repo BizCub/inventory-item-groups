@@ -1,18 +1,18 @@
 package com.bizcub.inventoryItemGroups.config;
 
-/*? fabric*/ //import net.fabricmc.loader.api.FabricLoader;
-/*? forge*/ import net.minecraftforge.fml.ModList;
+/*? fabric*/ import net.fabricmc.loader.api.FabricLoader;
+/*? forge*/ //import net.minecraftforge.fml.ModList;
 /*? neoforge*/ //import net.neoforged.fml.ModList;
 
 public class Compat {
     public static final String CLOTH_CONFIG_ID =
-            /*? fabric*/ //"cloth-config";
-            /*? forge || neoforge*/ "cloth_config";
+            /*? fabric*/ "cloth-config";
+            /*? forge || neoforge*/ //"cloth_config";
 
     public static boolean isModLoaded(String modId) {
-        /*? fabric*/ //return FabricLoader.getInstance().isModLoaded(modId);
+        /*? fabric*/ return FabricLoader.getInstance().isModLoaded(modId);
         /*? (forge && <26.1) || neoforge*/ //return ModList.get().isLoaded(modId);
-        /*? forge && >=26.1*/ return ModList.isLoaded(modId);
+        /*? forge && >=26.1*/ //return ModList.isLoaded(modId);
     }
 
     public static boolean isClothConfigLoaded() {

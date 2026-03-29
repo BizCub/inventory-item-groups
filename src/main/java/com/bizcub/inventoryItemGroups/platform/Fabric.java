@@ -1,5 +1,5 @@
 //? fabric {
-/*package com.bizcub.inventoryItemGroups.platform;
+package com.bizcub.inventoryItemGroups.platform;
 
 import com.bizcub.inventoryItemGroups.config.Compat;
 import com.bizcub.inventoryItemGroups.config.Configs;
@@ -21,4 +21,4 @@ public class Fabric implements ModInitializer {
             return Configs::getConfigScreen;
         }
     }
-}*///?}
+}//?}
