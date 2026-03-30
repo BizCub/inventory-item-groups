@@ -13,8 +13,6 @@ project.extensions.configure<MultiLoader>("multiloader") {
                 string(scp >= "26.1") {
                     replace("GuiGraphics", "GuiGraphicsExtractor")
                     replace("ClickType", "ContainerInput")
-                    replace("renderTooltip", "extractTooltip")
-                    replace("renderSlot", "extractSlot")
                 }
                 string(scp >= "1.21.11") {
                     replace("ResourceLocation", "Identifier")

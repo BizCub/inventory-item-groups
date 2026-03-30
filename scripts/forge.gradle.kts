@@ -15,7 +15,7 @@ multiloader {
 
     dependencies {
         implementation(minecraft.dependency("net.minecraftforge:forge:${getProp("forge")}"))
-        annotationProcessor("net.minecraftforge:eventbus-validator:7.0.0")
+        if (scp >= "1.21.6") annotationProcessor("net.minecraftforge:eventbus-validator:7.0.0")
         for (dep in deps) {
             when (dep.id) {
                 "cloth-config-forge" -> compileOnly(dep.dependency)

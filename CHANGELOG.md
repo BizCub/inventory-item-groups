@@ -1,1 +1,1 @@
-* The translation keys used have been corrected
+* Now the group name not remains visible even when it isn't displayed in the inventory

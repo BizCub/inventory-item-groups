@@ -37,11 +37,11 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     @Shadow @Final protected T menu;
     @Shadow protected Slot hoveredSlot;
 
-    @Shadow protected abstract List<Component> getTooltipFromContainerItem(ItemStack arg);
-
     @Unique private static boolean iig$onScreen(int index) {
         return index <= 44;
     }
+
+    @Shadow protected abstract List<Component> getTooltipFromContainerItem(ItemStack itemStack);
 
     @Unique
     private int iig$calculateIndex(Slot slot) {
@@ -62,30 +62,22 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     @Unique
-    private void iig$renderSprite(GuiGraphicsExtractor guiGraphics, String location, int x, int y, int size) {
+    private void iig$renderSprite(GuiGraphicsExtractor graphics, String location, int x, int y, int size) {
         //? >=1.21.6 {
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, iig$getSprite(location), x, y, size, size);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, iig$getSprite(location), x, y, size, size);
         //?} >=1.21.2 {
-        /*guiGraphics.blitSprite(RenderType::guiTextured, iig$getSprite(location), x, y, size, size);
+        /*graphics.blitSprite(RenderType::guiTextured, iig$getSprite(location), x, y, size, size);
         *///?} >=1.21 {
         /*RenderSystem.disableDepthTest();
-        guiGraphics.blitSprite(iig$getSprite(location), x, y, size, size);
+        graphics.blitSprite(iig$getSprite(location), x, y, size, size);
         RenderSystem.enableDepthTest();
         *///?} else {
         /*RenderSystem.disableDepthTest();
-        guiGraphics.blit(iig$getSprite(location), x, y, 0, 0, size, size, size, size);
+        graphics.blit(iig$getSprite(location), x, y, 0, 0, size, size, size, size);
         RenderSystem.enableDepthTest();*///?}
     }
 
-    @Inject(method = "extractTooltip", at = @At("HEAD"))
-    private void getTicks(CallbackInfo ci) {
-        tick++;
-        if (tick == Minecraft.getInstance().options.framerateLimit().get()) {
-            tick = 0;
-            seconds++;
-        }
-    }
-
+    //~ if >=26.1 'renderSlot' -> 'extractSlot'
     @Redirect(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;getItem()Lnet/minecraft/world/item/ItemStack;", ordinal = 0))
     private ItemStack renderItems(Slot slot) {
         int index = iig$calculateIndex(slot);
@@ -97,44 +89,57 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
                 : slot.getItem();
     }
 
+    //~ if >=26.1 'renderSlot' -> 'extractSlot'
     @Inject(method = "extractSlot", at = @At("HEAD"))
-    private void extractSlotSprites(GuiGraphicsExtractor guiGraphics, Slot slot, /*? >=1.21.11 {*/ int i, int j, /*?}*/ CallbackInfo ci) {
+    private void renderSlotSprites(GuiGraphicsExtractor graphics, Slot slot, /*? >=1.21.11 {*/ int mouseX, int mouseY, /*?}*/ CallbackInfo ci) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = iig$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
             if (iig$onScreen(slot.index) && group.isVisibility()) {
                 if (group.getIconIndex() == index)
-                    iig$renderSprite(guiGraphics, "icon_slot", slot.x-1, slot.y-1, 18);
+                    iig$renderSprite(graphics, "icon_slot", slot.x-1, slot.y-1, 18);
 
                 for (ItemStack itemStack : group.getItems())
                     for (HashMap<ItemStack, Integer> itemStacksMap : group.getItemsWithIndexes())
                         if (itemStacksMap.containsKey(itemStack) && itemStacksMap.containsValue(index))
-                            iig$renderSprite(guiGraphics, "item_slot", slot.x-1, slot.y-1, 18);
+                            iig$renderSprite(graphics, "item_slot", slot.x-1, slot.y-1, 18);
             }
         }
     }
 
+    //~ if >=26.1 'renderSlot' -> 'extractSlot'
     @Inject(method = "extractSlot", at = @At("TAIL"))
-    private void renderVisibilitySprites(GuiGraphicsExtractor guiGraphics, Slot slot, /*? >=1.21.11 {*/ int i, int j, /*?}*/ CallbackInfo ci) {
+    private void renderVisibilitySprites(GuiGraphicsExtractor graphics, Slot slot, /*? >=1.21.11 {*/ int mouseX, int mouseY, /*?}*/ CallbackInfo ci) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = iig$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
             if (iig$onScreen(slot.index) && group.getIconIndex() == index) {
                 if (group.isVisibility())
-                    iig$renderSprite(guiGraphics, "minus", slot.x, slot.y, 16);
+                    iig$renderSprite(graphics, "minus", slot.x, slot.y, 16);
                 else
-                    iig$renderSprite(guiGraphics, "plus", slot.x, slot.y, 16);
+                    iig$renderSprite(graphics, "plus", slot.x, slot.y, 16);
             }
         }
     }
 
+    //~ if >=26.1 'renderTooltip' -> 'extractTooltip'
     @Redirect(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;getTooltipFromContainerItem(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
     private List<Component> renderGroupName(AbstractContainerScreen instance, ItemStack arg) {
-        int slot = iig$calculateIndex(hoveredSlot);
-        Group group = Main.findGroupByIndex(slot);
+        int index = iig$calculateIndex(hoveredSlot);
+        Group group = Main.findGroupByIndex(index);
 
-        return (group != null && slot == group.getIconIndex())
+        return (group != null && index == group.getIconIndex() && iig$onScreen(hoveredSlot.index))
                 ? List.of(group.getName())
                 : this.getTooltipFromContainerItem(arg);
+    }
+
+    //~ if >=26.1 'renderTooltip' -> 'extractTooltip'
+    @Inject(method = "extractTooltip", at = @At("HEAD"))
+    private void getTicks(CallbackInfo ci) {
+        tick++;
+        if (tick == Minecraft.getInstance().options.framerateLimit().get()) {
+            tick = 0;
+            seconds++;
+        }
     }
 }

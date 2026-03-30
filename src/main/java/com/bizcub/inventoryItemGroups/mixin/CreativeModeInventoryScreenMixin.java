@@ -88,23 +88,23 @@ public class CreativeModeInventoryScreenMixin extends Screen {
     }
 
     @Inject(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
-    private void slotClicked(Slot slot, int i, int j, ContainerInput clickType, CallbackInfo ci) {
+    private void slotClicked(Slot slot, int i, int j, ContainerInput containerInput, CallbackInfo ci) {
         iig$clickedSlot = slot;
     }
 
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
-    private void mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
-        iig$mouseButtonsFix(instance, itemStack);
+    private void mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack arg) {
+        iig$mouseButtonsFix(instance, arg);
     }
 
     @Inject(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
-    private void getSlot(Slot slot, int i, int j, ContainerInput clickType, CallbackInfo ci) {
+    private void getSlot(Slot slot, int i, int j, ContainerInput containerInput, CallbackInfo ci) {
         iig$clickedSlot = slot;
     }
 
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
-    private void mouseMiddleButtonFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
-        iig$mouseButtonsFix(instance, itemStack);
+    private void mouseMiddleButtonFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack arg) {
+        iig$mouseButtonsFix(instance, arg);
     }
 
     @Inject(method = "mouseReleased", at = @At("RETURN"))
