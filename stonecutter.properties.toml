@@ -51,10 +51,11 @@ cloth_config="21.11.153"
 fabric_api="0.141.3+1.21.11"
 modmenu="17.0.0-beta.2"
 
-["26.1"]
-forge="62.0.3"
-neoforge="5-beta"
+["26.1.1"]
+forge="63.0.0"
+neoforge="0-beta"
 cloth_config="26.1.154"
-fabric_api="0.144.3+26.1"
+fabric_api="0.145.2+26.1.1"
 modmenu="18.0.0-alpha.8"
+pub_start="26.1"
 pub_end="latest"

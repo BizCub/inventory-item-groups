@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.stonecutter)
 }
 
-stonecutter active "26.1-fabric"
+stonecutter active "26.1.1-fabric"
 
 stonecutter parameters {
     val (version, loader) = current.project.split('-', limit = 2)
