@@ -4,25 +4,20 @@
 # Extra dependencies see: https://linkie.shedaniel.dev/dependencies
 
 ["1.20.1"]
-pub_start="1.20"
-pub_end="1.20.6"
+pub-start="1.20"
+pub-end="1.20.6"
 
 ["1.21.1"]
-pub_start="1.21"
+pub-start="1.21"
 
 ["1.21.3"]
-pub_start="1.21.2"
-pub_end="1.21.5"
+pub-start="1.21.2"
+pub-end="1.21.5"
 
 ["1.21.8"]
-pub_start="1.21.6"
-
-["1.21.10"]
-pub_start="1.21.9"
-
-["1.21.11"]
-modmenu="17.0.0-beta.2"
+pub-start="1.21.6"
+pub-end="1.21.10"
 
 ["26.1.1"]
-pub_start="26.1"
-pub_end="latest"
+pub-start="26.1"
+pub-end="latest"

@@ -24,7 +24,6 @@ stonecutter.create(rootProject) {
     }
     match("26.1.1", fb, fr, nf)
     match("1.21.11", fb, fr, nf)
-    match("1.21.10", fb, fr, nf)
     match("1.21.8", fb, fr, nf)
     match("1.21.1", fb, fr, nf)
     match("1.20.1", fb, fr)
