@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.stonecutter)
+    alias(libs.plugins.multiloader)
 }
+
+multiloader.createDepFile()
 
 stonecutter active "26.1.1-fabric"
 

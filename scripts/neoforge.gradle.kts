@@ -15,7 +15,7 @@ multiloader {
     }
 
     neoForge {
-        version = getProp("neoforge") as String
+        version = getDep("neoforge")
 
         runs {
             configureEach {

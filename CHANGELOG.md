@@ -1,1 +1,1 @@
-* Now the group name not remains visible even when it isn't displayed in the inventory
+* The method for deleting groups has been changed

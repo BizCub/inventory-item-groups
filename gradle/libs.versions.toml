@@ -9,6 +9,7 @@ neoforged = "2.0.140"
 
 [plugins]
 stonecutter = { id = "dev.kikugie.stonecutter" }
+multiloader = { id = "com.bizcub.multiloader" }
 loom = { id = "fabric-loom", version.ref = "loom" }
 loom-architectury = { id = "dev.architectury.loom", version.ref = "loom-architectury" }
 forge = { id = "net.minecraftforge.gradle", version.ref = "forge" }

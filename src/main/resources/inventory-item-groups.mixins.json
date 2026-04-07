@@ -6,7 +6,8 @@
     ],
     "client": [
         "AbstractContainerScreenMixin",
-        "ItemPickerMenuMixin"
+        "ItemPickerMenuMixin",
+        "MinecraftMixin"
     ],
     "injectors": {
         "defaultRequire": 1

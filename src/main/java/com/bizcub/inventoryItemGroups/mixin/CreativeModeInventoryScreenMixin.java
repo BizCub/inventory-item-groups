@@ -2,9 +2,7 @@ package com.bizcub.inventoryItemGroups.mixin;
 
 import com.bizcub.inventoryItemGroups.Group;
 import com.bizcub.inventoryItemGroups.Main;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.CreativeModeTab;
@@ -22,11 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Mixin(CreativeModeInventoryScreen.class)
-public class CreativeModeInventoryScreenMixin extends Screen {
-
-    protected CreativeModeInventoryScreenMixin(Component component) {
-        super(component);
-    }
+public class CreativeModeInventoryScreenMixin {
 
     @Shadow private float scrollOffs;
     @Shadow private static CreativeModeTab selectedTab;
@@ -112,11 +106,5 @@ public class CreativeModeInventoryScreenMixin extends Screen {
         if (selectedTab.getType() != CreativeModeTab.Type.CATEGORY) {
             Main.groups.clear();
         }
-    }
-
-    @Override
-    public void onClose() {
-        Main.groups.clear();
-        super.onClose();
     }
 }
