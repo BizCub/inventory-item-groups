@@ -22,7 +22,7 @@ stonecutter.create(rootProject) {
     fun match(version: String, vararg loaders: String) = loaders.forEach {
         version("$version-$it", version).buildscript = "scripts/$it.gradle.kts"
     }
-    match("26.1.1", fb, fr, nf)
+    match("26.1.2", fb, fr, nf)
     match("1.21.11", fb, fr, nf)
     match("1.21.8", fb, fr, nf)
     match("1.21.1", fb, fr, nf)

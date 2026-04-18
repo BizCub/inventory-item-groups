@@ -4,20 +4,13 @@
 # Extra dependencies see: https://linkie.shedaniel.dev/dependencies
 
 ["1.20.1"]
-pub-start="1.20"
 pub-end="1.20.6"
 
-["1.21.1"]
-pub-start="1.21"
-
 ["1.21.3"]
-pub-start="1.21.2"
 pub-end="1.21.5"
 
 ["1.21.8"]
-pub-start="1.21.6"
 pub-end="1.21.10"
 
-["26.1.1"]
-pub-start="26.1"
+["26.1.2"]
 pub-end="latest"
