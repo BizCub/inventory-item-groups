@@ -124,13 +124,13 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
     //~ if >=26.1 'renderTooltip' -> 'extractTooltip'
     @Redirect(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;getTooltipFromContainerItem(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
-    private List<Component> renderGroupName(AbstractContainerScreen instance, ItemStack arg) {
+    private List<Component> renderGroupName(AbstractContainerScreen instance, ItemStack itemStack) {
         int index = iig$calculateIndex(hoveredSlot);
         Group group = Main.findGroupByIndex(index);
 
         return (group != null && index == group.getIconIndex() && iig$onScreen(hoveredSlot.index))
                 ? List.of(group.getName())
-                : this.getTooltipFromContainerItem(arg);
+                : this.getTooltipFromContainerItem(itemStack);
     }
 
     //~ if >=26.1 'renderTooltip' -> 'extractTooltip'

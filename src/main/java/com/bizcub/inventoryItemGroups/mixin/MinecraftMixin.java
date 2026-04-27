@@ -3,6 +3,7 @@ package com.bizcub.inventoryItemGroups.mixin;
 import com.bizcub.inventoryItemGroups.Main;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,12 +18,15 @@ public class MinecraftMixin {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void clearGroups(CallbackInfo ci) {
-        if (Minecraft.getInstance().screen != null) {
-            oldScreen = Minecraft.getInstance().screen;
-            if (!oldScreen.equals(newScreen)) {
-                Main.groups.clear();
+        Screen currentScreen = Minecraft.getInstance().screen;
+        if (currentScreen != null) {
+            oldScreen = currentScreen;
+            if (newScreen != null && !oldScreen.equals(newScreen)) {
+                if (!(currentScreen instanceof CreativeModeInventoryScreen)) {
+                    Main.groups.clear();
+                }
             }
-            newScreen = Minecraft.getInstance().screen;
+            newScreen = currentScreen;
         } else {
             Main.groups.clear();
         }

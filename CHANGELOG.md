@@ -1,1 +1,1 @@
-* The method for deleting groups has been changed
+* Now, when you open the Creative Mode screen, you'll see groups right away, without having to switch between tabs.
