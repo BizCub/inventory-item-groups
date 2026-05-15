@@ -1,10 +1,13 @@
 import com.bizcub.multiloader.MultiLoader
 import dev.kikugie.stonecutter.build.StonecutterBuildExtension
-import me.modmuss50.mpp.ModPublishExtension
+
+apply(plugin = "dev.kikugie.fletching-table")
 
 val stonecutter = project.extensions.getByType(StonecutterBuildExtension::class.java)
 
 project.extensions.configure<MultiLoader>("multiloader") {
+    access()
+
     project.afterEvaluate {
         stonecutter.let { sc ->
             sc.constants["is_cloth_config_available"] = isClothConfigAvailable
@@ -21,31 +24,15 @@ project.extensions.configure<MultiLoader>("multiloader") {
         }
     }
 
-    addRepository("https://maven.shedaniel.me")
-    addDependency("api", "me.shedaniel.cloth:cloth-config-${mod.loader}:${getDep("cloth-config")?.split("+")?.first()}")
+    addDependency("maven.shedaniel.me", "api", "me.shedaniel.cloth:cloth-config-${mod.loader}:${getDep("cloth-config")?.split("+")?.first()}")
 
     if (isFabric) {
-        addRepository("https://maven.terraformersmc.com/releases")
-
         addDependency("implementation", "net.fabricmc:fabric-loader:${getDep("fabric")}")
         addDependency("implementation", "net.fabricmc.fabric-api:fabric-api:${getDep("fabric-api")}")
-        addDependency("api", "com.terraformersmc:modmenu:${getDep("modmenu")}")
+        addDependency("maven.terraformersmc.com/releases", "api", "com.terraformersmc:modmenu:${getDep("modmenu")}")
     }
 
-    if (isNeoForge) {
-        addRepository("https://maven.neoforged.net/releases")
-    }
-
-    project.extensions.configure<ModPublishExtension>("publishMods") {
-        modrinth {
-            if (isClothConfigAvailable) optional("cloth-config")
-            if (isFabric) requires("fabric-api")
-            if (isFabric) optional("modmenu")
-        }
-        curseforge {
-            if (isClothConfigAvailable) optional("cloth-config")
-            if (isFabric) requires("fabric-api")
-            if (isFabric) optional("modmenu")
-        }
-    }
+    if (isClothConfigAvailable) addPublishDep("optional", "cloth-config")
+    if (isFabric) addPublishDep("requires", "fabric-api")
+    if (isFabric) addPublishDep("optional", "modmenu")
 }
