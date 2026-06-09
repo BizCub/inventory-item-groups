@@ -45,10 +45,11 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
     @Unique
     private int iig$calculateIndex(Slot slot) {
-        int result = 0;
         var slots = menu.slots;
-        if (!slots.isEmpty() && slots.size() > 1)
-            result = Main.tempItemStacks.indexOf(slots.get(1).getItem());
+        if (slots.size() < 2) {
+            return -1;
+        }
+        int result = Main.tempItemStacks.indexOf(slots.get(1).getItem());
         if (!slots.get(0).getItem().equals(slots.get(1).getItem())) result--;
         return result + slot.index;
     }
