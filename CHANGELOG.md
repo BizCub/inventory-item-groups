@@ -1,1 +1,1 @@
-* Now, when you open the Creative Mode screen, you'll see groups right away, without having to switch between tabs.
+* Fixed a crash that occurred when opening a container with one slot
