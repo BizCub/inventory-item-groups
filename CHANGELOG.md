@@ -1,1 +1,2 @@
-* Fixed a crash that occurred when opening a container with one slot
+* Added a new group: Creature Buckets
+* Updated to 26.2

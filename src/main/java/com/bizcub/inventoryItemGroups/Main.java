@@ -144,7 +144,7 @@ public class Main {
             addDefaultItems("doors", List.of("door"));
             addDefaultItems("pressure_plates", List.of("pressure_plate"));
             addDefaultItems("buttons", List.of("button"));
-            addDefaultItems("bars", List.of("bar"));
+            addDefaultItems("bars", List.of("bar"), List.of("cinnabar"));
             addDefaultItems("chains", List.of("chain"));
             addDefaultItems("copper", List.of("copper"));
             addDefaultItems("walls", List.of("wall"));
@@ -217,6 +217,7 @@ public class Main {
             addDefaultItems("minecarts", List.of("minecart"));
             addDefaultItems("discs", List.of("disc"));
             addDefaultItems("goat_horns", List.of("goat_horn"));
+            addDefaultItems("creature_buckets", List.of("cod_bucket", "salmon_bucket", "tropical_fish_bucket", "pufferfish_bucket", "axolotl_bucket", "tadpole_bucket", "sulfur_cube_bucket"));
         }
         if (selectedTabId.equals("combat")) {
             addDefaultItems("swords", List.of("sword"));

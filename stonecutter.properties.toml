@@ -4,8 +4,6 @@
 # Extra dependencies see: https://linkie.shedaniel.dev/dependencies
 
 ["26.2"]
-version="26.2-pre-2"
-cloth-config="26.1.154"
 pub-end="latest"
 
 ["1.21.8"]
