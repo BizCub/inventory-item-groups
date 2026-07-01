@@ -1,17 +1,17 @@
 [versions]
 stonecutter = "0.9+"
-multiloader = "0.0+"
+multiloader = "0.2+"
 publish = "1.1.0"
-loom = "1.15-SNAPSHOT"
-loom-architectury = "1.14-SNAPSHOT"
-forge = "7.0.17"
-neoforged = "2.0.140"
+loom = "1.17+"
+loom-arch = "1.17+"
+forge = "7.0+"
+neoforged = "2.0+"
 
 [plugins]
 stonecutter = { id = "dev.kikugie.stonecutter" }
 multiloader = { id = "com.bizcub.multiloader" }
 loom = { id = "fabric-loom", version.ref = "loom" }
-loom-architectury = { id = "dev.architectury.loom", version.ref = "loom-architectury" }
+loom-arch = { id = "dev.architectury.loom", version.ref = "loom-arch" }
 forge = { id = "net.minecraftforge.gradle", version.ref = "forge" }
 neoforged = { id = "net.neoforged.moddev", version.ref = "neoforged" }
 

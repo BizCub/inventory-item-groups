@@ -1,0 +1,16 @@
+name: New feature
+description: Suggest or request a new feature
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the feature
+      placeholder: I think we need to add new types of seeds that the sniffer can dig up
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: Reason for adding
+      placeholder: Because that's what this project lacks and fits well with its theme

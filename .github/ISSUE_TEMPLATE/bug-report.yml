@@ -1,0 +1,39 @@
+name: Bug Report
+description: Report a bug
+labels: ["bug"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Project version
+      placeholder: ex. 1.0
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I confirm that I am using all required dependencies
+          required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe your issue
+      placeholder: When I click here this happens
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Click here
+        2. Click there
+    validations:
+      required: true
+  - type: textarea
+    id: solve
+    attributes:
+      label: A way to solve the issue
+      placeholder: Something you could suggest to solve the issue

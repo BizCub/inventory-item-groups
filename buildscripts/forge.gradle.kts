@@ -3,8 +3,6 @@ plugins {
     alias(libs.plugins.forge)
 }
 
-apply(from = ml.scriptPath)
-
 multiloader {
     repositories {
         minecraft.mavenizer(this)
@@ -16,11 +14,8 @@ multiloader {
     dependencies {
         implementation(minecraft.dependency("net.minecraftforge:forge:${getDep("forge")}"))
         if (scp >= "1.21.6") annotationProcessor("net.minecraftforge:eventbus-validator:7.0.0")
-        for (dep in deps) {
-            when (dep.id) {
-                "cloth-config-forge" -> if (isClothConfigAvailable) implementation(dep.dependency) else compileOnly(dep.dependency)
-                else -> dep.configuration(dep.dependency)
-            }
+        for (dep in deps) dep.configuration(dep.dependency) {
+            for (module in eModules) exclude(module.module)
         }
     }
 
@@ -29,11 +24,11 @@ multiloader {
 
         runs {
             register("client") {
-                workingDir.convention(layout.projectDirectory.dir(clientRunPath))
+                workingDir.set(clientRunFile)
                 args("--mixin.config=${mod.mixin}.mixins.json")
             }
             register("server") {
-                workingDir.convention(layout.projectDirectory.dir(serverRunPath))
+                workingDir.set(serverRunFile)
             }
         }
 
