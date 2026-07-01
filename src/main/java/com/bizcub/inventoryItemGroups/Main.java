@@ -210,6 +210,7 @@ public class Main {
             addDefaultItems("axes", List.of("axe"));
             addDefaultItems("hoes", List.of("hoe"));
             addDefaultItems("bundles", List.of("bundle"));
+            addDefaultItems("firework_rockets", List.of("firework_rocket"));
             addDefaultItems("harnesses", List.of("harness"));
             addDefaultItems("chest_boats", List.of("chest_boat", "chest_raft"));
             addDefaultItems("boats", List.of("boat", "_raft"));
