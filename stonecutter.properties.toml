@@ -9,11 +9,7 @@ mod.modrinth="adriDDJt"
 mod.curseforge="1447374"
 mod.github="inventory-item-groups"
 
-# Fabric versions see: https://fabricmc.net/develop
-# Forge versions see: https://files.minecraftforge.net
-# NeoForge versions see: https://neoforged.net
-# Extra dependencies see: https://linkie.shedaniel.dev/dependencies
-
+### Subprojects
 ["26.2"]
 pub-end="latest"
 

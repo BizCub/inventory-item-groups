@@ -5,6 +5,8 @@ plugins {
 }
 
 multiloader {
+    val isClothConfigAvailable = !(isForge && scp > "1.21.3")
+
     sc.constants["is_cloth_config_available"] = isClothConfigAvailable
 
     sc.replacements {
