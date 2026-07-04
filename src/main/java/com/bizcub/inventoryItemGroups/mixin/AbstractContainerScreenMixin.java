@@ -115,10 +115,14 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         int index = iig$calculateIndex(slot);
         for (Group group : groupsOnSelectedTab) {
             if (iig$onScreen(slot.index) && group.getIconIndex() == index) {
+                //? >=1.21.2 && <=1.21.5 {
+                /*graphics.pose().pushPose();
+                graphics.pose().translate(0.0F, 0.0F, 300.0F);*///?}
                 if (group.isVisibility())
                     iig$renderSprite(graphics, "minus", slot.x, slot.y, 16);
                 else
                     iig$renderSprite(graphics, "plus", slot.x, slot.y, 16);
+                /*? >=1.21.2 && <=1.21.5*/ //graphics.pose().popPose();
             }
         }
     }

@@ -78,19 +78,6 @@ public class Configs {
                             getTranslate("category.groups.group.name"),
                             currentElem,
                             List.of(
-                                    //entryBuilder.startDropdownMenu(
-                                    //                Component.literal("Name"),
-                                    //                DropdownMenuBuilder.TopCellElementBuilder.of(
-                                    //                        currentElem.name,
-                                    //                        str -> str,
-                                    //                        s -> Component.literal(s)
-                                    //                ),
-                                    //                DropdownMenuBuilder.CellCreatorBuilder.of(s -> Component.literal(s))
-                                    //        ).setSelections(NAME_OPTIONS)
-                                    //        .setDefaultValue("Default")
-                                    //        .setSaveConsumer(value -> currentElem.name = value)
-                                    //        .setSuggestionMode(false)
-                                    //        .build(),
                                     entryBuilder.startStrField(getTranslate("category.groups.group.group_name"), currentElem.groupName)
                                             .setDefaultValue("")
                                             .setSaveConsumer(value -> currentElem.groupName = value)
@@ -209,15 +196,15 @@ public class Configs {
     }
 
     private static HoverEvent getHoverEvent(Component component) {
-        /*? >=1.21.2*/ return new HoverEvent.ShowText(
-        /*? <=1.21.1*/ //return new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+        /*? >=1.21.5*/ return new HoverEvent.ShowText(
+        /*? <=1.21.4*/ //return new HoverEvent(HoverEvent.Action.SHOW_TEXT,
             component
         );
     }
 
     private static ClickEvent getClickEvent(String tabId) {
-        /*? >=1.21.2*/ return new ClickEvent.CopyToClipboard(
-        /*? <=1.21.1*/ //return new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD,
+        /*? >=1.21.5*/ return new ClickEvent.CopyToClipboard(
+        /*? <=1.21.4*/ //return new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD,
                 tabId
         );
     }
