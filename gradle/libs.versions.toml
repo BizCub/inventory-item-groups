@@ -1,7 +1,7 @@
 [versions]
 stonecutter = "0.9+"
-multiloader = "0.3+"
-publish = "1.1.0"
+multiloader = "0.4+"
+publish = "2+"
 loom = "1.17+"
 loom-arch = "1.17+"
 forge = "7.0+"
