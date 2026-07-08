@@ -4,6 +4,8 @@ plugins {
 }
 
 multiloader {
+    setBuiltFile(tasks.named<AbstractArchiveTask>(if (!isObfuscated) "jar" else "remapJar").get().archiveFile)
+
     repositories {
         for (rep in reps) maven(rep.repository)
     }
@@ -17,29 +19,16 @@ multiloader {
     }
 
     loom {
-        runConfigs.getByName("client") { runDirectory.set(clientRunFile) }
-        runConfigs.getByName("server") { runDirectory.set(serverRunFile) }
+        if (ctFabricFile.exists())
+            accessWidenerPath.set(sc.process(ctFabricFile, ctFabricProcessPath))
 
-        val awFile = rootProject.file(ctFabricPath)
-        if (awFile.exists()) accessWidenerPath.set(sc.process(awFile, ctFabricProcessPath))
-    }
-
-    val builtFile = if (isObfuscated)
-        tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar").get().archiveFile
-    else
-        tasks.jar.get().archiveFile
-
-    publishMods {
-        file.set(builtFile)
-    }
-
-    tasks {
-        named<Copy>("buildAndCollect") {
-            from(builtFile)
-        }
-
-        named("validateAccessWidener") {
-            dependsOn("processResources")
+        runConfigs {
+            getByName("client") {
+                runDirectory.set(clientRunFile)
+            }
+            getByName("server") {
+                runDirectory.set(serverRunFile)
+            }
         }
     }
 }

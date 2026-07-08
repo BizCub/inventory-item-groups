@@ -4,6 +4,8 @@ plugins {
 }
 
 multiloader {
+    setBuiltFile(tasks.jar.get().archiveFile)
+
     repositories {
         for (rep in reps) maven(rep.repository)
     }
@@ -17,6 +19,13 @@ multiloader {
     neoForge {
         version = getDep("neoforge")
 
+        if (atNeoForgeFile.exists())
+            accessTransformers.from(atNeoForgeFile)
+
+        mods.create(mod.id, Action {
+            sourceSet(sourceSets.main.get())
+        })
+
         runs {
             configureEach {
                 disableIdeRun()
@@ -29,29 +38,6 @@ multiloader {
                 gameDirectory.set(serverRunFile)
                 server()
             }
-        }
-
-        mods.create(mod.id, Action {
-            sourceSet(sourceSets.main.get())
-        })
-
-        val acFile = file(atNeoForgePath)
-        if (acFile.exists()) accessTransformers.from(acFile)
-    }
-
-    val builtFile = tasks.jar.get().archiveFile
-
-    publishMods {
-        file.set(builtFile)
-    }
-
-    tasks {
-        named<Copy>("buildAndCollect") {
-            from(builtFile)
-        }
-
-        named("createMinecraftArtifacts") {
-            dependsOn("processResources")
         }
     }
 }

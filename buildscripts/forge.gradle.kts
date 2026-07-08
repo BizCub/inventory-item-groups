@@ -4,6 +4,8 @@ plugins {
 }
 
 multiloader {
+    setBuiltFile(tasks.jar.get().archiveFile)
+
     repositories {
         minecraft.mavenizer(this)
         maven(fg.forgeMaven)
@@ -21,27 +23,15 @@ multiloader {
 
     minecraft {
         mappings("official", mod.mc)
+        accessTransformers.from(atForgeFile)
 
         runs {
             register("client") {
                 workingDir.set(clientRunFile)
-                args("--mixin.config=${mod.mixin}.mixins.json")
             }
             register("server") {
                 workingDir.set(serverRunFile)
             }
         }
-
-        accessTransformers.from(file(atForgePath))
-    }
-
-    val builtFile = tasks.jar.get().archiveFile
-
-    publishMods {
-        file.set(builtFile)
-    }
-
-    tasks.named<Copy>("buildAndCollect") {
-        from(builtFile)
     }
 }
