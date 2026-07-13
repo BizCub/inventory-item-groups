@@ -1,19 +1,20 @@
 plugins {
     multiloader
-    alias(libs.plugins.loom)
+    alias(libs.plugins.loom.arch)
 }
 
 multiloader {
-    setBuiltFile(tasks.named<AbstractArchiveTask>(fabricJarTask).get().archiveFile)
+    setBuiltFile(tasks.remapJar.get().archiveFile)
 
     dependencies {
-        minecraft("com.mojang:minecraft:${mod.mcExact}")
-        if (isObfuscated) "mappings"(loom.officialMojangMappings())
+        minecraft("com.mojang:minecraft:${mod.mc}")
+        mappings(loom.officialMojangMappings())
+        "forge"("net.minecraftforge:forge:${getDep("forge")}")
     }
 
     loom {
         if (isMainCTFileExist())
-            accessWidenerPath.set(ctFabricFile)
+            accessWidenerPath.set(ctForgeArchFile)
 
         runConfigs {
             getByName("client") {

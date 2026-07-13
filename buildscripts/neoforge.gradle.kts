@@ -6,20 +6,10 @@ plugins {
 multiloader {
     setBuiltFile(tasks.jar.get().archiveFile)
 
-    repositories {
-        for (rep in reps) maven(rep.repository)
-    }
-
-    dependencies {
-        for (dep in deps) dep.configuration(dep.dependency) {
-            for (module in eModules) exclude(module.module)
-        }
-    }
-
     neoForge {
         version = getDep("neoforge")
 
-        if (atNeoForgeFile.exists())
+        if (isMainCTFileExist())
             accessTransformers.from(atNeoForgeFile)
 
         mods.create(mod.id, Action {
