@@ -7,10 +7,10 @@
     "text.inventory_item_groups.category.groups.group.name": "グループ",
     "text.inventory_item_groups.category.groups.group.group_name": "グループ名",
     "text.inventory_item_groups.category.groups.group.tab_name": "タブID",
-    "text.inventory_item_groups.category.groups.group.containedItems": "アイテムIDを含む",
-    "text.inventory_item_groups.category.groups.group.containedItems.tooltip": "部分的なアイテムID",
-    "text.inventory_item_groups.category.groups.group.equivalentItems": "同等のアイテムID",
-    "text.inventory_item_groups.category.groups.group.equivalentItems.tooltip": "IDが完全に一致するアイテム",
+    "text.inventory_item_groups.category.groups.group.containedItems": "含まれるアイテムID",
+    "text.inventory_item_groups.category.groups.group.containedItems.tooltip": "部分的なIDが一致するアイテム",
+    "text.inventory_item_groups.category.groups.group.equivalentItems": "一致するアイテムID",
+    "text.inventory_item_groups.category.groups.group.equivalentItems.tooltip": "完全なIDが一致するアイテム",
     "text.inventory_item_groups.category.groups.addGroupsOverOld": "全てのグループを追加",
     "text.inventory_item_groups.category.groups.addGroupsOverOld.tooltip": "デフォルトのグループに加えて、新規にグループを追加します",
     "text.inventory_item_groups.category.groups.translateGroups": "グループを翻訳",
@@ -19,7 +19,7 @@
     "text.inventory_item_groups.category.main.sort": "アイテムの並び替え",
     "text.inventory_item_groups.category.main.sort.default": "デフォルト",
     "text.inventory_item_groups.category.main.sort.alphabetically": "アルファベット順",
-    "text.inventory_item_groups.category.main.show_group_items": "グループ内の項目を表示",
+    "text.inventory_item_groups.category.main.show_group_items": "グループ内アイテムを表示",
     "text.inventory_item_groups.category.main.show_group_items.tooltip": "グループアイコンの代わりにアイテムが表示されます",
 
     "group_name.inventory_item_groups.logs": "原木",
@@ -39,7 +39,7 @@
     "group_name.inventory_item_groups.chains": "鎖",
     "group_name.inventory_item_groups.copper": "銅",
     "group_name.inventory_item_groups.walls": "塀",
-    "group_name.inventory_item_groups.decorative_stone": "装飾用の石",
+    "group_name.inventory_item_groups.decorative_stone": "石の装飾",
     "group_name.inventory_item_groups.sandstone": "砂岩",
 
     "group_name.inventory_item_groups.wool": "羊毛",
@@ -79,7 +79,7 @@
     "group_name.inventory_item_groups.infested_stone": "虫食い石",
     "group_name.inventory_item_groups.paintings": "絵画",
 
-    "group_name.inventory_item_groups.transport": "移動手段",
+    "group_name.inventory_item_groups.transport": "トランスポート",
     "group_name.inventory_item_groups.rails": "レール",
 
     "group_name.inventory_item_groups.shovels": "シャベル",
