@@ -2,8 +2,7 @@
 /*package com.bizcub.inventoryItemGroups.platform;
 
 import com.bizcub.inventoryItemGroups.Main;
-import com.bizcub.inventoryItemGroups.config.Compat;
-import com.bizcub.inventoryItemGroups.config.Configs;
+import com.bizcub.inventoryItemGroups.config.ConfigHelper;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -12,10 +11,9 @@ import net.minecraftforge.fml.common.Mod;
 public class Forge {
 
     public Forge() {
-        if (Compat.isClothConfigLoaded()) Configs.load();
+        Main.init();
 
-        //? is_cloth_config_available {
         ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () ->
-                new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> Configs.getConfigScreen(screen)));//?}
+                new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> ConfigHelper.getScreen(screen)));
     }
 }*///?}

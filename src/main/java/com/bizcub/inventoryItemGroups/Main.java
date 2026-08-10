@@ -1,7 +1,10 @@
 package com.bizcub.inventoryItemGroups;
 
-import com.bizcub.inventoryItemGroups.config.Compat;
-import com.bizcub.inventoryItemGroups.config.Configs;
+import com.bizcub.inventoryItemGroups.config.*;
+import io.github.bizcub.simpleConfigLib.util.component.ClickEventBuilder;
+import io.github.bizcub.simpleConfigLib.util.component.ComponentBuilder;
+import io.github.bizcub.simpleConfigLib.util.component.HoverEventBuilder;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
 
@@ -15,6 +18,40 @@ public class Main {
     public static CreativeModeTab selectedTab;
     public static GroupVisibilityToggle itemsChanged = new GroupVisibilityToggle();
     public static ArrayList<ItemStack> tempItemStacks = new ArrayList<>();
+
+    public static void init() {
+        if (ConfigHelper.isSimpleConfigLoaded()) {
+            Config.set(SimpleConfig.getInstance().get());
+        } else if (ConfigHelper.isClothConfigLoaded()) {
+            ClothConfig.load();
+            Config.set(ClothConfig.getConfig());
+        }
+    }
+
+    public static List<Component> getTabIds() {
+        List<Component> list = new ArrayList<>();
+
+        for (CreativeModeTab creativeModeTab : CreativeModeTabs.allTabs()) {
+            String tabId = Main.convertComponentToId(creativeModeTab.getDisplayName().getContents().toString());
+            if (!tabId.equals("hotbar") && !tabId.equals("search") && !tabId.equals("op") && !tabId.equals("inventory")) {
+                list.add(
+                        ComponentBuilder.translatable(
+                                "text.inventory_item_groups.category.groups.ids.entry",
+                                        ComponentBuilder.literal(creativeModeTab.getDisplayName().getString()).build(),
+                                        ComponentBuilder.literal(tabId)
+                                                .hoverEvent(HoverEventBuilder.create().showText(Component.translatable("chat.copy")).build())
+                                                .clickEvent(ClickEventBuilder.create().copyToClipboard(tabId).build())
+                                                .color(ChatFormatting.WHITE)
+                                                .build()
+                                )
+                                .color(ChatFormatting.GRAY)
+                                .build()
+                );
+            }
+        }
+
+        return list;
+    }
 
     public static ArrayList<Group> groupsOnSelectedTab(CreativeModeTab selectedTab) {
         ArrayList<Group> groupsOnSelectedTab = new ArrayList<>();
@@ -112,15 +149,16 @@ public class Main {
         rawDefaultGroups.clear();
         groups.clear();
 
-        if (Compat.isClothConfigLoaded() && Configs.getConfig().addGroupsOverOld
-                || !Compat.isClothConfigLoaded()) createDefaultGroups();
+        if (ConfigHelper.isConfigLoaded() && Config.get().addGroupsOverOld() || !ConfigHelper.isConfigLoaded()) {
+            createDefaultGroups();
+        }
 
-        if (Compat.isClothConfigLoaded()) {
-            for (Configs.ItemGroup group : Configs.getConfig().groups) {
+        if (ConfigHelper.isConfigLoaded()) {
+            for (ItemGroup group : Config.get().groups()) {
                 List<String> tempListOfItems = group.containedItems.stream().map(Object::toString).toList();
                 List<String> tempListOfItemIds = group.equivalentItems.stream().map(Object::toString).toList();
                 if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals(group.tabName))
-                    addConfigItems(group.groupName, tempListOfItems, tempListOfItemIds, Configs.getConfig().translateGroups);
+                    addConfigItems(group.groupName, tempListOfItems, tempListOfItemIds, Config.get().translateGroups());
             }
         }
 
@@ -272,7 +310,7 @@ public class Main {
     public static Component getGroupTranslate(RawGroup rawGroup) {
         if (rawGroup.name == null) rawGroup.name = "name";
 
-        return (Compat.isClothConfigLoaded() && Configs.getConfig().translateGroups) || rawGroup.hasTranslation
+        return (ConfigHelper.isConfigLoaded() && Config.get().translateGroups()) || rawGroup.hasTranslation
                 ? Component.translatable("group_name.inventory_item_groups." + rawGroup.name)
                 : Component.literal(rawGroup.name);
     }

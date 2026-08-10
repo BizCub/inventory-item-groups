@@ -2,8 +2,8 @@ package com.bizcub.inventoryItemGroups.mixin;
 
 import com.bizcub.inventoryItemGroups.Group;
 import com.bizcub.inventoryItemGroups.Main;
-import com.bizcub.inventoryItemGroups.config.Compat;
-import com.bizcub.inventoryItemGroups.config.Configs;
+import com.bizcub.inventoryItemGroups.config.Config;
+import com.bizcub.inventoryItemGroups.config.ConfigHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -84,7 +84,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         int index = iig$calculateIndex(slot);
         Group group = Main.findGroupByIndex(index);
 
-        return (Compat.isClothConfigLoaded() && Configs.getConfig().showGroupItems
+        return (ConfigHelper.isConfigLoaded() && Config.get().showItemsInGroup()
                 && group != null && group.getIconIndex() == index && iig$onScreen(slot.index))
                 ? group.getItems().get(seconds % group.getItems().size())
                 : slot.getItem();

@@ -3,10 +3,6 @@ plugins {
 }
 
 multiloader {
-    val isClothConfigAvailable = !(isForge && scp > "1.21.3")
-
-    sc.constants["is_cloth_config_available"] = isClothConfigAvailable
-
     sc.replacements {
         string(scp >= "26.1") {
             replace("GuiGraphics", "GuiGraphicsExtractor")
@@ -25,7 +21,18 @@ multiloader {
     versionRange("1.21.3", to = "1.21.4")
     versionRange("1.20.1", to = "1.20.6")
 
-    addDependency(dependency = "io.github.bizcub:simple-config-lib:1.0-${mod.loader}+${mod.mc}")
+    addDependency(
+        dependency = "io.github.bizcub:simple-config-lib:1.0-${mod.loader}+${mod.mc}",
+    )
+
+    val isClothConfigAvailable = !(isForge && scp > "1.21.3")
+    addDependency(
+        dependency = "me.shedaniel.cloth:cloth-config-${mod.loader}:${getDep("cloth-config").split("+").first()}",
+        configuration = if (isClothConfigAvailable) "implementation" else "compileOnly",
+        repository = "maven.shedaniel.me",
+        isPublishDepEnabled = isClothConfigAvailable,
+        publishProjectId = "cloth-config"
+    )
 
     if (isFabric) {
         addDependency(dependency = "net.fabricmc:fabric-loader:${getDep("fabric")}")

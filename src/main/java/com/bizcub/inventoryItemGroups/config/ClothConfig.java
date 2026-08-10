@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class Configs {
+public class ClothConfig implements Config {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path CONFIG_PATH = Paths.get("config", Main.MOD_ID + ".json");
 
@@ -37,10 +37,11 @@ public class Configs {
     public boolean showGroupItems;
     public Sort sort = Sort.DEFAULT;
     public List<ItemGroup> groups = new ArrayList<>();
-    public static Configs config;
+    public static ClothConfig config;
 
     public static Screen getConfigScreen(Screen parent) {
         load();
+        Config.set(config);
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
@@ -72,7 +73,7 @@ public class Configs {
                 true,
                 true,
                 (elem, nestedListListEntry) -> {
-                    Configs.ItemGroup currentElem = elem != null ? elem : new Configs.ItemGroup("", "", new ArrayList<>(), new ArrayList<>());
+                    ItemGroup currentElem = elem != null ? elem : new ItemGroup();
                     if (currentElem.groupName == null) currentElem.groupName = "name";
                     return new MultiElementListEntry<>(
                             getTranslate("category.groups.group.name"),
@@ -124,7 +125,7 @@ public class Configs {
         ConfigCategory main = builder.getOrCreateCategory(getTranslate("category.main"));
         main.addEntry(entryBuilder.startEnumSelector(getTranslate("category.main.sort"), Sort.class, config.sort)
                 .setDefaultValue(Sort.DEFAULT)
-                .setEnumNameProvider(e -> getTranslate(((Configs.Sort) e).getKey()))
+                .setEnumNameProvider(e -> getTranslate(((Sort) e).getKey()))
                 .setSaveConsumer(value -> config.sort = value)
                 .build()
         );
@@ -138,53 +139,25 @@ public class Configs {
         return builder.build();
     }
 
-    public static class ItemGroup {
-        public String groupName;
-        public String tabName;
-        public List<Object> equivalentItems;
-        public List<Object> containedItems;
-
-        public ItemGroup(String groupName, String tabName, List<Object> containedItems, List<Object> equivalentItems) {
-            this.groupName = groupName;
-            this.tabName = tabName;
-            this.equivalentItems = equivalentItems;
-            this.containedItems = containedItems;
-        }
-    }
-
-    public enum Sort {
-        DEFAULT("category.main.sort.default"),
-        ALPHABETICALLY("category.main.sort.alphabetically");
-
-        private final String translationKey;
-
-        Sort(String translationKey) {
-            this.translationKey = translationKey;
-        }
-
-        public String getKey() {
-            return this.translationKey;
-        }
-    }
-
-    public static Configs getConfig() {
+    public static ClothConfig getConfig() {
         return config;
     }
 
     public static void load() {
         if (CONFIG_PATH.toFile().exists()) {
             try (BufferedReader reader = Files.newBufferedReader(CONFIG_PATH)) {
-                config = GSON.fromJson(reader, Configs.class);
+                config = GSON.fromJson(reader, ClothConfig.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            config = new Configs();
+            config = new ClothConfig();
             config.addGroupsOverOld = true;
         }
     }
 
     public void save() {
+        Config.set(config);
         try {
             Files.createDirectories(CONFIG_PATH.getParent());
             try (BufferedWriter writer = Files.newBufferedWriter(CONFIG_PATH)) {
@@ -219,5 +192,30 @@ public class Configs {
 
     private static String getTranslateKey(String text) {
         return "text.inventory_item_groups." + text;
+    }
+
+    @Override
+    public boolean addGroupsOverOld() {
+        return this.addGroupsOverOld;
+    }
+
+    @Override
+    public boolean translateGroups() {
+        return this.translateGroups;
+    }
+
+    @Override
+    public List<ItemGroup> groups() {
+        return this.groups;
+    }
+
+    @Override
+    public Sort sort() {
+        return this.sort;
+    }
+
+    @Override
+    public boolean showItemsInGroup() {
+        return this.showGroupItems;
     }
 }

@@ -1,0 +1,60 @@
+package com.bizcub.inventoryItemGroups.config;
+
+import com.bizcub.inventoryItemGroups.Main;
+import io.github.bizcub.simpleConfigLib.autoconfig.ConfigHolder;
+import io.github.bizcub.simpleConfigLib.autoconfig.annotation.*;
+import net.minecraft.network.chat.Component;
+
+import java.util.List;
+
+@AutoConfig(name = Main.MOD_ID, translate = true)
+public class SimpleConfig implements Config {
+    public static ConfigHolder<SimpleConfig> getInstance() {
+        return ConfigHolder.register(SimpleConfig.class);
+    }
+
+    @Tooltip
+    public boolean addGroupsOverOld = Config.super.addGroupsOverOld();
+
+    @Tooltip
+    public boolean translateGroups = Config.super.translateGroups();
+
+    @ListConfig(addToFront = true)
+    public List<ItemGroup> groups = Config.super.groups();
+
+    @ListConfig(editable = false, translateElements = true)
+    public List<Component> idOfMenuTabs = Main.getTabIds();
+
+    @ConfigGroup("main")
+    @EnumConfig(translate = true)
+    public Sort sort = Config.super.sort();
+
+    @Tooltip
+    @ConfigGroup("main")
+    public boolean showItemsInGroup = Config.super.showItemsInGroup();
+
+    @Override
+    public boolean addGroupsOverOld() {
+        return this.addGroupsOverOld;
+    }
+
+    @Override
+    public boolean translateGroups() {
+        return this.translateGroups;
+    }
+
+    @Override
+    public List<ItemGroup> groups() {
+        return this.groups;
+    }
+
+    @Override
+    public Sort sort() {
+        return this.sort;
+    }
+
+    @Override
+    public boolean showItemsInGroup() {
+        return this.showItemsInGroup;
+    }
+}
