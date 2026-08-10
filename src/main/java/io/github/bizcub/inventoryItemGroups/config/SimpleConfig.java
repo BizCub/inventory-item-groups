@@ -1,6 +1,6 @@
-package com.bizcub.inventoryItemGroups.config;
+package io.github.bizcub.inventoryItemGroups.config;
 
-import com.bizcub.inventoryItemGroups.Main;
+import io.github.bizcub.inventoryItemGroups.Main;
 import io.github.bizcub.simpleConfigLib.autoconfig.ConfigHolder;
 import io.github.bizcub.simpleConfigLib.autoconfig.annotation.*;
 import net.minecraft.network.chat.Component;

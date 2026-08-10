@@ -1,6 +1,6 @@
 {
     "required": true,
-    "package": "com.bizcub.inventoryItemGroups.mixin",
+    "package": "io.github.bizcub.inventoryItemGroups.mixin",
     "mixins": [
         "CreativeModeInventoryScreenMixin"
     ],

@@ -1,6 +1,6 @@
-package com.bizcub.inventoryItemGroups.config;
+package io.github.bizcub.inventoryItemGroups.config;
 
-import com.bizcub.inventoryItemGroups.Main;
+import io.github.bizcub.inventoryItemGroups.Main;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;

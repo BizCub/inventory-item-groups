@@ -1,4 +1,4 @@
-package com.bizcub.inventoryItemGroups.config;
+package io.github.bizcub.inventoryItemGroups.config;
 
 import java.util.ArrayList;
 import java.util.List;

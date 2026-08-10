@@ -1,8 +1,8 @@
-package com.bizcub.inventoryItemGroups;
+package io.github.bizcub.inventoryItemGroups;
 
-import com.bizcub.inventoryItemGroups.config.Config;
-import com.bizcub.inventoryItemGroups.config.ConfigHelper;
-import com.bizcub.inventoryItemGroups.config.Sort;
+import io.github.bizcub.inventoryItemGroups.config.Config;
+import io.github.bizcub.inventoryItemGroups.config.ConfigHelper;
+import io.github.bizcub.inventoryItemGroups.config.Sort;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;

@@ -1,9 +1,9 @@
-package com.bizcub.inventoryItemGroups.mixin;
+package io.github.bizcub.inventoryItemGroups.mixin;
 
-import com.bizcub.inventoryItemGroups.Group;
-import com.bizcub.inventoryItemGroups.Main;
-import com.bizcub.inventoryItemGroups.config.Config;
-import com.bizcub.inventoryItemGroups.config.ConfigHelper;
+import io.github.bizcub.inventoryItemGroups.Group;
+import io.github.bizcub.inventoryItemGroups.Main;
+import io.github.bizcub.inventoryItemGroups.config.Config;
+import io.github.bizcub.inventoryItemGroups.config.ConfigHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

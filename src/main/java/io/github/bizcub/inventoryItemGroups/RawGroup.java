@@ -1,4 +1,4 @@
-package com.bizcub.inventoryItemGroups;
+package io.github.bizcub.inventoryItemGroups;
 
 import net.minecraft.world.item.ItemStack;
 

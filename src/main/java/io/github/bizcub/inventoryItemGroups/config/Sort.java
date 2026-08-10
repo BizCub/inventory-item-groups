@@ -1,4 +1,4 @@
-package com.bizcub.inventoryItemGroups.config;
+package io.github.bizcub.inventoryItemGroups.config;
 
 public enum Sort {
     DEFAULT("category.main.sort.default"),

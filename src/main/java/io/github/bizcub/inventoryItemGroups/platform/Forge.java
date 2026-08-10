@@ -1,8 +1,8 @@
 //? forge {
-/*package com.bizcub.inventoryItemGroups.platform;
+/*package io.github.bizcub.inventoryItemGroups.platform;
 
-import com.bizcub.inventoryItemGroups.Main;
-import com.bizcub.inventoryItemGroups.config.ConfigHelper;
+import io.github.bizcub.inventoryItemGroups.Main;
+import io.github.bizcub.inventoryItemGroups.config.ConfigHelper;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;

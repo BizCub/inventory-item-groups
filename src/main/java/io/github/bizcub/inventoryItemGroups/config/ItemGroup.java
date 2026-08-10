@@ -1,4 +1,4 @@
-package com.bizcub.inventoryItemGroups.config;
+package io.github.bizcub.inventoryItemGroups.config;
 
 import io.github.bizcub.simpleConfigLib.autoconfig.annotation.ListConfig;
 import io.github.bizcub.simpleConfigLib.autoconfig.annotation.Tooltip;

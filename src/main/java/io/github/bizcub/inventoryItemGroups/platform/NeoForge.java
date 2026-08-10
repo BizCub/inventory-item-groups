@@ -1,8 +1,8 @@
 //? neoforge {
-/*package com.bizcub.inventoryItemGroups.platform;
+/*package io.github.bizcub.inventoryItemGroups.platform;
 
-import com.bizcub.inventoryItemGroups.Main;
-import com.bizcub.inventoryItemGroups.config.ConfigHelper;
+import io.github.bizcub.inventoryItemGroups.Main;
+import io.github.bizcub.inventoryItemGroups.config.ConfigHelper;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;

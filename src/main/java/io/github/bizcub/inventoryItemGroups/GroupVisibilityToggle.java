@@ -1,4 +1,4 @@
-package com.bizcub.inventoryItemGroups;
+package io.github.bizcub.inventoryItemGroups;
 
 public class GroupVisibilityToggle {
     private boolean isListChanged;

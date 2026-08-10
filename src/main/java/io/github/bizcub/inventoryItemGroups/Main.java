@@ -1,6 +1,6 @@
-package com.bizcub.inventoryItemGroups;
+package io.github.bizcub.inventoryItemGroups;
 
-import com.bizcub.inventoryItemGroups.config.*;
+import io.github.bizcub.inventoryItemGroups.config.*;
 import io.github.bizcub.simpleConfigLib.util.component.ClickEventBuilder;
 import io.github.bizcub.simpleConfigLib.util.component.ComponentBuilder;
 import io.github.bizcub.simpleConfigLib.util.component.HoverEventBuilder;

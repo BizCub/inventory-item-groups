@@ -1,6 +1,6 @@
-package com.bizcub.inventoryItemGroups.mixin;
+package io.github.bizcub.inventoryItemGroups.mixin;
 
-import com.bizcub.inventoryItemGroups.Main;
+import io.github.bizcub.inventoryItemGroups.Main;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
