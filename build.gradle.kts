@@ -19,7 +19,9 @@ multiloader {
     versionRange("26.2", to = "latest")
     versionRange("1.21.8", to = "1.21.10")
     versionRange("1.21.3", to = "1.21.4")
+    versionRange("1.20.6", from = "1.20.6")
     versionRange("1.20.1", to = "1.20.6")
+    versionRange("1.20.1", to = "1.20.4", loader = "forge")
 
     addDependency(
         dependency = "io.github.bizcub:simple-config-lib:1.0-${mod.loader}+${mod.mc}",
