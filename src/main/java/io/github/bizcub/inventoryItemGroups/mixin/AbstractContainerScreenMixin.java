@@ -44,17 +44,6 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     @Shadow protected abstract List<Component> getTooltipFromContainerItem(ItemStack itemStack);
 
     @Unique
-    private int iig$calculateIndex(Slot slot) {
-        var slots = menu.slots;
-        if (slots.size() < 2) {
-            return -1;
-        }
-        int result = Main.tempItemStacks.indexOf(slots.get(1).getItem());
-        if (!slots.get(0).getItem().equals(slots.get(1).getItem())) result--;
-        return result + slot.index;
-    }
-
-    @Unique
     private Identifier iig$getSprite(String location) {
         String id = Main.MOD_ID;
         String path = "container/" + location;
@@ -81,7 +70,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     //~ if >=26.1 'renderSlot' -> 'extractSlot'
     @Redirect(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;getItem()Lnet/minecraft/world/item/ItemStack;", ordinal = 0))
     private ItemStack renderItems(Slot slot) {
-        int index = iig$calculateIndex(slot);
+        int index = Main.calculateIndex(menu.slots, slot.index);
         Group group = Main.findGroupByIndex(index);
 
         return (ConfigHelper.isConfigLoaded() && Config.get().showItemsInGroup()
@@ -94,7 +83,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     @Inject(method = "extractSlot", at = @At("HEAD"))
     private void renderSlotSprites(GuiGraphicsExtractor graphics, Slot slot, /*? >=1.21.11 {*/ int mouseX, int mouseY, /*?}*/ CallbackInfo ci) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
-        int index = iig$calculateIndex(slot);
+        int index = Main.calculateIndex(menu.slots, slot.index);
         for (Group group : groupsOnSelectedTab) {
             if (iig$onScreen(slot.index) && group.isVisibility()) {
                 if (group.getIconIndex() == index)
@@ -112,7 +101,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     @Inject(method = "extractSlot", at = @At("TAIL"))
     private void renderVisibilitySprites(GuiGraphicsExtractor graphics, Slot slot, /*? >=1.21.11 {*/ int mouseX, int mouseY, /*?}*/ CallbackInfo ci) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
-        int index = iig$calculateIndex(slot);
+        int index = Main.calculateIndex(menu.slots, slot.index);
         for (Group group : groupsOnSelectedTab) {
             if (iig$onScreen(slot.index) && group.getIconIndex() == index) {
                 //? >=1.21.2 && <=1.21.5 {
@@ -130,7 +119,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     //~ if >=26.1 'renderTooltip' -> 'extractTooltip'
     @Redirect(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;getTooltipFromContainerItem(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
     private List<Component> renderGroupName(AbstractContainerScreen instance, ItemStack itemStack) {
-        int index = iig$calculateIndex(hoveredSlot);
+        int index = Main.calculateIndex(menu.slots, hoveredSlot.index);
         Group group = Main.findGroupByIndex(index);
 
         return (group != null && index == group.getIconIndex() && iig$onScreen(hoveredSlot.index))

@@ -6,6 +6,7 @@ import io.github.bizcub.simpleConfigLib.util.component.ComponentBuilder;
 import io.github.bizcub.simpleConfigLib.util.component.HoverEventBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 
 import java.util.*;
@@ -51,6 +52,13 @@ public class Main {
         }
 
         return list;
+    }
+
+    public static int calculateIndex(List<Slot> slots, int slotIndex) {
+        if (slots.size() < 2) return -1;
+        int result = tempItemStacks.indexOf(slots.get(1).getItem());
+        if (!slots.get(0).getItem().equals(slots.get(1).getItem())) result--;
+        return result + slotIndex;
     }
 
     public static ArrayList<Group> groupsOnSelectedTab(CreativeModeTab selectedTab) {

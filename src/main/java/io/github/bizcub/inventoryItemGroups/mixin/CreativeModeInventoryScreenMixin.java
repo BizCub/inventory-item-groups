@@ -11,10 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,8 +21,6 @@ public class CreativeModeInventoryScreenMixin {
 
     @Shadow private float scrollOffs;
     @Shadow private static CreativeModeTab selectedTab;
-
-    @Unique private static Slot iig$clickedSlot;
 
     @Redirect(method = "selectTab", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;getDisplayItems()Ljava/util/Collection;"))
     private Collection<ItemStack> groupsImplementation(CreativeModeTab selectedTab) {
@@ -58,21 +53,8 @@ public class CreativeModeInventoryScreenMixin {
     }
 
     @Unique
-    private int iig$indexCalculation(int inventorySize, int slotIndex) {
-        float rows = (float) inventorySize / 9;
-        rows = (float) Math.ceil(rows);
-        int index = 0;
-        if (inventorySize > 45) {
-            index = Math.round((rows - 5) * scrollOffs);
-            if (index > 0)
-                index = index * 9;
-        }
-        return index + slotIndex;
-    }
-
-    @Unique
-    private void iig$mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
-        int index = iig$indexCalculation(Main.tempItemStacks.size(), iig$clickedSlot.index);
+    private void iig$mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, Slot slot) {
+        int index = Main.calculateIndex(instance.slots, slot.index);
         Group group = Main.findGroupByIndex(index);
 
         if (group != null && selectedTab.equals(group.getTab()) && group.getIconIndex() == index) {
@@ -81,30 +63,13 @@ public class CreativeModeInventoryScreenMixin {
         } else instance.setCarried(itemStack);
     }
 
-    @Inject(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
-    private void slotClicked(Slot slot, int slotId, int buttonNum, ContainerInput containerInput, CallbackInfo ci) {
-        iig$clickedSlot = slot;
-    }
-
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
-    private void mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
-        iig$mouseButtonsFix(instance, itemStack);
-    }
-
-    @Inject(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
-    private void getSlot(Slot slot, int slotId, int buttonNum, ContainerInput containerInput, CallbackInfo ci) {
-        iig$clickedSlot = slot;
+    private void mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, Slot slot, int slotId, int buttonNum, ContainerInput containerInput) {
+        iig$mouseButtonsFix(instance, itemStack, slot);
     }
 
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
-    private void mouseMiddleButtonFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack) {
-        iig$mouseButtonsFix(instance, itemStack);
-    }
-
-    @Inject(method = "mouseReleased", at = @At("RETURN"))
-    private void removeTexturesDisplay(CallbackInfoReturnable<Boolean> cir) {
-        if (selectedTab.getType() != CreativeModeTab.Type.CATEGORY) {
-            Main.groups.clear();
-        }
+    private void mouseMiddleButtonFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, Slot slot, int slotId, int buttonNum, ContainerInput containerInput) {
+        iig$mouseButtonsFix(instance, itemStack, slot);
     }
 }
