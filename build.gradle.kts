@@ -26,9 +26,6 @@ multiloader {
     addDependency(
         dependency = "io.github.bizcub:simple-config-lib:1.0-${mod.loader}+${mod.mc}",
     )
-    if (isFabric) addDependency(
-        dependency = "maven.modrinth:smooth-scroll:${getDep("smooth-scroll")}"
-    )
     val isClothConfigAvailable = !(isForge && scp > "1.21.3")
     addDependency(
         dependency = "me.shedaniel.cloth:cloth-config-${mod.loader}:${getDep("cloth-config").split("+").first()}",
