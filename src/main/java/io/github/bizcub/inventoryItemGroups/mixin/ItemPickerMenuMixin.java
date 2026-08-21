@@ -53,9 +53,13 @@ public abstract class ItemPickerMenuMixin {
     @Unique
     private int iig$currentTopRow() {
         var slots = ((AbstractContainerMenu) (Object) this).slots;
-        if (slots.size() < 2) return 0;
-        int topLeft = Main.tempItemStacks.indexOf(slots.get(1).getItem());
-        if (!slots.get(0).getItem().equals(slots.get(1).getItem())) topLeft--;
+        if (slots.isEmpty()) return 0;
+        int topLeft = slots.size() >= 2 ? Main.tempItemStacks.indexOf(slots.get(1).getItem()) : -1;
+        if (topLeft >= 0) {
+            if (!slots.get(0).getItem().equals(slots.get(1).getItem())) topLeft--;
+        } else {
+            topLeft = Main.tempItemStacks.indexOf(slots.get(0).getItem());
+        }
         return Math.max(topLeft, 0) / 9;
     }
 }

@@ -83,9 +83,9 @@ public class ClothConfig implements Config {
                                             .setDefaultValue("")
                                             .setSaveConsumer(value -> currentElem.groupName = value)
                                             .build(),
-                                    entryBuilder.startStrField(getTranslate("category.groups.group.tab_name"), currentElem.tabName)
+                                    entryBuilder.startStrField(getTranslate("category.groups.group.tab_name"), currentElem.tabId)
                                             .setDefaultValue("")
-                                            .setSaveConsumer(value -> currentElem.tabName = value)
+                                            .setSaveConsumer(value -> currentElem.tabId = value)
                                             .build(),
                                     entryBuilder.startStrList(getTranslate("category.groups.group.equivalentItems"), currentElem.equivalentItems.stream().map(Object::toString).toList())
                                             .setDefaultValue(List.of())
@@ -109,17 +109,7 @@ public class ClothConfig implements Config {
                 }
         ));
         SubCategoryBuilder ids = entryBuilder.startSubCategory(getTranslate("category.groups.ids")).setExpanded(false);
-        for (CreativeModeTab creativeModeTab : CreativeModeTabs.allTabs()) {
-            String tabId = Main.convertComponentToId(creativeModeTab.getDisplayName().getContents().toString());
-            if (!tabId.equals("hotbar") && !tabId.equals("search") && !tabId.equals("op") && !tabId.equals("inventory")) {
-                ids.add(entryBuilder.startTextDescription(
-                        getTranslate("category.groups.ids.entry",
-                                Component.literal(creativeModeTab.getDisplayName().getString()),
-                                Component.literal(tabId).withStyle(style -> style.withHoverEvent(getHoverEvent(Component.translatable("chat.copy"))).withClickEvent(getClickEvent(tabId))).withStyle(style -> style.withColor(ChatFormatting.WHITE))
-                        ).withStyle(style -> style.withColor(ChatFormatting.GRAY))
-                ).build());
-            }
-        }
+        Main.getTabIds().forEach(id -> ids.add(entryBuilder.startTextDescription(id).build()));
         groups.addEntry(ids.build());
 
         ConfigCategory main = builder.getOrCreateCategory(getTranslate("category.main"));
@@ -168,30 +158,8 @@ public class ClothConfig implements Config {
         }
     }
 
-    private static HoverEvent getHoverEvent(Component component) {
-        /*? >=1.21.5*/ return new HoverEvent.ShowText(
-        /*? <=1.21.4*/ //return new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-            component
-        );
-    }
-
-    private static ClickEvent getClickEvent(String tabId) {
-        /*? >=1.21.5*/ return new ClickEvent.CopyToClipboard(
-        /*? <=1.21.4*/ //return new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD,
-                tabId
-        );
-    }
-
     private static Component getTranslate(String text) {
-        return Component.translatable(getTranslateKey(text));
-    }
-
-    private static MutableComponent getTranslate(String text, Object... objects) {
-        return Component.translatable(getTranslateKey(text), objects);
-    }
-
-    private static String getTranslateKey(String text) {
-        return "text.inventory_item_groups." + text;
+        return Component.translatable("text.inventory_item_groups." + text);
     }
 
     @Override

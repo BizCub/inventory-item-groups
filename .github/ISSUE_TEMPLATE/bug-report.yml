@@ -6,7 +6,7 @@ body:
     id: version
     attributes:
       label: Project version
-      placeholder: ex. 1.0
+      placeholder: ex. 1.0-fabric
     validations:
       required: true
   - type: checkboxes

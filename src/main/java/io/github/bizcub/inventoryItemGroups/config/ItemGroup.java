@@ -9,7 +9,7 @@ import java.util.List;
 public class ItemGroup {
     public String groupName = "";
 
-    public String tabName = "";
+    public String tabId = "";
 
     @Tooltip
     @ListConfig(addToFront = true)

@@ -24,7 +24,7 @@ multiloader {
     versionRange("1.20.1", to = "1.20.4", loader = "forge")
 
     addDependency(
-        dependency = "io.github.bizcub:simple-config-lib:1.0-${mod.loader}+${mod.mc}",
+        dependency = "io.github.bizcub:simple-config-lib:1.0-${mod.loader}+${mod.mc}"
     )
     val isClothConfigAvailable = !(isForge && scp > "1.21.3")
     addDependency(

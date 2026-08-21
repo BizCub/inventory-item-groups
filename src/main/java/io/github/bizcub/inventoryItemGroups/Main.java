@@ -1,11 +1,12 @@
 package io.github.bizcub.inventoryItemGroups;
 
 import io.github.bizcub.inventoryItemGroups.config.*;
-import io.github.bizcub.simpleConfigLib.util.component.ClickEventBuilder;
-import io.github.bizcub.simpleConfigLib.util.component.ComponentBuilder;
-import io.github.bizcub.simpleConfigLib.util.component.HoverEventBuilder;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 
@@ -29,24 +30,27 @@ public class Main {
         }
     }
 
+    public static String getTabId(CreativeModeTab tab) {
+        Identifier key = BuiltInRegistries.CREATIVE_MODE_TAB.getKey(tab);
+        return key != null ? key.toString() : tab.getDisplayName().getString();
+    }
+
     public static List<Component> getTabIds() {
         List<Component> list = new ArrayList<>();
 
         for (CreativeModeTab creativeModeTab : CreativeModeTabs.allTabs()) {
-            String tabId = Main.convertComponentToId(creativeModeTab.getDisplayName().getContents().toString());
-            if (!tabId.equals("hotbar") && !tabId.equals("search") && !tabId.equals("op") && !tabId.equals("inventory")) {
+            String tabId = Main.getTabId(creativeModeTab);
+            if (!tabId.equals("minecraft:hotbar") && !tabId.equals("minecraft:search") && !tabId.equals("minecraft:op_blocks") && !tabId.equals("minecraft:inventory")) {
                 list.add(
-                        ComponentBuilder.translatable(
-                                "text.inventory_item_groups.category.groups.ids.entry",
-                                        ComponentBuilder.literal(creativeModeTab.getDisplayName().getString()).build(),
-                                        ComponentBuilder.literal(tabId)
-                                                .hoverEvent(HoverEventBuilder.create().showText(Component.translatable("chat.copy")).build())
-                                                .clickEvent(ClickEventBuilder.create().copyToClipboard(tabId).build())
-                                                .color(ChatFormatting.WHITE)
-                                                .build()
+                        Component.translatable(
+                                        "text.inventory_item_groups.category.groups.ids.entry",
+                                        Component.literal(creativeModeTab.getDisplayName().getString()),
+                                        Component.literal(tabId).withStyle(style -> style
+                                                .withHoverEvent(getHoverEvent(Component.translatable("chat.copy")))
+                                                .withClickEvent(getClickEvent(tabId))
+                                                .withColor(ChatFormatting.WHITE))
                                 )
-                                .color(ChatFormatting.GRAY)
-                                .build()
+                                .withStyle(ChatFormatting.GRAY)
                 );
             }
         }
@@ -55,9 +59,19 @@ public class Main {
     }
 
     public static int calculateIndex(List<Slot> slots, int slotIndex) {
-        if (slots.size() < 2) return -1;
-        int result = tempItemStacks.indexOf(slots.get(1).getItem());
-        if (!slots.get(0).getItem().equals(slots.get(1).getItem())) result--;
+        if (slots.isEmpty()) return -1;
+
+        int result;
+        int secondItemIndex = slots.size() >= 2 ? tempItemStacks.indexOf(slots.get(1).getItem()) : -1;
+
+        if (secondItemIndex >= 0) {
+            result = secondItemIndex;
+            if (!slots.get(0).getItem().equals(slots.get(1).getItem())) result--;
+        } else {
+            result = tempItemStacks.indexOf(slots.get(0).getItem());
+        }
+
+        if (result < 0) result = 0;
         return result + slotIndex;
     }
 
@@ -139,7 +153,7 @@ public class Main {
             }
 
             for (String equivalentItem : equivalentItems) {
-                if (equivalentItem.equals(itemNameWithoutNamespace)) {
+                if (equivalentItem.equals(itemName)) {
                     addRawGroup(rawGroup, groupName, itemStack, hasTranslation);
                     break;
                 }
@@ -165,7 +179,7 @@ public class Main {
             for (ItemGroup group : Config.get().groups()) {
                 List<String> tempListOfItems = group.containedItems.stream().map(Object::toString).toList();
                 List<String> tempListOfItemIds = group.equivalentItems.stream().map(Object::toString).toList();
-                if (convertComponentToId(selectedTab.getDisplayName().getContents().toString()).equals(group.tabName))
+                if (getTabId(selectedTab).equals(group.tabId))
                     addConfigItems(group.groupName, tempListOfItems, tempListOfItemIds, Config.get().translateGroups());
             }
         }
@@ -175,9 +189,9 @@ public class Main {
     }
 
     public static void createDefaultGroups() {
-        String selectedTabId = convertComponentToId(selectedTab.getDisplayName().getContents().toString());
+        String selectedTabId = getTabId(selectedTab);
         switch (selectedTabId) {
-            case "buildingBlocks" -> {
+            case "minecraft:building_blocks" -> {
                 addDefaultItems("logs", List.of("log", "stem", "bamboo_block"), List.of("stripped"));
                 addDefaultItems("woods", List.of("wood", "hyphae"), List.of("stripped"));
                 addDefaultItems("stripped_logs", List.of("log", "stem", "bamboo_block"));
@@ -198,7 +212,7 @@ public class Main {
                 addDefaultItems("decorative_stone", List.of("bricks", "chiseled", "tiles", "polished"));
                 addDefaultItems("sandstone", List.of("sandstone"));
             }
-            case "coloredBlocks" -> {
+            case "minecraft:colored_blocks" -> {
                 addDefaultItems("wool", List.of("wool"));
                 addDefaultItems("carpets", List.of("carpet"));
                 addDefaultItems("glazed_terracotta", List.of("glazed_terracotta"));
@@ -212,7 +226,7 @@ public class Main {
                 addDefaultItems("banners", List.of("banner"));
                 addDefaultItems("beds", List.of("bed"));
             }
-            case "natural" -> {
+            case "minecraft:natural_blocks" -> {
                 addDefaultItems("ores", List.of("_ore", "debris", "raw_"));
                 addDefaultItems("mushrooms", List.of("mushroom", "fungus"));
                 addDefaultItems("saplings", List.of("sapling", "propagule"));
@@ -225,7 +239,7 @@ public class Main {
                 addDefaultItems("stone", List.of(":stone", "diorite", "andesite", "granite", "tuff", "basalt", "blackstone", "deepslate"));
                 addDefaultItems("logs", List.of("log", "stem"));
             }
-            case "functional" -> {
+            case "minecraft:functional_blocks" -> {
                 addDefaultItems("lanterns", List.of("lantern"), List.of("sea"));
                 addDefaultItems("chains", List.of("chain"));
                 addDefaultItems("bulbs", List.of("bulb"));
@@ -244,14 +258,14 @@ public class Main {
                 addDefaultItems("infested_stone", List.of("infested"));
                 addDefaultItems("paintings", List.of("painting"));
             }
-            case "redstone" -> {
+            case "minecraft:redstone_blocks" -> {
                 addDefaultItems("bulbs", List.of("bulb"));
                 addDefaultItems("pressure_plates", List.of("pressure_plate"));
                 addDefaultItems("transport", List.of("minecart", "boat", "_raft"));
                 addDefaultItems("chests", List.of("chest"));
                 addDefaultItems("rails", List.of("rail"));
             }
-            case "tools" -> {
+            case "minecraft:tools_and_utilities" -> {
                 addDefaultItems("shovels", List.of("shovel"));
                 addDefaultItems("pickaxes", List.of("pickaxe"));
                 addDefaultItems("axes", List.of("axe"));
@@ -267,7 +281,7 @@ public class Main {
                 addDefaultItems("goat_horns", List.of("goat_horn"));
                 addDefaultItems("creature_buckets", List.of("cod_bucket", "salmon_bucket", "tropical_fish_bucket", "pufferfish_bucket", "axolotl_bucket", "tadpole_bucket", "sulfur_cube_bucket"));
             }
-            case "combat" -> {
+            case "minecraft:combat" -> {
                 addDefaultItems("swords", List.of("sword"));
                 addDefaultItems("spears", List.of("spear"));
                 addDefaultItems("axes", List.of("axe"));
@@ -281,7 +295,7 @@ public class Main {
                 addDefaultItems("tipped_arrows", List.of("tipped_arrow"));
                 addDefaultItems("firework_rockets", List.of("firework_rocket"));
             }
-            case "foodAndDrink" -> {
+            case "minecraft:food_and_drinks" -> {
                 addDefaultItems("suspicious_stews", List.of("suspicious_stew"));
                 addDefaultItems("ominous_bottles", List.of("ominous_bottle"));
                 addDefaultItems("splash_potions", List.of("splash_potion"));
@@ -290,7 +304,7 @@ public class Main {
                 addDefaultItems("cooked_food", List.of("cooked"));
                 addDefaultItems("raw_food", List.of("beef", "porkchop", "mutton", "chicken", "rabbit", ":cod", "salmon"), List.of("rabbit_"));
             }
-            case "ingredients" -> {
+            case "minecraft:ingredients" -> {
                 addDefaultItems("dyes", List.of("dye"));
                 addDefaultItems("banner_patterns", List.of("banner_pattern"));
                 addDefaultItems("pottery_sherds", List.of("pottery_sherd"));
@@ -305,21 +319,21 @@ public class Main {
         groups.removeIf(group -> group.getItems().size() < 3);
     }
 
-    public static String convertComponentToId(String tabId) {
-        int firstIndex = tabId.indexOf("'");
-        if (tabId.startsWith("key=", firstIndex - 4)) {
-            tabId = tabId.substring(firstIndex + 1);
-            tabId = tabId.substring(0, tabId.indexOf("'"));
-            tabId = tabId.substring(tabId.lastIndexOf(".") + 1);
-        }
-        return tabId;
-    }
-
     public static Component getGroupTranslate(RawGroup rawGroup) {
         if (rawGroup.name == null) rawGroup.name = "name";
 
         return (ConfigHelper.isConfigLoaded() && Config.get().translateGroups()) || rawGroup.hasTranslation
                 ? Component.translatable("group_name.inventory_item_groups." + rawGroup.name)
                 : Component.literal(rawGroup.name);
+    }
+
+    private static HoverEvent getHoverEvent(Component component) {
+        //~ if >=1.21.5 'HoverEvent(HoverEvent.Action.SHOW_TEXT,' -> 'HoverEvent.ShowText('
+        return new HoverEvent.ShowText(component);
+    }
+
+    private static ClickEvent getClickEvent(String tabId) {
+        //~ if >=1.21.5 'ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD,' -> 'ClickEvent.CopyToClipboard('
+        return new ClickEvent.CopyToClipboard(tabId);
     }
 }

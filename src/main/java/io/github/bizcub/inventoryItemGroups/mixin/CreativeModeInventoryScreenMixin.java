@@ -11,7 +11,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,5 +73,10 @@ public class CreativeModeInventoryScreenMixin {
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
     private void mouseMiddleButtonFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, Slot slot, int slotId, int buttonNum, ContainerInput containerInput) {
         iig$mouseButtonsFix(instance, itemStack, slot);
+    }
+
+    @Inject(method = "selectTab", at = @At("HEAD"))
+    private void iig$updateSelectedTab(CreativeModeTab tab, CallbackInfo ci) {
+        Main.selectedTab = tab;
     }
 }
