@@ -7,7 +7,7 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-@AutoConfig(name = Main.MOD_ID, translate = true)
+@AutoConfig(name = Main.MOD_ID, translate = true, snakeCaseKeys = true)
 public class SimpleConfig implements Config {
     public static ConfigHolder<SimpleConfig> getInstance() {
         return ConfigHolder.register(SimpleConfig.class);
@@ -22,7 +22,7 @@ public class SimpleConfig implements Config {
     @ListConfig(addToFront = true)
     public List<ItemGroup> groups = Config.super.groups();
 
-    @ListConfig(editable = false, translateElements = true)
+    @ListConfig(editable = false)
     public List<Component> idOfMenuTabs = Main.getTabIds();
 
     @ConfigGroup("main")

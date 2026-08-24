@@ -1,16 +1,15 @@
 package io.github.bizcub.inventoryItemGroups.config;
 
 public enum Sort {
-    DEFAULT("category.main.sort.default"),
-    ALPHABETICALLY("category.main.sort.alphabetically");
+    DEFAULT, ALPHABETICALLY;
 
-    private final String translationKey;
+    private final String key;
 
-    Sort(String translationKey) {
-        this.translationKey = translationKey;
+    Sort() {
+        this.key = "enum.sort." + this.name().toLowerCase();
     }
 
     public String getKey() {
-        return this.translationKey;
+        return this.key;
     }
 }

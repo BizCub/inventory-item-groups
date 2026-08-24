@@ -9,14 +9,8 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.MultiElementListEntry;
 import me.shedaniel.clothconfig2.gui.entries.NestedListListEntry;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -34,7 +28,7 @@ public class ClothConfig implements Config {
 
     public boolean addGroupsOverOld;
     public boolean translateGroups;
-    public boolean showGroupItems;
+    public boolean showItemsInGroup;
     public Sort sort = Sort.DEFAULT;
     public List<ItemGroup> groups = new ArrayList<>();
     public static ClothConfig config;
@@ -49,21 +43,21 @@ public class ClothConfig implements Config {
                 .setSavingRunnable(config::save);
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-        ConfigCategory groups = builder.getOrCreateCategory(getTranslate("category.groups"));
-        groups.addEntry(entryBuilder.startBooleanToggle(getTranslate("category.groups.addGroupsOverOld"), config.addGroupsOverOld)
+        ConfigCategory groups = builder.getOrCreateCategory(getTranslate("group.general"));
+        groups.addEntry(entryBuilder.startBooleanToggle(getTranslate("option.add_groups_over_old"), config.addGroupsOverOld)
                 .setDefaultValue(true)
-                .setTooltip(getTranslate("category.groups.addGroupsOverOld.tooltip"))
+                .setTooltip(getTranslate("option.add_groups_over_old.tooltip"))
                 .setSaveConsumer(value -> config.addGroupsOverOld = value)
                 .build()
         );
-        groups.addEntry(entryBuilder.startBooleanToggle(getTranslate("category.groups.translateGroups"), config.translateGroups)
+        groups.addEntry(entryBuilder.startBooleanToggle(getTranslate("option.translate_groups"), config.translateGroups)
                 .setDefaultValue(false)
-                .setTooltip(getTranslate("category.groups.translateGroups.tooltip"))
+                .setTooltip(getTranslate("option.translate_groups.tooltip"))
                 .setSaveConsumer(value -> config.translateGroups = value)
                 .build()
         );
         groups.addEntry(new NestedListListEntry<ItemGroup, MultiElementListEntry<ItemGroup>>(
-                getTranslate("category.groups.group"),
+                getTranslate("option.groups"),
                 config.groups,
                 false,
                 Optional::empty,
@@ -76,28 +70,28 @@ public class ClothConfig implements Config {
                     ItemGroup currentElem = elem != null ? elem : new ItemGroup();
                     if (currentElem.groupName == null) currentElem.groupName = "name";
                     return new MultiElementListEntry<>(
-                            getTranslate("category.groups.group.name"),
+                            getTranslate("option.groups"),
                             currentElem,
                             List.of(
-                                    entryBuilder.startStrField(getTranslate("category.groups.group.group_name"), currentElem.groupName)
+                                    entryBuilder.startStrField(getTranslate("option.groups.group_name"), currentElem.groupName)
                                             .setDefaultValue("")
                                             .setSaveConsumer(value -> currentElem.groupName = value)
                                             .build(),
-                                    entryBuilder.startStrField(getTranslate("category.groups.group.tab_name"), currentElem.tabId)
+                                    entryBuilder.startStrField(getTranslate("option.groups.tab_id"), currentElem.tabId)
                                             .setDefaultValue("")
                                             .setSaveConsumer(value -> currentElem.tabId = value)
                                             .build(),
-                                    entryBuilder.startStrList(getTranslate("category.groups.group.equivalentItems"), currentElem.equivalentItems.stream().map(Object::toString).toList())
+                                    entryBuilder.startStrList(getTranslate("option.groups.equivalent_items"), currentElem.equivalentItems.stream().map(Object::toString).toList())
                                             .setDefaultValue(List.of())
-                                            .setTooltip(getTranslate("category.groups.group.equivalentItems.tooltip"))
+                                            .setTooltip(getTranslate("option.groups.equivalent_items.tooltip"))
                                             .setSaveConsumer(objects -> {
                                                 currentElem.equivalentItems.clear();
                                                 currentElem.equivalentItems.addAll(objects);
                                             })
                                             .build(),
-                                    entryBuilder.startStrList(getTranslate("category.groups.group.containedItems"), currentElem.containedItems.stream().map(Object::toString).toList())
+                                    entryBuilder.startStrList(getTranslate("option.groups.contained_items"), currentElem.containedItems.stream().map(Object::toString).toList())
                                             .setDefaultValue(List.of())
-                                            .setTooltip(getTranslate("category.groups.group.containedItems.tooltip"))
+                                            .setTooltip(getTranslate("option.groups.contained_items.tooltip"))
                                             .setSaveConsumer(objects -> {
                                                 currentElem.containedItems.clear();
                                                 currentElem.containedItems.addAll(objects);
@@ -108,21 +102,21 @@ public class ClothConfig implements Config {
                     );
                 }
         ));
-        SubCategoryBuilder ids = entryBuilder.startSubCategory(getTranslate("category.groups.ids")).setExpanded(false);
+        SubCategoryBuilder ids = entryBuilder.startSubCategory(getTranslate("option.id_of_menu_tabs")).setExpanded(false);
         Main.getTabIds().forEach(id -> ids.add(entryBuilder.startTextDescription(id).build()));
         groups.addEntry(ids.build());
 
-        ConfigCategory main = builder.getOrCreateCategory(getTranslate("category.main"));
-        main.addEntry(entryBuilder.startEnumSelector(getTranslate("category.main.sort"), Sort.class, config.sort)
+        ConfigCategory main = builder.getOrCreateCategory(getTranslate("group.main"));
+        main.addEntry(entryBuilder.startEnumSelector(getTranslate("option.sort"), Sort.class, config.sort)
                 .setDefaultValue(Sort.DEFAULT)
                 .setEnumNameProvider(e -> getTranslate(((Sort) e).getKey()))
                 .setSaveConsumer(value -> config.sort = value)
                 .build()
         );
-        main.addEntry(entryBuilder.startBooleanToggle(getTranslate("category.main.show_group_items"), config.showGroupItems)
+        main.addEntry(entryBuilder.startBooleanToggle(getTranslate("option.show_items_in_group"), config.showItemsInGroup)
                 .setDefaultValue(false)
-                .setTooltip(getTranslate("category.main.show_group_items.tooltip"))
-                .setSaveConsumer(value -> config.showGroupItems = value)
+                .setTooltip(getTranslate("option.show_items_in_group.tooltip"))
+                .setSaveConsumer(value -> config.showItemsInGroup = value)
                 .build()
         );
 
@@ -184,6 +178,6 @@ public class ClothConfig implements Config {
 
     @Override
     public boolean showItemsInGroup() {
-        return this.showGroupItems;
+        return this.showItemsInGroup;
     }
 }

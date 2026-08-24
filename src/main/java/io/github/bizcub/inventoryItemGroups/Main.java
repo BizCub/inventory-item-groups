@@ -43,7 +43,7 @@ public class Main {
             if (!tabId.equals("minecraft:hotbar") && !tabId.equals("minecraft:search") && !tabId.equals("minecraft:op_blocks") && !tabId.equals("minecraft:inventory")) {
                 list.add(
                         Component.translatable(
-                                        "text.inventory_item_groups.category.groups.ids.entry",
+                                        "text.inventory_item_groups.option.id_of_menu_tabs.element",
                                         Component.literal(creativeModeTab.getDisplayName().getString()),
                                         Component.literal(tabId).withStyle(style -> style
                                                 .withHoverEvent(getHoverEvent(Component.translatable("chat.copy")))
