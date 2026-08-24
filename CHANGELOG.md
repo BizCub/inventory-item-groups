@@ -1,1 +1,0 @@
-* Added Simplified Chinese translation (thanks Po-Cu)
