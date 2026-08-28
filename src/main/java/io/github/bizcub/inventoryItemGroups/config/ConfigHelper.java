@@ -1,5 +1,6 @@
 package io.github.bizcub.inventoryItemGroups.config;
 
+import io.github.bizcub.simpleConfigLib.autoconfig.gui.AutoConfigScreen;
 import net.minecraft.client.gui.screens.Screen;
 /*? fabric*/ import net.fabricmc.loader.api.FabricLoader;
 /*? forge*/ //import net.minecraftforge.fml.ModList;
@@ -26,11 +27,11 @@ public class ConfigHelper {
 
     public static Screen getScreen(Screen parent) {
         if (isSimpleConfigLoaded()) {
-            return SimpleConfig.getInstance().createScreen(parent);
-        } else if (isClothConfigLoaded()) {
-            return ClothConfig.getConfigScreen(parent);
-        } else {
-            return parent;
+            return AutoConfigScreen.create(SimpleConfig.getInstance(), parent);
         }
+        if (isClothConfigLoaded()) {
+            return ClothConfig.getConfigScreen(parent);
+        }
+        return parent;
     }
 }
