@@ -122,7 +122,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         int index = Main.calculateIndex(menu.slots, hoveredSlot.index);
         Group group = Main.findGroupByIndex(index);
 
-        return (group != null && index == group.getIconIndex() && iig$onScreen(hoveredSlot.index))
+        return (group != null && Main.selectedTab.equals(group.getTab()) && index == group.getIconIndex() && iig$onScreen(hoveredSlot.index))
                 ? List.of(group.getName())
                 : this.getTooltipFromContainerItem(itemStack);
     }
