@@ -1,5 +1,7 @@
 package io.github.bizcub.inventoryItemGroups.config;
 
+import io.github.bizcub.inventoryItemGroups.Main;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public interface Config {
     }
 
     default List<ItemGroup> groups() {
-        return new ArrayList<>();
+        return Main.getDefaultGroups();
     }
 
     default Sort sort() {

@@ -96,6 +96,14 @@ public class ClothConfig implements Config {
                                                 currentElem.containedItems.clear();
                                                 currentElem.containedItems.addAll(objects);
                                             })
+                                            .build(),
+                                    entryBuilder.startStrList(getTranslate("option.groups.non_contained_items"), currentElem.nonContainedItems.stream().map(Object::toString).toList())
+                                            .setDefaultValue(List.of())
+                                            .setTooltip(getTranslate("option.groups.non_contained_items.tooltip"))
+                                            .setSaveConsumer(objects -> {
+                                                currentElem.nonContainedItems.clear();
+                                                currentElem.nonContainedItems.addAll(objects);
+                                            })
                                             .build()
                             ),
                             true
@@ -136,7 +144,8 @@ public class ClothConfig implements Config {
             }
         } else {
             config = new ClothConfig();
-            config.addGroupsOverOld = true;
+            config.addGroupsOverOld = false;
+            config.groups = new ArrayList<>(Main.getDefaultGroups());
         }
     }
 
