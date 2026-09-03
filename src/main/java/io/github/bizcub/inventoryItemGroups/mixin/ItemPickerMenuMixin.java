@@ -1,7 +1,6 @@
 package io.github.bizcub.inventoryItemGroups.mixin;
 
 import io.github.bizcub.inventoryItemGroups.Group;
-import io.github.bizcub.inventoryItemGroups.GroupVisibilityToggle;
 import io.github.bizcub.inventoryItemGroups.Main;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.core.NonNullList;
