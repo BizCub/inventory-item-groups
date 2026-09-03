@@ -29,21 +29,22 @@ public abstract class ItemPickerMenuMixin {
 
     @Inject(method = "getCarried", at = @At("HEAD"))
     private void toggleGroupVisibility(CallbackInfoReturnable<ItemStack> cir) {
-        GroupVisibilityToggle toggle = Main.itemsChanged;
-        if (toggle.isListChanged()) {
-            Group group = toggle.getGroup();
+        Group group = Main.pendingGroup;
+        if (group != null) {
             group.setVisibility(!group.isVisibility());
 
             int topRow = iig$currentTopRow();
+            int insertIndex = group.getIconIndex() + 1;
 
             if (group.isVisibility()) {
                 ArrayList<ItemStack> itemsColl = group.getItems();
                 Collections.reverse(itemsColl);
-                itemsColl.forEach(itemStack -> items.add(toggle.getItemIndex() + 1, itemStack));
+                itemsColl.forEach(itemStack -> items.add(insertIndex, itemStack));
             }
-            else group.getItems().forEach(ignore -> items.remove(toggle.getItemIndex() + 1));
+            else
+                group.getItems().forEach(ignore -> items.remove(insertIndex));
 
-            toggle.off();
+            Main.pendingGroup = null;
             scrollTo(getScrollForRowIndex(topRow));
             Main.tempItemStacks = new ArrayList<>(items);
             Main.setIndexes();

@@ -21,7 +21,6 @@ import java.util.Collection;
 @Mixin(CreativeModeInventoryScreen.class)
 public class CreativeModeInventoryScreenMixin {
 
-    @Shadow private float scrollOffs;
     @Shadow private static CreativeModeTab selectedTab;
 
     @Redirect(method = "selectTab", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;getDisplayItems()Ljava/util/Collection;"))
@@ -61,8 +60,9 @@ public class CreativeModeInventoryScreenMixin {
 
         if (group != null && selectedTab.equals(group.getTab()) && group.getIconIndex() == index) {
             instance.setCarried(ItemStack.EMPTY);
-            Main.itemsChanged.toggle(index, scrollOffs);
-        } else instance.setCarried(itemStack);
+            Main.pendingGroup = group;
+        } else
+            instance.setCarried(itemStack);
     }
 
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))

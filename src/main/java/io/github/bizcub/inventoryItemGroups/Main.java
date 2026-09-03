@@ -19,7 +19,7 @@ public class Main {
     public static ArrayList<Group> groups = new ArrayList<>();
     public static ArrayList<RawGroup> rawDefaultGroups = new ArrayList<>();
     public static CreativeModeTab selectedTab;
-    public static GroupVisibilityToggle itemsChanged = new GroupVisibilityToggle();
+    public static Group pendingGroup = null;
     public static ArrayList<ItemStack> tempItemStacks = new ArrayList<>();
 
     public static void init() {
