@@ -13,12 +13,6 @@ public class SimpleConfig implements Config {
         return ConfigHolder.register(SimpleConfig.class);
     }
 
-    @Tooltip
-    public boolean addGroupsOverOld = Config.super.addGroupsOverOld();
-
-    @Tooltip
-    public boolean translateGroups = Config.super.translateGroups();
-
     @ListConfig(addToFront = true)
     public List<ItemGroup> groups = Config.super.groups();
 
@@ -32,16 +26,6 @@ public class SimpleConfig implements Config {
     @Tooltip
     @ConfigGroup("main")
     public boolean showItemsInGroup = Config.super.showItemsInGroup();
-
-    @Override
-    public boolean addGroupsOverOld() {
-        return this.addGroupsOverOld;
-    }
-
-    @Override
-    public boolean translateGroups() {
-        return this.translateGroups;
-    }
 
     @Override
     public List<ItemGroup> groups() {

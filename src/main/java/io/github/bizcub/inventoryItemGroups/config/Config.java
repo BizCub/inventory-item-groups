@@ -20,10 +20,6 @@ public interface Config {
         private static Config INSTANCE = new Config() { };
     }
 
-    default boolean addGroupsOverOld() {
-        return true;
-    }
-
     default boolean translateGroups() {
         return false;
     }

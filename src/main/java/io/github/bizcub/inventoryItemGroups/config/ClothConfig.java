@@ -26,8 +26,6 @@ public class ClothConfig implements Config {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path CONFIG_PATH = Paths.get("config", Main.MOD_ID + ".json");
 
-    public boolean addGroupsOverOld;
-    public boolean translateGroups;
     public boolean showItemsInGroup;
     public Sort sort = Sort.DEFAULT;
     public List<ItemGroup> groups = new ArrayList<>();
@@ -44,18 +42,6 @@ public class ClothConfig implements Config {
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
         ConfigCategory groups = builder.getOrCreateCategory(getTranslate("group.general"));
-        groups.addEntry(entryBuilder.startBooleanToggle(getTranslate("option.add_groups_over_old"), config.addGroupsOverOld)
-                .setDefaultValue(true)
-                .setTooltip(getTranslate("option.add_groups_over_old.tooltip"))
-                .setSaveConsumer(value -> config.addGroupsOverOld = value)
-                .build()
-        );
-        groups.addEntry(entryBuilder.startBooleanToggle(getTranslate("option.translate_groups"), config.translateGroups)
-                .setDefaultValue(false)
-                .setTooltip(getTranslate("option.translate_groups.tooltip"))
-                .setSaveConsumer(value -> config.translateGroups = value)
-                .build()
-        );
         groups.addEntry(new NestedListListEntry<ItemGroup, MultiElementListEntry<ItemGroup>>(
                 getTranslate("option.groups"),
                 config.groups,
@@ -144,7 +130,6 @@ public class ClothConfig implements Config {
             }
         } else {
             config = new ClothConfig();
-            config.addGroupsOverOld = false;
             config.groups = new ArrayList<>(Main.getDefaultGroups());
         }
     }
@@ -163,16 +148,6 @@ public class ClothConfig implements Config {
 
     private static Component getTranslate(String text) {
         return Component.translatable("text.inventory_item_groups." + text);
-    }
-
-    @Override
-    public boolean addGroupsOverOld() {
-        return this.addGroupsOverOld;
-    }
-
-    @Override
-    public boolean translateGroups() {
-        return this.translateGroups;
     }
 
     @Override

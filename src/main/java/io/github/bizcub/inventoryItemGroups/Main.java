@@ -119,14 +119,6 @@ public class Main {
         }
     }
 
-    private static void addDefaultItems(String groupName, List<String> containedItems) {
-        addItems(groupName, containedItems, List.of(), List.of(), true);
-    }
-
-    private static void addDefaultItems(String groupName, List<String> containedItems, List<String> nonContainedItems) {
-        addItems(groupName, containedItems, nonContainedItems, List.of(), true);
-    }
-
     private static void addConfigItems(String groupName, List<String> containedItems, List<String> nonContainedItems, List<String> equivalentItems, boolean hasTranslation) {
         addItems(groupName, containedItems, nonContainedItems, equivalentItems, hasTranslation);
     }
@@ -171,18 +163,12 @@ public class Main {
         rawDefaultGroups.clear();
         groups.clear();
 
-        if (ConfigHelper.isConfigLoaded() && Config.get().addGroupsOverOld() || !ConfigHelper.isConfigLoaded()) {
-            createDefaultGroups();
-        }
-
-        if (ConfigHelper.isConfigLoaded()) {
-            for (ItemGroup group : Config.get().groups()) {
-                List<String> tempListOfItemIds = group.equivalentItems.stream().map(Object::toString).toList();
-                List<String> tempListOfItems = group.containedItems.stream().map(Object::toString).toList();
-                List<String> tempListOfNonItems = group.nonContainedItems.stream().map(Object::toString).toList();
-                if (getTabId(selectedTab).equals(group.tabId))
-                    addConfigItems(group.groupName, tempListOfItems, tempListOfNonItems, tempListOfItemIds, Config.get().translateGroups());
-            }
+        for (ItemGroup group : Config.get().groups()) {
+            List<String> tempListOfItems = group.containedItems.stream().map(Object::toString).toList();
+            List<String> tempListOfNonItems = group.nonContainedItems.stream().map(Object::toString).toList();
+            List<String> tempListOfItemIds = group.equivalentItems.stream().map(Object::toString).toList();
+            if (getTabId(selectedTab).equals(group.tabId))
+                addConfigItems(group.groupName, tempListOfItems, tempListOfNonItems, tempListOfItemIds, Config.get().translateGroups());
         }
 
         rawDefaultGroups.forEach(rawGroup -> groups.add(new Group(getGroupTranslate(rawGroup), selectedTab, rawGroup.items)));
@@ -322,132 +308,6 @@ public class Main {
         group.containedItems = new ArrayList<>(containedItems);
         group.nonContainedItems = new ArrayList<>(nonContainedItems);
         list.add(group);
-    }
-
-    public static void createDefaultGroups() {
-        String selectedTabId = getTabId(selectedTab);
-        switch (selectedTabId) {
-            case "minecraft:building_blocks" -> {
-                addDefaultItems("logs", List.of("log", "stem", "bamboo_block"), List.of("stripped"));
-                addDefaultItems("woods", List.of("wood", "hyphae"), List.of("stripped"));
-                addDefaultItems("stripped_logs", List.of("log", "stem", "bamboo_block"));
-                addDefaultItems("stripped_woods", List.of("wood", "hyphae"));
-                addDefaultItems("stairs", List.of("stair"));
-                addDefaultItems("slabs", List.of("slab"));
-                addDefaultItems("planks", List.of("planks", "mosaic"));
-                addDefaultItems("fence_gates", List.of("fence_gate"));
-                addDefaultItems("fences", List.of("fence"));
-                addDefaultItems("trapdoors", List.of("trapdoor"));
-                addDefaultItems("doors", List.of("door"));
-                addDefaultItems("pressure_plates", List.of("pressure_plate"));
-                addDefaultItems("buttons", List.of("button"));
-                addDefaultItems("bars", List.of("bar"), List.of("cinnabar"));
-                addDefaultItems("chains", List.of("chain"));
-                addDefaultItems("copper", List.of("copper"));
-                addDefaultItems("walls", List.of("wall"));
-                addDefaultItems("decorative_stone", List.of("bricks", "chiseled", "tiles", "polished"));
-                addDefaultItems("sandstone", List.of("sandstone"));
-            }
-            case "minecraft:colored_blocks" -> {
-                addDefaultItems("wool", List.of("wool"));
-                addDefaultItems("carpets", List.of("carpet"));
-                addDefaultItems("glazed_terracotta", List.of("glazed_terracotta"));
-                addDefaultItems("terracotta", List.of("terracotta"));
-                addDefaultItems("concrete_powder", List.of("concrete_powder"));
-                addDefaultItems("concrete", List.of("concrete"));
-                addDefaultItems("glass_panes", List.of("glass_pane"));
-                addDefaultItems("glass", List.of("glass"));
-                addDefaultItems("shulker_boxes", List.of("shulker_box"));
-                addDefaultItems("candles", List.of("candle"));
-                addDefaultItems("banners", List.of("banner"));
-                addDefaultItems("beds", List.of("bed"));
-            }
-            case "minecraft:natural_blocks" -> {
-                addDefaultItems("ores", List.of("_ore", "debris", "raw_"));
-                addDefaultItems("mushrooms", List.of("mushroom", "fungus"));
-                addDefaultItems("saplings", List.of("sapling", "propagule"));
-                addDefaultItems("ground_cover", List.of("fern", "_grass", "bush", "_sprouts", "hanging_moss", "_vines"), List.of("_bush"));
-                addDefaultItems("seeds", List.of("seeds", "_pod"));
-                addDefaultItems("flowers", List.of("dandelion", "poppy", "orchid", "allium", "tulip", "daisy", "cornflower", "torchflower", "azure_bluet", "valley", "cactus_flower", "eyeblossom", "rose", "petals", "wildflower", "crimson_roots", "warped_roots", "sunflower", "peony", "lilac", "pitcher_plant"));
-                addDefaultItems("leaves", List.of("leaves"));
-                addDefaultItems("coral_blocks", List.of("coral_block"));
-                addDefaultItems("coral_decorations", List.of("coral"));
-                addDefaultItems("stone", List.of(":stone", "diorite", "andesite", "granite", "tuff", "basalt", "blackstone", "deepslate"));
-                addDefaultItems("logs", List.of("log", "stem"));
-            }
-            case "minecraft:functional_blocks" -> {
-                addDefaultItems("lanterns", List.of("lantern"), List.of("sea"));
-                addDefaultItems("chains", List.of("chain"));
-                addDefaultItems("bulbs", List.of("bulb"));
-                addDefaultItems("anvils", List.of("anvil"));
-                addDefaultItems("lightning_rods", List.of("lightning_rod"));
-                addDefaultItems("shelves", List.of("_shelf"));
-                addDefaultItems("hanging_signs", List.of("hanging_sign"));
-                addDefaultItems("signs", List.of("sign"));
-                addDefaultItems("chests", List.of("chest"));
-                addDefaultItems("shulker_boxes", List.of("shulker_box"));
-                addDefaultItems("beds", List.of("_bed"));
-                addDefaultItems("candles", List.of("candle"));
-                addDefaultItems("banners", List.of("banner"));
-                addDefaultItems("skulls", List.of("head", "skull"));
-                addDefaultItems("golem_statues", List.of("golem_statue"));
-                addDefaultItems("infested_stone", List.of("infested"));
-                addDefaultItems("paintings", List.of("painting"));
-            }
-            case "minecraft:redstone_blocks" -> {
-                addDefaultItems("bulbs", List.of("bulb"));
-                addDefaultItems("pressure_plates", List.of("pressure_plate"));
-                addDefaultItems("transport", List.of("minecart", "boat", "_raft"));
-                addDefaultItems("chests", List.of("chest"));
-                addDefaultItems("rails", List.of("rail"));
-            }
-            case "minecraft:tools_and_utilities" -> {
-                addDefaultItems("shovels", List.of("shovel"));
-                addDefaultItems("pickaxes", List.of("pickaxe"));
-                addDefaultItems("axes", List.of("axe"));
-                addDefaultItems("hoes", List.of("hoe"));
-                addDefaultItems("bundles", List.of("bundle"));
-                addDefaultItems("firework_rockets", List.of("firework_rocket"));
-                addDefaultItems("harnesses", List.of("harness"));
-                addDefaultItems("chest_boats", List.of("chest_boat", "chest_raft"));
-                addDefaultItems("boats", List.of("boat", "_raft"));
-                addDefaultItems("rails", List.of("rail"));
-                addDefaultItems("minecarts", List.of("minecart"));
-                addDefaultItems("discs", List.of("disc"));
-                addDefaultItems("goat_horns", List.of("goat_horn"));
-                addDefaultItems("creature_buckets", List.of("cod_bucket", "salmon_bucket", "tropical_fish_bucket", "pufferfish_bucket", "axolotl_bucket", "tadpole_bucket", "sulfur_cube_bucket"));
-            }
-            case "minecraft:combat" -> {
-                addDefaultItems("swords", List.of("sword"));
-                addDefaultItems("spears", List.of("spear"));
-                addDefaultItems("axes", List.of("axe"));
-                addDefaultItems("helmets", List.of("helmet"));
-                addDefaultItems("chestplates", List.of("chestplate"));
-                addDefaultItems("leggings", List.of("leggings"));
-                addDefaultItems("boots", List.of("boots"));
-                addDefaultItems("horse_armor", List.of("horse_armor"));
-                addDefaultItems("nautilus_armor", List.of("nautilus_armor"));
-                addDefaultItems("eggs", List.of("egg"));
-                addDefaultItems("tipped_arrows", List.of("tipped_arrow"));
-                addDefaultItems("firework_rockets", List.of("firework_rocket"));
-            }
-            case "minecraft:food_and_drinks" -> {
-                addDefaultItems("suspicious_stews", List.of("suspicious_stew"));
-                addDefaultItems("ominous_bottles", List.of("ominous_bottle"));
-                addDefaultItems("splash_potions", List.of("splash_potion"));
-                addDefaultItems("lingering_potions", List.of("lingering_potion"));
-                addDefaultItems("potions", List.of("potion"));
-                addDefaultItems("cooked_food", List.of("cooked"));
-                addDefaultItems("raw_food", List.of("beef", "porkchop", "mutton", "chicken", "rabbit", ":cod", "salmon"), List.of("rabbit_"));
-            }
-            case "minecraft:ingredients" -> {
-                addDefaultItems("dyes", List.of("dye"));
-                addDefaultItems("banner_patterns", List.of("banner_pattern"));
-                addDefaultItems("pottery_sherds", List.of("pottery_sherd"));
-                addDefaultItems("smithing_templates", List.of("smithing_template"));
-                addDefaultItems("enchanted_books", List.of("enchanted_book"));
-            }
-        }
     }
 
     private static void validateGroups() {
