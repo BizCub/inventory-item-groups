@@ -18,4 +18,8 @@ public class ItemGroup {
     @Tooltip
     @ListConfig(addToFront = true)
     public List<String> containedItems = new ArrayList<>();
+
+    @Tooltip
+    @ListConfig(addToFront = true)
+    public List<String> nonContainedItems = new ArrayList<>();
 }
