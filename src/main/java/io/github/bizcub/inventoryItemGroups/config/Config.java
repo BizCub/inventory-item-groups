@@ -20,10 +20,6 @@ public interface Config {
         private static Config INSTANCE = new Config() { };
     }
 
-    default boolean translateGroups() {
-        return false;
-    }
-
     default List<ItemGroup> groups() {
         return Main.getDefaultGroups();
     }

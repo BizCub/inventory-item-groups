@@ -3,6 +3,7 @@ package io.github.bizcub.inventoryItemGroups;
 import io.github.bizcub.inventoryItemGroups.config.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -119,24 +120,23 @@ public class Main {
         }
     }
 
-    private static void addConfigItems(String groupName, List<String> containedItems, List<String> nonContainedItems, List<String> equivalentItems, boolean hasTranslation) {
-        addItems(groupName, containedItems, nonContainedItems, equivalentItems, hasTranslation);
+    private static void addConfigItems(String groupName, List<String> containedItems, List<String> nonContainedItems, List<String> equivalentItems) {
+        addItems(groupName, containedItems, nonContainedItems, equivalentItems);
     }
 
-    private static void addItems(String groupName, List<String> containedItems, List<String> nonContainedItems, List<String> equivalentItems, boolean hasTranslation) {
+    private static void addItems(String groupName, List<String> containedItems, List<String> nonContainedItems, List<String> equivalentItems) {
         rawDefaultGroups.add(new RawGroup());
-        RawGroup rawGroup = rawDefaultGroups.get(rawDefaultGroups.size()-1);
+        RawGroup rawGroup = rawDefaultGroups.get(rawDefaultGroups.size() - 1);
         if (nonContainedItems.isEmpty()) nonContainedItems = List.of("1111111");
 
         for (ItemStack itemStack : selectedTab.getDisplayItems()) {
             String itemName = itemStack.getItem().toString();
-            String itemNameWithoutNamespace = itemName.contains(":") ? itemName.split(":")[1] : itemName;
             boolean flag = false;
 
             for (String containedItem : containedItems) {
                 for (String nonContainedItem : nonContainedItems) {
                     if (itemName.contains(containedItem) && !itemName.contains(nonContainedItem)) {
-                        addRawGroup(rawGroup, groupName, itemStack, hasTranslation);
+                        addRawGroup(rawGroup, groupName, itemStack);
                         flag = true;
                         break;
                     }
@@ -146,17 +146,16 @@ public class Main {
 
             for (String equivalentItem : equivalentItems) {
                 if (equivalentItem.equals(itemName)) {
-                    addRawGroup(rawGroup, groupName, itemStack, hasTranslation);
+                    addRawGroup(rawGroup, groupName, itemStack);
                     break;
                 }
             }
         }
     }
 
-    private static void addRawGroup(RawGroup rawGroup, String groupName, ItemStack itemStack, boolean hasTranslation) {
+    private static void addRawGroup(RawGroup rawGroup, String groupName, ItemStack itemStack) {
         rawGroup.items.add(itemStack);
         rawGroup.name = groupName;
-        rawGroup.hasTranslation = hasTranslation;
     }
 
     public static void createGroups() {
@@ -168,7 +167,7 @@ public class Main {
             List<String> tempListOfNonItems = group.nonContainedItems.stream().map(Object::toString).toList();
             List<String> tempListOfItemIds = group.equivalentItems.stream().map(Object::toString).toList();
             if (getTabId(selectedTab).equals(group.tabId))
-                addConfigItems(group.groupName, tempListOfItems, tempListOfNonItems, tempListOfItemIds, Config.get().translateGroups());
+                addConfigItems(group.groupName, tempListOfItems, tempListOfNonItems, tempListOfItemIds);
         }
 
         rawDefaultGroups.forEach(rawGroup -> groups.add(new Group(getGroupTranslate(rawGroup), selectedTab, rawGroup.items)));
@@ -318,8 +317,9 @@ public class Main {
     public static Component getGroupTranslate(RawGroup rawGroup) {
         if (rawGroup.name == null) rawGroup.name = "name";
 
-        return (ConfigHelper.isConfigLoaded() && Config.get().translateGroups()) || rawGroup.hasTranslation
-                ? Component.translatable("group_name.inventory_item_groups." + rawGroup.name)
+        String key = "group_name.inventory_item_groups." + rawGroup.name;
+        return Language.getInstance().has(key)
+                ? Component.translatable(key)
                 : Component.literal(rawGroup.name);
     }
 
