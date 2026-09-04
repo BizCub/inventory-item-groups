@@ -1,15 +1,13 @@
 package io.github.bizcub.inventoryItemGroups;
 
 import io.github.bizcub.inventoryItemGroups.config.Config;
-import io.github.bizcub.inventoryItemGroups.config.ConfigHelper;
 import io.github.bizcub.inventoryItemGroups.config.Sort;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public class Group {
@@ -36,16 +34,10 @@ public class Group {
     }
 
     public ArrayList<ItemStack> sort(ArrayList<ItemStack> itemStacks) {
-        LinkedHashMap<ItemStack, String> map = new LinkedHashMap<>();
-        for (ItemStack itemStack : itemStacks) map.put(itemStack, itemStack.getItem().toString());
-
-        if (ConfigHelper.isConfigLoaded() && Config.get().sort() == Sort.ALPHABETICALLY) {
-            map = map.entrySet().stream()
-                    .sorted(Map.Entry.comparingByValue())
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        if (Config.get().sort() == Sort.ALPHABETICALLY) {
+            itemStacks.sort(Comparator.comparing(stack -> stack.getItem().toString()));
         }
-
-        return new ArrayList<>(map.keySet());
+        return itemStacks;
     }
 
     public ArrayList<ItemStack> removeDuplicates(ArrayList<ItemStack> list) {
@@ -63,13 +55,13 @@ public class Group {
     }
 
     public ArrayList<ItemStack> getItems() {
-        ArrayList<ItemStack> list = new ArrayList<>();
-        this.itemStacks.forEach(entry -> list.add(entry.getItemStack()));
-        return list;
+        return this.itemStacks.stream()
+                .map(IndexedItemStack::getItemStack)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ArrayList<IndexedItemStack> getItemsWithIndexes() {
-        return itemStacks;
+        return this.itemStacks;
     }
 
     public void setItemWithIndex(ItemStack item, int index) {

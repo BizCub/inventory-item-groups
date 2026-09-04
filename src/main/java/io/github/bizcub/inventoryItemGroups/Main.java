@@ -11,7 +11,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static final String MOD_ID = /*$ mod_id*/ "inventory_item_groups";
@@ -86,10 +87,11 @@ public class Main {
     }
 
     public static Group findGroupByIndex(int index) {
-        for (Group group : groups)
-            for (IndexedItemStack entry : group.getItemsWithIndexes())
-                if (entry.getIndex() == index || group.getIconIndex() == index)
-                    return group;
+        for (Group group : groups) {
+            if (group.getIconIndex() == index || group.getItemsWithIndexes().stream().anyMatch(entry -> entry.getIndex() == index)) {
+                return group;
+            }
+        }
         return null;
     }
 
@@ -174,144 +176,147 @@ public class Main {
         validateGroups();
     }
 
+    private static void validateGroups() {
+        groups.removeIf(group -> group.getItems().size() < 3);
+    }
+
     public static List<ItemGroup> getDefaultGroups() {
         List<ItemGroup> defaults = new ArrayList<>();
 
         String tabId = "minecraft:building_blocks";
-        addDefaultGroup(defaults, tabId, "logs", List.of("log", "stem", "bamboo_block"), List.of("stripped"));
-        addDefaultGroup(defaults, tabId, "woods", List.of("wood", "hyphae"), List.of("stripped"));
-        addDefaultGroup(defaults, tabId, "stripped_logs", List.of("log", "stem", "bamboo_block"), List.of());
-        addDefaultGroup(defaults, tabId, "stripped_woods", List.of("wood", "hyphae"), List.of());
-        addDefaultGroup(defaults, tabId, "stairs", List.of("stair"), List.of());
-        addDefaultGroup(defaults, tabId, "slabs", List.of("slab"), List.of());
-        addDefaultGroup(defaults, tabId, "planks", List.of("planks", "mosaic"), List.of());
-        addDefaultGroup(defaults, tabId, "fence_gates", List.of("fence_gate"), List.of());
-        addDefaultGroup(defaults, tabId, "fences", List.of("fence"), List.of());
-        addDefaultGroup(defaults, tabId, "trapdoors", List.of("trapdoor"), List.of());
-        addDefaultGroup(defaults, tabId, "doors", List.of("door"), List.of());
-        addDefaultGroup(defaults, tabId, "pressure_plates", List.of("pressure_plate"), List.of());
-        addDefaultGroup(defaults, tabId, "buttons", List.of("button"), List.of());
-        addDefaultGroup(defaults, tabId, "bars", List.of("bar"), List.of("cinnabar"));
-        addDefaultGroup(defaults, tabId, "chains", List.of("chain"), List.of());
-        addDefaultGroup(defaults, tabId, "copper", List.of("copper"), List.of());
-        addDefaultGroup(defaults, tabId, "walls", List.of("wall"), List.of());
-        addDefaultGroup(defaults, tabId, "decorative_stone", List.of("bricks", "chiseled", "tiles", "polished"), List.of());
-        addDefaultGroup(defaults, tabId, "sandstone", List.of("sandstone"), List.of());
+        addGroup(defaults, tabId, "logs", List.of("log", "stem", "bamboo_block"), List.of("stripped"));
+        addGroup(defaults, tabId, "woods", List.of("wood", "hyphae"), List.of("stripped"));
+        addGroup(defaults, tabId, "stripped_logs", List.of("log", "stem", "bamboo_block"));
+        addGroup(defaults, tabId, "stripped_woods", List.of("wood", "hyphae"));
+        addGroup(defaults, tabId, "stairs", List.of("stair"));
+        addGroup(defaults, tabId, "slabs", List.of("slab"));
+        addGroup(defaults, tabId, "planks", List.of("planks", "mosaic"));
+        addGroup(defaults, tabId, "fence_gates", List.of("fence_gate"));
+        addGroup(defaults, tabId, "fences", List.of("fence"));
+        addGroup(defaults, tabId, "trapdoors", List.of("trapdoor"));
+        addGroup(defaults, tabId, "doors", List.of("door"));
+        addGroup(defaults, tabId, "pressure_plates", List.of("pressure_plate"));
+        addGroup(defaults, tabId, "buttons", List.of("button"));
+        addGroup(defaults, tabId, "bars", List.of("bar"), List.of("cinnabar"));
+        addGroup(defaults, tabId, "chains", List.of("chain"));
+        addGroup(defaults, tabId, "copper", List.of("copper"));
+        addGroup(defaults, tabId, "walls", List.of("wall"));
+        addGroup(defaults, tabId, "decorative_stone", List.of("bricks", "chiseled", "tiles", "polished"));
+        addGroup(defaults, tabId, "sandstone", List.of("sandstone"));
 
         tabId = "minecraft:colored_blocks";
-        addDefaultGroup(defaults, tabId, "wool", List.of("wool"), List.of());
-        addDefaultGroup(defaults, tabId, "carpets", List.of("carpet"), List.of());
-        addDefaultGroup(defaults, tabId, "glazed_terracotta", List.of("glazed_terracotta"), List.of());
-        addDefaultGroup(defaults, tabId, "terracotta", List.of("terracotta"), List.of());
-        addDefaultGroup(defaults, tabId, "concrete_powder", List.of("concrete_powder"), List.of());
-        addDefaultGroup(defaults, tabId, "concrete", List.of("concrete"), List.of());
-        addDefaultGroup(defaults, tabId, "glass_panes", List.of("glass_pane"), List.of());
-        addDefaultGroup(defaults, tabId, "glass", List.of("glass"), List.of());
-        addDefaultGroup(defaults, tabId, "shulker_boxes", List.of("shulker_box"), List.of());
-        addDefaultGroup(defaults, tabId, "candles", List.of("candle"), List.of());
-        addDefaultGroup(defaults, tabId, "banners", List.of("banner"), List.of());
-        addDefaultGroup(defaults, tabId, "beds", List.of("bed"), List.of());
+        addGroup(defaults, tabId, "wool", List.of("wool"));
+        addGroup(defaults, tabId, "carpets", List.of("carpet"));
+        addGroup(defaults, tabId, "glazed_terracotta", List.of("glazed_terracotta"));
+        addGroup(defaults, tabId, "terracotta", List.of("terracotta"));
+        addGroup(defaults, tabId, "concrete_powder", List.of("concrete_powder"));
+        addGroup(defaults, tabId, "concrete", List.of("concrete"));
+        addGroup(defaults, tabId, "glass_panes", List.of("glass_pane"));
+        addGroup(defaults, tabId, "glass", List.of("glass"));
+        addGroup(defaults, tabId, "shulker_boxes", List.of("shulker_box"));
+        addGroup(defaults, tabId, "candles", List.of("candle"));
+        addGroup(defaults, tabId, "banners", List.of("banner"));
+        addGroup(defaults, tabId, "beds", List.of("bed"));
 
         tabId = "minecraft:natural_blocks";
-        addDefaultGroup(defaults, tabId, "ores", List.of("_ore", "debris", "raw_"), List.of());
-        addDefaultGroup(defaults, tabId, "mushrooms", List.of("mushroom", "fungus"), List.of());
-        addDefaultGroup(defaults, tabId, "saplings", List.of("sapling", "propagule"), List.of());
-        addDefaultGroup(defaults, tabId, "ground_cover", List.of("fern", "_grass", "bush", "_sprouts", "hanging_moss", "_vines"), List.of("_bush"));
-        addDefaultGroup(defaults, tabId, "seeds", List.of("seeds", "_pod"), List.of());
-        addDefaultGroup(defaults, tabId, "flowers", List.of("dandelion", "poppy", "orchid", "allium", "tulip", "daisy", "cornflower", "torchflower", "azure_bluet", "valley", "cactus_flower", "eyeblossom", "rose", "petals", "wildflower", "crimson_roots", "warped_roots", "sunflower", "peony", "lilac", "pitcher_plant"), List.of());
-        addDefaultGroup(defaults, tabId, "leaves", List.of("leaves"), List.of());
-        addDefaultGroup(defaults, tabId, "coral_blocks", List.of("coral_block"), List.of());
-        addDefaultGroup(defaults, tabId, "coral_decorations", List.of("coral"), List.of());
-        addDefaultGroup(defaults, tabId, "stone", List.of(":stone", "diorite", "andesite", "granite", "tuff", "basalt", "blackstone", "deepslate"), List.of());
-        addDefaultGroup(defaults, tabId, "logs", List.of("log", "stem"), List.of());
+        addGroup(defaults, tabId, "ores", List.of("_ore", "debris", "raw_"));
+        addGroup(defaults, tabId, "mushrooms", List.of("mushroom", "fungus"));
+        addGroup(defaults, tabId, "saplings", List.of("sapling", "propagule"));
+        addGroup(defaults, tabId, "ground_cover", List.of("fern", "_grass", "bush", "_sprouts", "hanging_moss", "_vines"), List.of("_bush"));
+        addGroup(defaults, tabId, "seeds", List.of("seeds", "_pod"));
+        addGroup(defaults, tabId, "flowers", List.of("dandelion", "poppy", "orchid", "allium", "tulip", "daisy", "cornflower", "torchflower", "azure_bluet", "valley", "cactus_flower", "eyeblossom", "rose", "petals", "wildflower", "crimson_roots", "warped_roots", "sunflower", "peony", "lilac", "pitcher_plant"));
+        addGroup(defaults, tabId, "leaves", List.of("leaves"));
+        addGroup(defaults, tabId, "coral_blocks", List.of("coral_block"));
+        addGroup(defaults, tabId, "coral_decorations", List.of("coral"));
+        addGroup(defaults, tabId, "stone", List.of(":stone", "diorite", "andesite", "granite", "tuff", "basalt", "blackstone", "deepslate"));
+        addGroup(defaults, tabId, "logs", List.of("log", "stem"));
 
         tabId = "minecraft:functional_blocks";
-        addDefaultGroup(defaults, tabId, "lanterns", List.of("lantern"), List.of("sea"));
-        addDefaultGroup(defaults, tabId, "chains", List.of("chain"), List.of());
-        addDefaultGroup(defaults, tabId, "bulbs", List.of("bulb"), List.of());
-        addDefaultGroup(defaults, tabId, "anvils", List.of("anvil"), List.of());
-        addDefaultGroup(defaults, tabId, "lightning_rods", List.of("lightning_rod"), List.of());
-        addDefaultGroup(defaults, tabId, "shelves", List.of("_shelf"), List.of());
-        addDefaultGroup(defaults, tabId, "hanging_signs", List.of("hanging_sign"), List.of());
-        addDefaultGroup(defaults, tabId, "signs", List.of("sign"), List.of());
-        addDefaultGroup(defaults, tabId, "chests", List.of("chest"), List.of());
-        addDefaultGroup(defaults, tabId, "shulker_boxes", List.of("shulker_box"), List.of());
-        addDefaultGroup(defaults, tabId, "beds", List.of("_bed"), List.of());
-        addDefaultGroup(defaults, tabId, "candles", List.of("candle"), List.of());
-        addDefaultGroup(defaults, tabId, "banners", List.of("banner"), List.of());
-        addDefaultGroup(defaults, tabId, "skulls", List.of("head", "skull"), List.of());
-        addDefaultGroup(defaults, tabId, "golem_statues", List.of("golem_statue"), List.of());
-        addDefaultGroup(defaults, tabId, "infested_stone", List.of("infested"), List.of());
-        addDefaultGroup(defaults, tabId, "paintings", List.of("painting"), List.of());
+        addGroup(defaults, tabId, "lanterns", List.of("lantern"), List.of("sea"));
+        addGroup(defaults, tabId, "chains", List.of("chain"));
+        addGroup(defaults, tabId, "bulbs", List.of("bulb"));
+        addGroup(defaults, tabId, "anvils", List.of("anvil"));
+        addGroup(defaults, tabId, "lightning_rods", List.of("lightning_rod"));
+        addGroup(defaults, tabId, "shelves", List.of("_shelf"));
+        addGroup(defaults, tabId, "hanging_signs", List.of("hanging_sign"));
+        addGroup(defaults, tabId, "signs", List.of("sign"));
+        addGroup(defaults, tabId, "chests", List.of("chest"));
+        addGroup(defaults, tabId, "shulker_boxes", List.of("shulker_box"));
+        addGroup(defaults, tabId, "beds", List.of("_bed"));
+        addGroup(defaults, tabId, "candles", List.of("candle"));
+        addGroup(defaults, tabId, "banners", List.of("banner"));
+        addGroup(defaults, tabId, "skulls", List.of("head", "skull"));
+        addGroup(defaults, tabId, "golem_statues", List.of("golem_statue"));
+        addGroup(defaults, tabId, "infested_stone", List.of("infested"));
+        addGroup(defaults, tabId, "paintings", List.of("painting"));
 
         tabId = "minecraft:redstone_blocks";
-        addDefaultGroup(defaults, tabId, "bulbs", List.of("bulb"), List.of());
-        addDefaultGroup(defaults, tabId, "pressure_plates", List.of("pressure_plate"), List.of());
-        addDefaultGroup(defaults, tabId, "transport", List.of("minecart", "boat", "_raft"), List.of());
-        addDefaultGroup(defaults, tabId, "chests", List.of("chest"), List.of());
-        addDefaultGroup(defaults, tabId, "rails", List.of("rail"), List.of());
+        addGroup(defaults, tabId, "bulbs", List.of("bulb"));
+        addGroup(defaults, tabId, "pressure_plates", List.of("pressure_plate"));
+        addGroup(defaults, tabId, "transport", List.of("minecart", "boat", "_raft"));
+        addGroup(defaults, tabId, "chests", List.of("chest"));
+        addGroup(defaults, tabId, "rails", List.of("rail"));
 
         tabId = "minecraft:tools_and_utilities";
-        addDefaultGroup(defaults, tabId, "shovels", List.of("shovel"), List.of());
-        addDefaultGroup(defaults, tabId, "pickaxes", List.of("pickaxe"), List.of());
-        addDefaultGroup(defaults, tabId, "axes", List.of("axe"), List.of());
-        addDefaultGroup(defaults, tabId, "hoes", List.of("hoe"), List.of());
-        addDefaultGroup(defaults, tabId, "bundles", List.of("bundle"), List.of());
-        addDefaultGroup(defaults, tabId, "firework_rockets", List.of("firework_rocket"), List.of());
-        addDefaultGroup(defaults, tabId, "harnesses", List.of("harness"), List.of());
-        addDefaultGroup(defaults, tabId, "chest_boats", List.of("chest_boat", "chest_raft"), List.of());
-        addDefaultGroup(defaults, tabId, "boats", List.of("boat", "_raft"), List.of());
-        addDefaultGroup(defaults, tabId, "rails", List.of("rail"), List.of());
-        addDefaultGroup(defaults, tabId, "minecarts", List.of("minecart"), List.of());
-        addDefaultGroup(defaults, tabId, "discs", List.of("disc"), List.of());
-        addDefaultGroup(defaults, tabId, "goat_horns", List.of("goat_horn"), List.of());
-        addDefaultGroup(defaults, tabId, "creature_buckets", List.of("cod_bucket", "salmon_bucket", "tropical_fish_bucket", "pufferfish_bucket", "axolotl_bucket", "tadpole_bucket", "sulfur_cube_bucket"), List.of());
+        addGroup(defaults, tabId, "shovels", List.of("shovel"));
+        addGroup(defaults, tabId, "pickaxes", List.of("pickaxe"));
+        addGroup(defaults, tabId, "axes", List.of("axe"));
+        addGroup(defaults, tabId, "hoes", List.of("hoe"));
+        addGroup(defaults, tabId, "bundles", List.of("bundle"));
+        addGroup(defaults, tabId, "firework_rockets", List.of("firework_rocket"));
+        addGroup(defaults, tabId, "harnesses", List.of("harness"));
+        addGroup(defaults, tabId, "chest_boats", List.of("chest_boat", "chest_raft"));
+        addGroup(defaults, tabId, "boats", List.of("boat", "_raft"));
+        addGroup(defaults, tabId, "rails", List.of("rail"));
+        addGroup(defaults, tabId, "minecarts", List.of("minecart"));
+        addGroup(defaults, tabId, "discs", List.of("disc"));
+        addGroup(defaults, tabId, "goat_horns", List.of("goat_horn"));
+        addGroup(defaults, tabId, "creature_buckets", List.of("cod_bucket", "salmon_bucket", "tropical_fish_bucket", "pufferfish_bucket", "axolotl_bucket", "tadpole_bucket", "sulfur_cube_bucket"));
 
         tabId = "minecraft:combat";
-        addDefaultGroup(defaults, tabId, "swords", List.of("sword"), List.of());
-        addDefaultGroup(defaults, tabId, "spears", List.of("spear"), List.of());
-        addDefaultGroup(defaults, tabId, "axes", List.of("axe"), List.of());
-        addDefaultGroup(defaults, tabId, "helmets", List.of("helmet"), List.of());
-        addDefaultGroup(defaults, tabId, "chestplates", List.of("chestplate"), List.of());
-        addDefaultGroup(defaults, tabId, "leggings", List.of("leggings"), List.of());
-        addDefaultGroup(defaults, tabId, "boots", List.of("boots"), List.of());
-        addDefaultGroup(defaults, tabId, "horse_armor", List.of("horse_armor"), List.of());
-        addDefaultGroup(defaults, tabId, "nautilus_armor", List.of("nautilus_armor"), List.of());
-        addDefaultGroup(defaults, tabId, "eggs", List.of("egg"), List.of());
-        addDefaultGroup(defaults, tabId, "tipped_arrows", List.of("tipped_arrow"), List.of());
-        addDefaultGroup(defaults, tabId, "firework_rockets", List.of("firework_rocket"), List.of());
+        addGroup(defaults, tabId, "swords", List.of("sword"));
+        addGroup(defaults, tabId, "spears", List.of("spear"));
+        addGroup(defaults, tabId, "axes", List.of("axe"));
+        addGroup(defaults, tabId, "helmets", List.of("helmet"));
+        addGroup(defaults, tabId, "chestplates", List.of("chestplate"));
+        addGroup(defaults, tabId, "leggings", List.of("leggings"));
+        addGroup(defaults, tabId, "boots", List.of("boots"));
+        addGroup(defaults, tabId, "horse_armor", List.of("horse_armor"));
+        addGroup(defaults, tabId, "nautilus_armor", List.of("nautilus_armor"));
+        addGroup(defaults, tabId, "eggs", List.of("egg"));
+        addGroup(defaults, tabId, "tipped_arrows", List.of("tipped_arrow"));
+        addGroup(defaults, tabId, "firework_rockets", List.of("firework_rocket"));
 
         tabId = "minecraft:food_and_drinks";
-        addDefaultGroup(defaults, tabId, "suspicious_stews", List.of("suspicious_stew"), List.of());
-        addDefaultGroup(defaults, tabId, "ominous_bottles", List.of("ominous_bottle"), List.of());
-        addDefaultGroup(defaults, tabId, "splash_potions", List.of("splash_potion"), List.of());
-        addDefaultGroup(defaults, tabId, "lingering_potions", List.of("lingering_potion"), List.of());
-        addDefaultGroup(defaults, tabId, "potions", List.of("potion"), List.of());
-        addDefaultGroup(defaults, tabId, "cooked_food", List.of("cooked"), List.of());
-        addDefaultGroup(defaults, tabId, "raw_food", List.of("beef", "porkchop", "mutton", "chicken", "rabbit", ":cod", "salmon"), List.of("rabbit_"));
+        addGroup(defaults, tabId, "suspicious_stews", List.of("suspicious_stew"));
+        addGroup(defaults, tabId, "ominous_bottles", List.of("ominous_bottle"));
+        addGroup(defaults, tabId, "splash_potions", List.of("splash_potion"));
+        addGroup(defaults, tabId, "lingering_potions", List.of("lingering_potion"));
+        addGroup(defaults, tabId, "potions", List.of("potion"));
+        addGroup(defaults, tabId, "cooked_food", List.of("cooked"));
+        addGroup(defaults, tabId, "raw_food", List.of("beef", "porkchop", "mutton", "chicken", "rabbit", ":cod", "salmon"), List.of("rabbit_"));
 
         tabId = "minecraft:ingredients";
-        addDefaultGroup(defaults, tabId, "dyes", List.of("dye"), List.of());
-        addDefaultGroup(defaults, tabId, "banner_patterns", List.of("banner_pattern"), List.of());
-        addDefaultGroup(defaults, tabId, "pottery_sherds", List.of("pottery_sherd"), List.of());
-        addDefaultGroup(defaults, tabId, "smithing_templates", List.of("smithing_template"), List.of());
-        addDefaultGroup(defaults, tabId, "enchanted_books", List.of("enchanted_book"), List.of());
+        addGroup(defaults, tabId, "dyes", List.of("dye"));
+        addGroup(defaults, tabId, "banner_patterns", List.of("banner_pattern"));
+        addGroup(defaults, tabId, "pottery_sherds", List.of("pottery_sherd"));
+        addGroup(defaults, tabId, "smithing_templates", List.of("smithing_template"));
+        addGroup(defaults, tabId, "enchanted_books", List.of("enchanted_book"));
 
         return defaults;
     }
 
-    private static void addDefaultGroup(List<ItemGroup> list, String tabId, String groupName, List<String> containedItems, List<String> nonContainedItems) {
+    private static void addGroup(List<ItemGroup> list, String tabId, String groupName, List<String> containedItems) {
+        addGroup(list, tabId, groupName, containedItems, List.of());
+    }
+
+    private static void addGroup(List<ItemGroup> list, String tabId, String groupName, List<String> containedItems, List<String> nonContainedItems) {
         ItemGroup group = new ItemGroup();
         group.tabId = tabId;
         group.groupName = groupName;
         group.containedItems = new ArrayList<>(containedItems);
         group.nonContainedItems = new ArrayList<>(nonContainedItems);
         list.add(group);
-    }
-
-    private static void validateGroups() {
-        groups.removeIf(group -> group.getItems().isEmpty());
-        groups.removeIf(group -> group.getItems().size() < 3);
     }
 
     public static Component getGroupTranslate(RawGroup rawGroup) {
