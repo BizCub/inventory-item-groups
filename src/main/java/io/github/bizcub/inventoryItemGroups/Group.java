@@ -21,8 +21,8 @@ public class Group {
         this.name = name;
         this.tab = tab;
         this.visibility = false;
-        itemStacks = removeDuplicates(itemStacks);
-        itemStacks = sort(itemStacks);
+        removeDuplicates(itemStacks);
+        sort(itemStacks);
 
         if (!itemStacks.isEmpty()) {
             this.icon = new IndexedItemStack(itemStacks.get(0), -1);
@@ -33,17 +33,15 @@ public class Group {
         }
     }
 
-    public ArrayList<ItemStack> sort(ArrayList<ItemStack> itemStacks) {
+    private void sort(ArrayList<ItemStack> itemStacks) {
         if (Config.get().sort() == Sort.ALPHABETICALLY) {
             itemStacks.sort(Comparator.comparing(stack -> stack.getItem().toString()));
         }
-        return itemStacks;
     }
 
-    public ArrayList<ItemStack> removeDuplicates(ArrayList<ItemStack> list) {
+    private void removeDuplicates(ArrayList<ItemStack> list) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(tab);
         groupsOnSelectedTab.forEach(group -> list.removeAll(group.getItems()));
-        return list;
     }
 
     public Component getName() {

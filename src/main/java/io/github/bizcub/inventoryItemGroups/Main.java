@@ -152,10 +152,6 @@ public class Main {
         }
 
         rawDefaultGroups.forEach(rawGroup -> groups.add(new Group(getGroupTranslate(rawGroup), selectedTab, rawGroup.items)));
-        validateGroups();
-    }
-
-    private static void validateGroups() {
         groups.removeIf(group -> group.getItems().size() < 3);
     }
 
@@ -299,8 +295,6 @@ public class Main {
     }
 
     public static Component getGroupTranslate(RawGroup rawGroup) {
-        if (rawGroup.name == null) rawGroup.name = "name";
-
         String key = "group_name.inventory_item_groups." + rawGroup.name;
         return Language.getInstance().has(key)
                 ? Component.translatable(key)

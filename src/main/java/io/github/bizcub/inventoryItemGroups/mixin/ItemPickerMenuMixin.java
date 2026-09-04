@@ -5,6 +5,7 @@ import io.github.bizcub.inventoryItemGroups.Main;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
@@ -17,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Mixin(CreativeModeInventoryScreen.ItemPickerMenu.class)
 public abstract class ItemPickerMenuMixin {
@@ -52,14 +54,7 @@ public abstract class ItemPickerMenuMixin {
 
     @Unique
     private int iig$currentTopRow() {
-        var slots = ((AbstractContainerMenu) (Object) this).slots;
-        if (slots.isEmpty()) return 0;
-        int topLeft = slots.size() >= 2 ? Main.tempItemStacks.indexOf(slots.get(1).getItem()) : -1;
-        if (topLeft >= 0) {
-            if (!slots.get(0).getItem().equals(slots.get(1).getItem())) topLeft--;
-        } else {
-            topLeft = Main.tempItemStacks.indexOf(slots.get(0).getItem());
-        }
-        return Math.max(topLeft, 0) / 9;
+        List<Slot> slots = ((AbstractContainerMenu) (Object) this).slots;
+        return Math.max(Main.calculateIndex(slots, 0), 0) / 9;
     }
 }
