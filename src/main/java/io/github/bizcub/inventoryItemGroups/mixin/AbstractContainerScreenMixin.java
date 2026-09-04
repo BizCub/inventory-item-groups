@@ -1,5 +1,7 @@
 package io.github.bizcub.inventoryItemGroups.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.bizcub.inventoryItemGroups.Group;
 import io.github.bizcub.inventoryItemGroups.IndexedItemStack;
 import io.github.bizcub.inventoryItemGroups.Main;
@@ -22,7 +24,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
@@ -40,8 +41,6 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     @Unique private static boolean iig$onScreen(int index) {
         return index <= 44;
     }
-
-    @Shadow protected abstract List<Component> getTooltipFromContainerItem(ItemStack itemStack);
 
     @Unique
     private Identifier iig$getSprite(String location) {
@@ -68,15 +67,15 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     //~ if >=26.1 'renderSlot' -> 'extractSlot'
-    @Redirect(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;getItem()Lnet/minecraft/world/item/ItemStack;", ordinal = 0))
-    private ItemStack iig$renderItems(Slot slot) {
+    @WrapOperation(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;getItem()Lnet/minecraft/world/item/ItemStack;", ordinal = 0))
+    private ItemStack iig$renderItems(Slot slot, Operation<ItemStack> original) {
         int index = Main.calculateIndex(menu.slots, slot.index);
         Group group = Main.findGroupByIndex(index);
 
         return (ConfigHelper.isConfigLoaded() && Config.get().showItemsInGroup()
                 && group != null && group.getIconIndex() == index && iig$onScreen(slot.index))
                 ? group.getItems().get(seconds % group.getItems().size())
-                : slot.getItem();
+                : original.call(slot);
     }
 
     //~ if >=26.1 'renderSlot' -> 'extractSlot'
@@ -116,14 +115,14 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     }
 
     //~ if >=26.1 'renderTooltip' -> 'extractTooltip'
-    @Redirect(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;getTooltipFromContainerItem(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
-    private List<Component> iig$renderGroupName(AbstractContainerScreen instance, ItemStack itemStack) {
+    @WrapOperation(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;getTooltipFromContainerItem(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
+    private List<Component> iig$renderGroupName(AbstractContainerScreen instance, ItemStack itemStack, Operation<List<Component>> original) {
         int index = Main.calculateIndex(menu.slots, hoveredSlot.index);
         Group group = Main.findGroupByIndex(index);
 
         return (group != null && Main.selectedTab.equals(group.getTab()) && index == group.getIconIndex() && iig$onScreen(hoveredSlot.index))
                 ? List.of(group.getName())
-                : this.getTooltipFromContainerItem(itemStack);
+                : original.call(instance, itemStack);
     }
 
     //~ if >=26.1 'renderTooltip' -> 'extractTooltip'
