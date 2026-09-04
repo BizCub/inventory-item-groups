@@ -13,24 +13,17 @@ public class SimpleConfig implements Config {
         return ConfigHolder.register(SimpleConfig.class);
     }
 
-    @ListConfig(addToFront = true)
-    public List<ItemGroup> groups = Config.super.groups();
-
-    @ListConfig(editable = false)
-    public List<Component> idOfMenuTabs = Main.getTabIds();
-
-    @ConfigGroup("main")
     @EnumConfig(translate = true)
     public Sort sort = Config.super.sort();
 
     @Tooltip
-    @ConfigGroup("main")
     public boolean showItemsInGroup = Config.super.showItemsInGroup();
 
-    @Override
-    public List<ItemGroup> groups() {
-        return this.groups;
-    }
+    @ListConfig(addToFront = true, translateElements = true)
+    public List<ItemGroup> groups = Config.super.groups();
+
+    @ListConfig(editable = false)
+    public List<Component> idOfMenuTabs = Main.getTabIds();
 
     @Override
     public Sort sort() {
@@ -40,5 +33,10 @@ public class SimpleConfig implements Config {
     @Override
     public boolean showItemsInGroup() {
         return this.showItemsInGroup;
+    }
+
+    @Override
+    public List<ItemGroup> groups() {
+        return this.groups;
     }
 }

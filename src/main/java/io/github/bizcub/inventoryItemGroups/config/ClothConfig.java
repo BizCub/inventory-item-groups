@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +25,10 @@ public class ClothConfig implements Config {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path CONFIG_PATH = Paths.get("config", Main.MOD_ID + ".json");
 
-    public boolean showItemsInGroup;
-    public Sort sort = Sort.DEFAULT;
-    public List<ItemGroup> groups = new ArrayList<>();
     public static ClothConfig config;
+    public Sort sort = Config.super.sort();
+    public boolean showItemsInGroup = Config.super.showItemsInGroup();
+    public List<ItemGroup> groups = Config.super.groups();
 
     public static Screen getConfigScreen(Screen parent) {
         load();
@@ -37,11 +36,23 @@ public class ClothConfig implements Config {
 
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(getTranslate("title"))
+                .setTitle(getTranslate("group.general"))
                 .setSavingRunnable(config::save);
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-        ConfigCategory groups = builder.getOrCreateCategory(getTranslate("group.general"));
+        ConfigCategory groups = builder.getOrCreateCategory(Component.empty());
+        groups.addEntry(entryBuilder.startEnumSelector(getTranslate("option.sort"), Sort.class, config.sort)
+                .setDefaultValue(Sort.DEFAULT)
+                .setEnumNameProvider(e -> getTranslate(((Sort) e).getKey()))
+                .setSaveConsumer(value -> config.sort = value)
+                .build()
+        );
+        groups.addEntry(entryBuilder.startBooleanToggle(getTranslate("option.show_items_in_group"), config.showItemsInGroup)
+                .setDefaultValue(false)
+                .setTooltip(getTranslate("option.show_items_in_group.tooltip"))
+                .setSaveConsumer(value -> config.showItemsInGroup = value)
+                .build()
+        );
         groups.addEntry(new NestedListListEntry<ItemGroup, MultiElementListEntry<ItemGroup>>(
                 getTranslate("option.groups"),
                 config.groups,
@@ -56,7 +67,7 @@ public class ClothConfig implements Config {
                     ItemGroup currentElem = elem != null ? elem : new ItemGroup();
                     if (currentElem.groupName == null) currentElem.groupName = "name";
                     return new MultiElementListEntry<>(
-                            getTranslate("option.groups"),
+                            getTranslate("option.groups.element"),
                             currentElem,
                             List.of(
                                     entryBuilder.startStrField(getTranslate("option.groups.group_name"), currentElem.groupName)
@@ -100,20 +111,6 @@ public class ClothConfig implements Config {
         Main.getTabIds().forEach(id -> ids.add(entryBuilder.startTextDescription(id).build()));
         groups.addEntry(ids.build());
 
-        ConfigCategory main = builder.getOrCreateCategory(getTranslate("group.main"));
-        main.addEntry(entryBuilder.startEnumSelector(getTranslate("option.sort"), Sort.class, config.sort)
-                .setDefaultValue(Sort.DEFAULT)
-                .setEnumNameProvider(e -> getTranslate(((Sort) e).getKey()))
-                .setSaveConsumer(value -> config.sort = value)
-                .build()
-        );
-        main.addEntry(entryBuilder.startBooleanToggle(getTranslate("option.show_items_in_group"), config.showItemsInGroup)
-                .setDefaultValue(false)
-                .setTooltip(getTranslate("option.show_items_in_group.tooltip"))
-                .setSaveConsumer(value -> config.showItemsInGroup = value)
-                .build()
-        );
-
         return builder.build();
     }
 
@@ -130,7 +127,6 @@ public class ClothConfig implements Config {
             }
         } else {
             config = new ClothConfig();
-            config.groups = new ArrayList<>(Main.getDefaultGroups());
         }
     }
 
@@ -151,11 +147,6 @@ public class ClothConfig implements Config {
     }
 
     @Override
-    public List<ItemGroup> groups() {
-        return this.groups;
-    }
-
-    @Override
     public Sort sort() {
         return this.sort;
     }
@@ -163,5 +154,10 @@ public class ClothConfig implements Config {
     @Override
     public boolean showItemsInGroup() {
         return this.showItemsInGroup;
+    }
+
+    @Override
+    public List<ItemGroup> groups() {
+        return this.groups;
     }
 }
