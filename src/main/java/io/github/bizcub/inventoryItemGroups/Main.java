@@ -122,14 +122,11 @@ public class Main {
         }
     }
 
-    private static void addConfigItems(String groupName, List<String> containedItems, List<String> nonContainedItems, List<String> equivalentItems) {
-        addItems(groupName, containedItems, nonContainedItems, equivalentItems);
-    }
-
     private static void addItems(String groupName, List<String> containedItems, List<String> nonContainedItems, List<String> equivalentItems) {
-        rawDefaultGroups.add(new RawGroup());
-        RawGroup rawGroup = rawDefaultGroups.get(rawDefaultGroups.size() - 1);
-        if (nonContainedItems.isEmpty()) nonContainedItems = List.of("1111111");
+        RawGroup rawGroup = new RawGroup();
+        rawGroup.name = groupName;
+        if (nonContainedItems.isEmpty())
+            nonContainedItems = List.of("1111111");
 
         for (ItemStack itemStack : selectedTab.getDisplayItems()) {
             String itemName = itemStack.getItem().toString();
@@ -138,7 +135,7 @@ public class Main {
             for (String containedItem : containedItems) {
                 for (String nonContainedItem : nonContainedItems) {
                     if (itemName.contains(containedItem) && !itemName.contains(nonContainedItem)) {
-                        addRawGroup(rawGroup, groupName, itemStack);
+                        rawGroup.items.add(itemStack);
                         flag = true;
                         break;
                     }
@@ -148,16 +145,13 @@ public class Main {
 
             for (String equivalentItem : equivalentItems) {
                 if (equivalentItem.equals(itemName)) {
-                    addRawGroup(rawGroup, groupName, itemStack);
+                    rawGroup.items.add(itemStack);
                     break;
                 }
             }
         }
-    }
 
-    private static void addRawGroup(RawGroup rawGroup, String groupName, ItemStack itemStack) {
-        rawGroup.items.add(itemStack);
-        rawGroup.name = groupName;
+        rawDefaultGroups.add(rawGroup);
     }
 
     public static void createGroups() {
@@ -165,11 +159,9 @@ public class Main {
         groups.clear();
 
         for (ItemGroup group : Config.get().groups()) {
-            List<String> tempListOfItems = group.containedItems.stream().map(Object::toString).toList();
-            List<String> tempListOfNonItems = group.nonContainedItems.stream().map(Object::toString).toList();
-            List<String> tempListOfItemIds = group.equivalentItems.stream().map(Object::toString).toList();
-            if (getTabId(selectedTab).equals(group.tabId))
-                addConfigItems(group.groupName, tempListOfItems, tempListOfNonItems, tempListOfItemIds);
+            if (getTabId(selectedTab).equals(group.tabId)) {
+                addItems(group.groupName, group.containedItems, group.nonContainedItems, group.equivalentItems);
+            }
         }
 
         rawDefaultGroups.forEach(rawGroup -> groups.add(new Group(getGroupTranslate(rawGroup), selectedTab, rawGroup.items)));
