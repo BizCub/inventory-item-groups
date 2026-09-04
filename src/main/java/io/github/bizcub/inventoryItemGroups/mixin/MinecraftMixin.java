@@ -17,7 +17,7 @@ public class MinecraftMixin {
     @Unique Screen newScreen;
 
     @Inject(method = "tick", at = @At("TAIL"))
-    private void clearGroups(CallbackInfo ci) {
+    private void iig$clearGroups(CallbackInfo ci) {
         //~ if >=26.2 '.screen' -> '.gui.screen()'
         Screen currentScreen = Minecraft.getInstance().gui.screen();
         if (currentScreen != null) {

@@ -24,7 +24,7 @@ public class CreativeModeInventoryScreenMixin {
     @Shadow private static CreativeModeTab selectedTab;
 
     @Redirect(method = "selectTab", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;getDisplayItems()Ljava/util/Collection;"))
-    private Collection<ItemStack> groupsImplementation(CreativeModeTab selectedTab) {
+    private Collection<ItemStack> iig$groupsImplementation(CreativeModeTab selectedTab) {
         Main.selectedTab = selectedTab;
         Main.createGroups();
 
@@ -66,12 +66,12 @@ public class CreativeModeInventoryScreenMixin {
     }
 
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
-    private void mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, Slot slot, int slotId, int buttonNum, ContainerInput containerInput) {
+    private void iig$mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, Slot slot, int slotId, int buttonNum, ContainerInput containerInput) {
         iig$mouseButtonsFix(instance, itemStack, slot);
     }
 
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
-    private void mouseMiddleButtonFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, Slot slot, int slotId, int buttonNum, ContainerInput containerInput) {
+    private void iig$mouseMiddleButtonFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, Slot slot, int slotId, int buttonNum, ContainerInput containerInput) {
         iig$mouseButtonsFix(instance, itemStack, slot);
     }
 

@@ -8,7 +8,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,9 +15,9 @@ import java.util.stream.Collectors;
 public class Group {
     private boolean visibility;
     private final CreativeModeTab tab;
-    private final HashMap<ItemStack, Integer> icon = new HashMap<>();
+    private IndexedItemStack icon;
     private final Component name;
-    private final ArrayList<HashMap<ItemStack, Integer>> itemStacks = new ArrayList<>();
+    private final ArrayList<IndexedItemStack> itemStacks = new ArrayList<>();
 
     public Group(Component name, CreativeModeTab tab, ArrayList<ItemStack> itemStacks) {
         this.name = name;
@@ -28,11 +27,10 @@ public class Group {
         itemStacks = sort(itemStacks);
 
         if (!itemStacks.isEmpty()) {
-            this.icon.put(itemStacks.get(0), -1);
+            this.icon = new IndexedItemStack(itemStacks.get(0), -1);
 
             for (ItemStack itemStack : itemStacks) {
-                this.itemStacks.add(new HashMap<>());
-                this.itemStacks.get(this.itemStacks.size()-1).put(itemStack, -1);
+                this.itemStacks.add(new IndexedItemStack(itemStack, -1));
             }
         }
     }
@@ -66,18 +64,18 @@ public class Group {
 
     public ArrayList<ItemStack> getItems() {
         ArrayList<ItemStack> list = new ArrayList<>();
-        this.itemStacks.forEach(itemStacksMap -> list.add(itemStacksMap.keySet().iterator().next()));
+        this.itemStacks.forEach(entry -> list.add(entry.getItemStack()));
         return list;
     }
 
-    public ArrayList<HashMap<ItemStack, Integer>> getItemsWithIndexes() {
+    public ArrayList<IndexedItemStack> getItemsWithIndexes() {
         return itemStacks;
     }
 
     public void setItemWithIndex(ItemStack item, int index) {
-        this.itemStacks.forEach(itemStacksMap -> {
-            if (itemStacksMap.containsKey(item)) {
-                itemStacksMap.put(item, index);
+        this.itemStacks.forEach(entry -> {
+            if (entry.getItemStack().equals(item)) {
+                entry.setIndex(index);
             }
         });
     }
@@ -91,14 +89,14 @@ public class Group {
     }
 
     public ItemStack getIcon() {
-        return icon.keySet().stream().toList().get(0);
+        return icon.getItemStack();
     }
 
     public int getIconIndex() {
-        return icon.get(getIcon());
+        return icon.getIndex();
     }
 
     public void setIconIndex(int index) {
-        this.icon.put(getIcon(), index);
+        this.icon.setIndex(index);
     }
 }

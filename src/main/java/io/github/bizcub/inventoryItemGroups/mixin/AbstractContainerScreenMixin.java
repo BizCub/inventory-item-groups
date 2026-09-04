@@ -1,6 +1,7 @@
 package io.github.bizcub.inventoryItemGroups.mixin;
 
 import io.github.bizcub.inventoryItemGroups.Group;
+import io.github.bizcub.inventoryItemGroups.IndexedItemStack;
 import io.github.bizcub.inventoryItemGroups.Main;
 import io.github.bizcub.inventoryItemGroups.config.Config;
 import io.github.bizcub.inventoryItemGroups.config.ConfigHelper;
@@ -25,7 +26,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Mixin(AbstractContainerScreen.class)
@@ -69,7 +69,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
     //~ if >=26.1 'renderSlot' -> 'extractSlot'
     @Redirect(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;getItem()Lnet/minecraft/world/item/ItemStack;", ordinal = 0))
-    private ItemStack renderItems(Slot slot) {
+    private ItemStack iig$renderItems(Slot slot) {
         int index = Main.calculateIndex(menu.slots, slot.index);
         Group group = Main.findGroupByIndex(index);
 
@@ -81,7 +81,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
     //~ if >=26.1 'renderSlot' -> 'extractSlot'
     @Inject(method = "extractSlot", at = @At("HEAD"))
-    private void renderSlotSprites(GuiGraphicsExtractor graphics, Slot slot, /*? >=1.21.11 {*/ int mouseX, int mouseY, /*?}*/ CallbackInfo ci) {
+    private void iig$renderSlotSprites(GuiGraphicsExtractor graphics, Slot slot, /*? >=1.21.11 {*/ int mouseX, int mouseY, /*?}*/ CallbackInfo ci) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = Main.calculateIndex(menu.slots, slot.index);
         for (Group group : groupsOnSelectedTab) {
@@ -90,8 +90,8 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
                     iig$renderSprite(graphics, "icon_slot", slot.x-1, slot.y-1, 18);
 
                 for (ItemStack itemStack : group.getItems())
-                    for (HashMap<ItemStack, Integer> itemStacksMap : group.getItemsWithIndexes())
-                        if (itemStacksMap.containsKey(itemStack) && itemStacksMap.containsValue(index))
+                    for (IndexedItemStack entry : group.getItemsWithIndexes())
+                        if (entry.getItemStack().equals(itemStack) && entry.getIndex() == index)
                             iig$renderSprite(graphics, "item_slot", slot.x-1, slot.y-1, 18);
             }
         }
@@ -99,7 +99,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
     //~ if >=26.1 'renderSlot' -> 'extractSlot'
     @Inject(method = "extractSlot", at = @At("TAIL"))
-    private void renderVisibilitySprites(GuiGraphicsExtractor graphics, Slot slot, /*? >=1.21.11 {*/ int mouseX, int mouseY, /*?}*/ CallbackInfo ci) {
+    private void iig$renderVisibilitySprites(GuiGraphicsExtractor graphics, Slot slot, /*? >=1.21.11 {*/ int mouseX, int mouseY, /*?}*/ CallbackInfo ci) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = Main.calculateIndex(menu.slots, slot.index);
         for (Group group : groupsOnSelectedTab) {
@@ -118,7 +118,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
     //~ if >=26.1 'renderTooltip' -> 'extractTooltip'
     @Redirect(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;getTooltipFromContainerItem(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
-    private List<Component> renderGroupName(AbstractContainerScreen instance, ItemStack itemStack) {
+    private List<Component> iig$renderGroupName(AbstractContainerScreen instance, ItemStack itemStack) {
         int index = Main.calculateIndex(menu.slots, hoveredSlot.index);
         Group group = Main.findGroupByIndex(index);
 
@@ -129,7 +129,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
     //~ if >=26.1 'renderTooltip' -> 'extractTooltip'
     @Inject(method = "extractTooltip", at = @At("HEAD"))
-    private void getTicks(CallbackInfo ci) {
+    private void iig$getTicks(CallbackInfo ci) {
         tick++;
         if (tick == Minecraft.getInstance().options.framerateLimit().get()) {
             tick = 0;

@@ -87,8 +87,8 @@ public class Main {
 
     public static Group findGroupByIndex(int index) {
         for (Group group : groups)
-            for (HashMap<ItemStack, Integer> itemStacksMap : group.getItemsWithIndexes())
-                if (itemStacksMap.containsValue(index) || group.getIconIndex() == index)
+            for (IndexedItemStack entry : group.getItemsWithIndexes())
+                if (entry.getIndex() == index || group.getIconIndex() == index)
                     return group;
         return null;
     }

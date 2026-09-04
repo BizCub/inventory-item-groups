@@ -27,7 +27,7 @@ public abstract class ItemPickerMenuMixin {
     @Shadow protected abstract float getScrollForRowIndex(int rowIndex);
 
     @Inject(method = "getCarried", at = @At("HEAD"))
-    private void toggleGroupVisibility(CallbackInfoReturnable<ItemStack> cir) {
+    private void iig$toggleGroupVisibility(CallbackInfoReturnable<ItemStack> cir) {
         Group group = Main.pendingGroup;
         if (group != null) {
             group.setVisibility(!group.isVisibility());
