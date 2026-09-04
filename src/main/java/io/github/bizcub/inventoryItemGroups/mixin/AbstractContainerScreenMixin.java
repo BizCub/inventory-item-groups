@@ -89,10 +89,9 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
                 if (group.getIconIndex() == index)
                     iig$renderSprite(graphics, "icon_slot", slot.x-1, slot.y-1, 18);
 
-                for (ItemStack itemStack : group.getItems())
-                    for (IndexedItemStack entry : group.getItemsWithIndexes())
-                        if (entry.getItemStack().equals(itemStack) && entry.getIndex() == index)
-                            iig$renderSprite(graphics, "item_slot", slot.x-1, slot.y-1, 18);
+                for (IndexedItemStack entry : group.getItemsWithIndexes())
+                    if (entry.getIndex() == index)
+                        iig$renderSprite(graphics, "item_slot", slot.x-1, slot.y-1, 18);
             }
         }
     }

@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 
-    @Unique Screen oldScreen;
     @Unique Screen newScreen;
 
     @Inject(method = "tick", at = @At("TAIL"))
@@ -21,11 +20,8 @@ public class MinecraftMixin {
         //~ if >=26.2 '.screen' -> '.gui.screen()'
         Screen currentScreen = Minecraft.getInstance().gui.screen();
         if (currentScreen != null) {
-            oldScreen = currentScreen;
-            if (newScreen != null && !oldScreen.equals(newScreen)) {
-                if (!(currentScreen instanceof CreativeModeInventoryScreen)) {
-                    Main.groups.clear();
-                }
+            if (newScreen != null && !currentScreen.equals(newScreen) && !(currentScreen instanceof CreativeModeInventoryScreen)) {
+                Main.groups.clear();
             }
             newScreen = currentScreen;
         } else {

@@ -37,16 +37,7 @@ public class CreativeModeInventoryScreenMixin {
             removeItems.remove(group.getIcon());
         }
 
-        for (int i = 0; i < newStack.size(); i++) {
-            ItemStack itemStack = newStack.get(i);
-
-            for (ItemStack removableItemStacks : removeItems) {
-                if (itemStack.equals(removableItemStacks)) {
-                    newStack.remove(i);
-                    i--;
-                }
-            }
-        }
+        newStack.removeAll(removeItems);
 
         Main.tempItemStacks = newStack;
         Main.setIndexes();
@@ -54,7 +45,7 @@ public class CreativeModeInventoryScreenMixin {
     }
 
     @Unique
-    private void iig$mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, Slot slot) {
+    private void iig$toggleOrCarry(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, Slot slot) {
         int index = Main.calculateIndex(instance.slots, slot.index);
         Group group = Main.findGroupByIndex(index);
 
@@ -67,12 +58,12 @@ public class CreativeModeInventoryScreenMixin {
 
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 4))
     private void iig$mouseButtonsFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, Slot slot, int slotId, int buttonNum, ContainerInput containerInput) {
-        iig$mouseButtonsFix(instance, itemStack, slot);
+        iig$toggleOrCarry(instance, itemStack, slot);
     }
 
     @Redirect(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V", ordinal = 2))
     private void iig$mouseMiddleButtonFix(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, Slot slot, int slotId, int buttonNum, ContainerInput containerInput) {
-        iig$mouseButtonsFix(instance, itemStack, slot);
+        iig$toggleOrCarry(instance, itemStack, slot);
     }
 
     @Inject(method = "selectTab", at = @At("HEAD"))

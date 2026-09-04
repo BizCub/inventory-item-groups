@@ -130,25 +130,12 @@ public class Main {
 
         for (ItemStack itemStack : selectedTab.getDisplayItems()) {
             String itemName = itemStack.getItem().toString();
-            boolean flag = false;
 
-            for (String containedItem : containedItems) {
-                for (String nonContainedItem : nonContainedItems) {
-                    if (itemName.contains(containedItem) && !itemName.contains(nonContainedItem)) {
-                        rawGroup.items.add(itemStack);
-                        flag = true;
-                        break;
-                    }
-                }
-                if (flag) break;
-            }
+            boolean contained = containedItems.stream().anyMatch(itemName::contains)
+                    && nonContainedItems.stream().anyMatch(n -> !itemName.contains(n));
 
-            for (String equivalentItem : equivalentItems) {
-                if (equivalentItem.equals(itemName)) {
-                    rawGroup.items.add(itemStack);
-                    break;
-                }
-            }
+            if (contained || equivalentItems.contains(itemName))
+                rawGroup.items.add(itemStack);
         }
 
         rawDefaultGroups.add(rawGroup);
@@ -158,10 +145,10 @@ public class Main {
         rawDefaultGroups.clear();
         groups.clear();
 
+        String selectedTabId = getTabId(selectedTab);
         for (ItemGroup group : Config.get().groups()) {
-            if (getTabId(selectedTab).equals(group.tabId)) {
+            if (selectedTabId.equals(group.tabId))
                 addItems(group.groupName, group.containedItems, group.nonContainedItems, group.equivalentItems);
-            }
         }
 
         rawDefaultGroups.forEach(rawGroup -> groups.add(new Group(getGroupTranslate(rawGroup), selectedTab, rawGroup.items)));
