@@ -47,6 +47,8 @@ public class CreativeModeInventoryScreenMixin {
 
     @WrapWithCondition(method = "slotClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen$ItemPickerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V"))
     private boolean iig$toggleInsteadOfCarry(CreativeModeInventoryScreen.ItemPickerMenu instance, ItemStack itemStack, @Local(argsOnly = true) Slot slot) {
+        if (slot == null) return true;
+
         int index = Main.calculateIndex(instance.slots, slot.index);
         Group group = Main.findGroupByIndex(index);
         if (group != null && selectedTab.equals(group.getTab()) && group.getIconIndex() == index) {

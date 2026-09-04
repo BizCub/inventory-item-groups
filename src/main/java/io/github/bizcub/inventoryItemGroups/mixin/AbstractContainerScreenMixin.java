@@ -2,6 +2,7 @@ package io.github.bizcub.inventoryItemGroups.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import io.github.bizcub.inventoryItemGroups.Group;
 import io.github.bizcub.inventoryItemGroups.IndexedItemStack;
 import io.github.bizcub.inventoryItemGroups.Main;
@@ -80,7 +81,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
     //~ if >=26.1 'renderSlot' -> 'extractSlot'
     @Inject(method = "extractSlot", at = @At("HEAD"))
-    private void iig$renderSlotSprites(GuiGraphicsExtractor graphics, Slot slot, /*? >=1.21.11 {*/ int mouseX, int mouseY, /*?}*/ CallbackInfo ci) {
+    private void iig$renderSlotSprites(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor graphics, @Local(argsOnly = true) Slot slot) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = Main.calculateIndex(menu.slots, slot.index);
         for (Group group : groupsOnSelectedTab) {
@@ -97,7 +98,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
 
     //~ if >=26.1 'renderSlot' -> 'extractSlot'
     @Inject(method = "extractSlot", at = @At("TAIL"))
-    private void iig$renderVisibilitySprites(GuiGraphicsExtractor graphics, Slot slot, /*? >=1.21.11 {*/ int mouseX, int mouseY, /*?}*/ CallbackInfo ci) {
+    private void iig$renderVisibilitySprites(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor graphics, @Local(argsOnly = true) Slot slot) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = Main.calculateIndex(menu.slots, slot.index);
         for (Group group : groupsOnSelectedTab) {
