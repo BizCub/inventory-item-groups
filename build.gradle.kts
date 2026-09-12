@@ -24,10 +24,10 @@ multiloader {
     versionRange("1.20.1", to = "1.20.4", loader = "forge")
 
     addDependency(
-        dependency = getSimpleConfigLibDep(),
+        dependency = getSimpleConfigLibDep("2.0"),
         isPublishDepEnabled = true
     )
-    val isClothConfigAvailable = !(isForge && scp > "1.21.3")
+    val isClothConfigAvailable = !(isForge && scp > "1.21.3") && false
     addDependency(
         dependency = "me.shedaniel.cloth:cloth-config-${mod.loader}:${getDep("cloth-config").split("+").first()}",
         configuration = if (isClothConfigAvailable) "implementation" else "compileOnly",
