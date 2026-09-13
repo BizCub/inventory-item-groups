@@ -2,12 +2,13 @@ package io.github.bizcub.inventoryItemGroups.config;
 
 import io.github.bizcub.inventoryItemGroups.Main;
 import io.github.bizcub.simpleConfigLib.autoconfig.ConfigHolder;
+import io.github.bizcub.simpleConfigLib.autoconfig.ConfigSide;
 import io.github.bizcub.simpleConfigLib.autoconfig.annotation.*;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-@AutoConfig(name = Main.MOD_ID, translate = true, snakeCaseKeys = true)
+@AutoConfig(name = Main.MOD_ID, fileName = Main.MOD_ID + "_scl", side = ConfigSide.CLIENT, translate = true, snakeCaseKeys = true)
 public class SimpleConfig implements Config {
     public static ConfigHolder<SimpleConfig> getInstance() {
         return ConfigHolder.register(SimpleConfig.class);
