@@ -180,17 +180,15 @@ public class Main {
         addGroup(defaults, tabId, "sandstone", List.of("sandstone"));
 
         tabId = "minecraft:colored_blocks";
-        //? >=26.3 {
         addGroup(defaults, tabId, "wool_stairs", List.of("wool_stairs"));
-        addGroup(defaults, tabId, "wool_slabs", List.of("wool_slab"));//?}
+        addGroup(defaults, tabId, "wool_slabs", List.of("wool_slab"));
         addGroup(defaults, tabId, "wool", List.of("wool"));
         addGroup(defaults, tabId, "carpets", List.of("carpet"));
         addGroup(defaults, tabId, "glazed_terracotta", List.of("glazed_terracotta"));
         addGroup(defaults, tabId, "terracotta", List.of("terracotta"));
         addGroup(defaults, tabId, "concrete_powder", List.of("concrete_powder"));
-        //? >=26.3 {
         addGroup(defaults, tabId, "concrete_stairs", List.of("concrete_stairs"));
-        addGroup(defaults, tabId, "concrete_slabs", List.of("concrete_slab"));//?}
+        addGroup(defaults, tabId, "concrete_slabs", List.of("concrete_slab"));
         addGroup(defaults, tabId, "concrete", List.of("concrete"));
         addGroup(defaults, tabId, "glass_panes", List.of("glass_pane"));
         addGroup(defaults, tabId, "glass", List.of("glass"));
