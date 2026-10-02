@@ -9,13 +9,13 @@ import io.github.bizcub.inventoryItemGroups.Main;
 import io.github.bizcub.inventoryItemGroups.config.Config;
 import io.github.bizcub.inventoryItemGroups.config.ConfigHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 //~ if >=1.21.6 'RenderType' -> 'RenderPipelines'
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -32,9 +32,6 @@ import java.util.List;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMenu> {
-
-    @Unique private int tick = 0;
-    @Unique private int seconds = 0;
 
     @Shadow @Final protected T menu;
     @Shadow protected Slot hoveredSlot;
@@ -73,10 +70,13 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         int index = Main.calculateIndex(menu.slots, slot.index);
         Group group = Main.findGroupByIndex(index);
 
+        ItemStack real = original.call(slot);
         return (ConfigHelper.isConfigLoaded() && Config.get().showItemsInGroup()
-                && group != null && group.getIconIndex() == index && iig$onScreen(slot.index))
-                ? group.getItems().get(seconds % group.getItems().size())
-                : original.call(slot);
+                && group != null && Main.selectedTab.equals(group.getTab())
+                && group.getIconIndex() == index && iig$onScreen(slot.index)
+                && ItemStack.isSameItem(real, group.getIcon()))
+                ? group.getItems().get((int) (Util.getMillis() / 1500) % group.getItems().size())
+                : real;
     }
 
     //~ if >=26.1 'renderSlot' -> 'extractSlot'
@@ -106,10 +106,7 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
                 //? >=1.21.2 && <=1.21.5 {
                 /*graphics.pose().pushPose();
                 graphics.pose().translate(0.0F, 0.0F, 300.0F);*///?}
-                if (group.isVisibility())
-                    iig$renderSprite(graphics, "minus", slot.x, slot.y, 16);
-                else
-                    iig$renderSprite(graphics, "plus", slot.x, slot.y, 16);
+                iig$renderSprite(graphics, group.isVisibility() ? "minus" : "plus", slot.x, slot.y, 16);
                 /*? >=1.21.2 && <=1.21.5*/ //graphics.pose().popPose();
             }
         }
@@ -124,15 +121,5 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         return (group != null && Main.selectedTab.equals(group.getTab()) && index == group.getIconIndex() && iig$onScreen(hoveredSlot.index))
                 ? List.of(group.getName())
                 : original.call(instance, itemStack);
-    }
-
-    //~ if >=26.1 'renderTooltip' -> 'extractTooltip'
-    @Inject(method = "extractTooltip", at = @At("HEAD"))
-    private void iig$getTicks(CallbackInfo ci) {
-        tick++;
-        if (tick == Minecraft.getInstance().options.framerateLimit().get()) {
-            tick = 0;
-            seconds++;
-        }
     }
 }
