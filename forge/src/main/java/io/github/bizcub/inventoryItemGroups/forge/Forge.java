@@ -1,5 +1,4 @@
-//? forge {
-/*package io.github.bizcub.inventoryItemGroups.platform;
+package io.github.bizcub.inventoryItemGroups.forge;
 
 import io.github.bizcub.inventoryItemGroups.Main;
 import io.github.bizcub.inventoryItemGroups.config.ConfigHelper;
@@ -16,4 +15,4 @@ public class Forge {
         ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () ->
                 new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> ConfigHelper.getScreen(screen)));
     }
-}*///?}
+}

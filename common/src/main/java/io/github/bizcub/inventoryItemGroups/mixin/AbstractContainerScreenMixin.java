@@ -8,14 +8,11 @@ import io.github.bizcub.inventoryItemGroups.IndexedItemStack;
 import io.github.bizcub.inventoryItemGroups.Main;
 import io.github.bizcub.inventoryItemGroups.config.Config;
 import io.github.bizcub.inventoryItemGroups.config.ConfigHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-//~ if >=1.21.6 'RenderType' -> 'RenderPipelines'
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-//~ if >=1.21.11 'Util' -> 'util.Util'
 import net.minecraft.util.Util;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
@@ -45,27 +42,14 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
     private Identifier iig$getSprite(String location) {
         String id = Main.MOD_ID;
         String path = "container/" + location;
-        /*? >=1.21*/ return Identifier.fromNamespaceAndPath(id, path);
-        /*? <=1.20.6*/ //return new Identifier(id, "textures/gui/sprites/" + path + ".png");
+        return Identifier.fromNamespaceAndPath(id, path);
     }
 
     @Unique
     private void iig$renderSprite(GuiGraphicsExtractor graphics, String location, int x, int y, int size) {
-        //? >=1.21.6 {
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, iig$getSprite(location), x, y, size, size);
-        //?} >=1.21.2 {
-        /*graphics.blitSprite(RenderType::guiTextured, iig$getSprite(location), x, y, size, size);
-        *///?} >=1.21 {
-        /*RenderSystem.disableDepthTest();
-        graphics.blitSprite(iig$getSprite(location), x, y, size, size);
-        RenderSystem.enableDepthTest();
-        *///?} else {
-        /*RenderSystem.disableDepthTest();
-        graphics.blit(iig$getSprite(location), x, y, 0, 0, size, size, size, size);
-        RenderSystem.enableDepthTest();*///?}
     }
 
-    //~ if >=26.1 'renderSlot' -> 'extractSlot'
     @WrapOperation(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;getItem()Lnet/minecraft/world/item/ItemStack;", ordinal = 0))
     private ItemStack iig$renderItems(Slot slot, Operation<ItemStack> original) {
         int index = Main.calculateIndex(menu.slots, slot.index);
@@ -80,7 +64,6 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
                 : real;
     }
 
-    //~ if >=26.1 'renderSlot' -> 'extractSlot'
     @Inject(method = "extractSlot", at = @At("HEAD"))
     private void iig$renderSlotSprites(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor graphics, @Local(argsOnly = true) Slot slot) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
@@ -97,23 +80,17 @@ public abstract class AbstractContainerScreenMixin<T extends AbstractContainerMe
         }
     }
 
-    //~ if >=26.1 'renderSlot' -> 'extractSlot'
     @Inject(method = "extractSlot", at = @At("TAIL"))
     private void iig$renderVisibilitySprites(CallbackInfo ci, @Local(argsOnly = true) GuiGraphicsExtractor graphics, @Local(argsOnly = true) Slot slot) {
         ArrayList<Group> groupsOnSelectedTab = Main.groupsOnSelectedTab(Main.selectedTab);
         int index = Main.calculateIndex(menu.slots, slot.index);
         for (Group group : groupsOnSelectedTab) {
             if (iig$onScreen(slot.index) && group.getIconIndex() == index) {
-                //? >=1.21.2 && <=1.21.5 {
-                /*graphics.pose().pushPose();
-                graphics.pose().translate(0.0F, 0.0F, 300.0F);*///?}
                 iig$renderSprite(graphics, group.isVisibility() ? "minus" : "plus", slot.x, slot.y, 16);
-                /*? >=1.21.2 && <=1.21.5*/ //graphics.pose().popPose();
             }
         }
     }
 
-    //~ if >=26.1 'renderTooltip' -> 'extractTooltip'
     @WrapOperation(method = "extractTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;getTooltipFromContainerItem(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
     private List<Component> iig$renderGroupName(AbstractContainerScreen instance, ItemStack itemStack, Operation<List<Component>> original) {
         int index = Main.calculateIndex(menu.slots, hoveredSlot.index);

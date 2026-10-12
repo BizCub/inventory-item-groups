@@ -17,7 +17,6 @@ public class MinecraftMixin {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void iig$clearGroups(CallbackInfo ci) {
-        //~ if >=26.2 '.screen' -> '.gui.screen()'
         Screen currentScreen = Minecraft.getInstance().gui.screen();
         if (currentScreen != null) {
             if (newScreen != null && !currentScreen.equals(newScreen) && !(currentScreen instanceof CreativeModeInventoryScreen)) {

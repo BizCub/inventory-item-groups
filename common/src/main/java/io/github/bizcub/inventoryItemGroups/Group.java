@@ -25,7 +25,7 @@ public class Group {
         sort(itemStacks);
 
         if (!itemStacks.isEmpty()) {
-            this.icon = new IndexedItemStack(itemStacks.get(0), -1);
+            this.icon = new IndexedItemStack(itemStacks.getFirst(), -1);
 
             for (ItemStack itemStack : itemStacks) {
                 this.itemStacks.add(new IndexedItemStack(itemStack, -1));

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static final String MOD_ID = /*$ mod_id*/ "inventory_item_groups";
+    public static final String MOD_ID = "inventory_item_groups";
 
     public static ArrayList<Group> groups = new ArrayList<>();
     public static ArrayList<RawGroup> rawDefaultGroups = new ArrayList<>();
@@ -24,11 +24,8 @@ public class Main {
     public static ArrayList<ItemStack> tempItemStacks = new ArrayList<>();
 
     public static void init() {
-        if (ConfigHelper.isSimpleConfigLoaded()) {
+        if (ConfigHelper.isConfigLoaded()) {
             Config.set(SimpleConfig.getInstance().get());
-        } else if (ConfigHelper.isClothConfigLoaded()) {
-            ClothConfig.load();
-            Config.set(ClothConfig.getConfig());
         }
     }
 
@@ -48,8 +45,8 @@ public class Main {
                                         "text.inventory_item_groups.option.id_of_menu_tabs.element",
                                         Component.literal(creativeModeTab.getDisplayName().getString()),
                                         Component.literal(tabId).withStyle(style -> style
-                                                .withHoverEvent(getHoverEvent(Component.translatable("chat.copy")))
-                                                .withClickEvent(getClickEvent(tabId))
+                                                .withHoverEvent(new HoverEvent.ShowText(Component.translatable("chat.copy")))
+                                                .withClickEvent(new ClickEvent.CopyToClipboard(tabId))
                                                 .withColor(ChatFormatting.WHITE))
                                 )
                                 .withStyle(ChatFormatting.GRAY)
@@ -70,7 +67,7 @@ public class Main {
             result = secondItemIndex;
             if (!slots.get(0).getItem().equals(slots.get(1).getItem())) result--;
         } else {
-            result = tempItemStacks.indexOf(slots.get(0).getItem());
+            result = tempItemStacks.indexOf(slots.getFirst().getItem());
         }
 
         if (result < 0) result = 0;
@@ -304,15 +301,5 @@ public class Main {
         return Language.getInstance().has(key)
                 ? Component.translatable(key)
                 : Component.literal(rawGroup.name);
-    }
-
-    private static HoverEvent getHoverEvent(Component component) {
-        //~ if >=1.21.5 'HoverEvent(HoverEvent.Action.SHOW_TEXT,' -> 'HoverEvent.ShowText('
-        return new HoverEvent.ShowText(component);
-    }
-
-    private static ClickEvent getClickEvent(String tabId) {
-        //~ if >=1.21.5 'ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD,' -> 'ClickEvent.CopyToClipboard('
-        return new ClickEvent.CopyToClipboard(tabId);
     }
 }

@@ -1,5 +1,4 @@
-//? fabric {
-package io.github.bizcub.inventoryItemGroups.platform;
+package io.github.bizcub.inventoryItemGroups.fabric;
 
 import io.github.bizcub.inventoryItemGroups.Main;
 import io.github.bizcub.inventoryItemGroups.config.ConfigHelper;
@@ -21,4 +20,4 @@ public class Fabric implements ClientModInitializer {
             return ConfigHelper::getScreen;
         }
     }
-}//?}
+}

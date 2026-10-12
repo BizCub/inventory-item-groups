@@ -1,5 +1,4 @@
-//? neoforge {
-/*package io.github.bizcub.inventoryItemGroups.platform;
+package io.github.bizcub.inventoryItemGroups.platform;
 
 import io.github.bizcub.inventoryItemGroups.Main;
 import io.github.bizcub.inventoryItemGroups.config.ConfigHelper;
@@ -16,4 +15,4 @@ public class NeoForge {
         ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, () ->
             (container, parent) -> ConfigHelper.getScreen(parent));
     }
-}*///?}
+}
