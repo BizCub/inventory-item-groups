@@ -298,8 +298,13 @@ public class Main {
 
     public static Component getGroupTranslate(RawGroup rawGroup) {
         String key = "group_name.inventory_item_groups." + rawGroup.name;
-        return Language.getInstance().has(key)
-                ? Component.translatable(key)
-                : Component.literal(rawGroup.name);
+        Language language = Language.getInstance();
+        if (language.has(key)) {
+            return Component.translatable(key);
+        }
+        if (language.has(rawGroup.name)) {
+            return Component.translatable(rawGroup.name);
+        }
+        return Component.literal(rawGroup.name);
     }
 }
