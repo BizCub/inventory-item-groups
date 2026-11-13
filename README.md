@@ -25,11 +25,11 @@ Below is an example of adding an item group to the blocks tab in the Cobllemon m
 
 ---
 
-If desired, you can completely disable the default groups by unchecking the "Add all groups" option.
+If desired, you can remove the default groups from the Groups list in the mod settings.
 
 Another customization option is item sorting within a group. Currently, there are two modes: default and alphabetical.
 
-You can translate the created group. The "Translate Groups" option must be enabled. To do this, [create a resource pack](https://minecraft.wiki/w/Tutorial:Creating_a_resource_pack) and write a translation using the translation key from the example, then change the group name and ID to your own.
+You can translate the created group. To do this, [create a resource pack](https://minecraft.wiki/w/Tutorial:Creating_a_resource_pack) and write a translation using the translation key from the example, then change the group name and ID to your own.
 
 
 <details>
