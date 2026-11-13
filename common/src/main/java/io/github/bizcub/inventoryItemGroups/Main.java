@@ -122,14 +122,12 @@ public class Main {
     private static void addItems(String groupName, List<String> containedItems, List<String> nonContainedItems, List<String> equivalentItems) {
         RawGroup rawGroup = new RawGroup();
         rawGroup.name = groupName;
-        if (nonContainedItems.isEmpty())
-            nonContainedItems = List.of("1111111");
 
         for (ItemStack itemStack : selectedTab.getDisplayItems()) {
             String itemName = itemStack.getItem().toString();
 
             boolean contained = containedItems.stream().anyMatch(itemName::contains)
-                    && nonContainedItems.stream().anyMatch(n -> !itemName.contains(n));
+                    && nonContainedItems.stream().noneMatch(itemName::contains);
 
             if (contained || equivalentItems.contains(itemName))
                 rawGroup.items.add(itemStack);
