@@ -23,8 +23,8 @@ public class Main {
     public static Group pendingGroup = null;
     public static ArrayList<ItemStack> tempItemStacks = new ArrayList<>();
 
-    public static void init() {
-        if (ConfigHelper.isConfigLoaded()) {
+    public static void init(boolean hasSimpleConfig) {
+        if (hasSimpleConfig) {
             Config.set(SimpleConfig.getInstance().get());
         }
     }

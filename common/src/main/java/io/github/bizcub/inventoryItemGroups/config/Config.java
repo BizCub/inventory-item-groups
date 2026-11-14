@@ -15,8 +15,13 @@ public interface Config {
         }
     }
 
+    static boolean isLoaded() {
+        return Holder.INSTANCE != Holder.DEFAULT;
+    }
+
     class Holder {
-        private static Config INSTANCE = new Config() { };
+        private static final Config DEFAULT = new Config() { };
+        private static Config INSTANCE = DEFAULT;
     }
 
     default Sort sort() {
